@@ -1,0 +1,8 @@
+[package]
+name = "psp"
+version = "0.1.0"
+edition = "2021"
+authors = ["matteoguadrini"]
+
+[dependencies]
+inquire = "0.7"
