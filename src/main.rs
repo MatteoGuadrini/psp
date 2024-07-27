@@ -1,9 +1,12 @@
+use inquire::Text;
 use std::{
     fs::{create_dir_all, File},
     io::Write,
     path::Path,
     process::exit,
 };
+
+// Utility functions
 
 // Function for check if tool is installed
 fn check_tool(tool: &str) {
@@ -36,6 +39,12 @@ fn make_file(file: &str, content: String) -> std::io::Result<()> {
         }
         Ok(_) => Ok(()),
     }
+}
+
+// Function for prompt text
+fn prompt_text(question: &str, default: &str) -> String {
+    let answer = Text::new(question).with_default(default).prompt();
+    answer.unwrap().to_string()
 }
 
 fn main() {
