@@ -17,14 +17,14 @@ fn check_tool(tool: &str) {
 }
 
 // Function for creating folders and parents
-fn make_dirs(dir: &str) {
+fn make_dirs(dir: &str) -> std::io::Result<()> {
     let result = create_dir_all(dir);
     match result {
         Err(e) => {
             eprintln!("error: {}", e);
             exit(2);
         }
-        Ok(_) => (),
+        Ok(_) => Ok(()),
     }
 }
 
@@ -45,6 +45,34 @@ fn make_file(file: &str, content: String) -> std::io::Result<()> {
 fn prompt_text(question: &str, default: &str) -> String {
     let answer = Text::new(question).with_default(default).prompt();
     answer.unwrap().to_string()
+}
+
+// Core functions
+
+// Project name
+fn prj_name() {
+    let name = prompt_text("Name of Python project: ", "None");
+    // Make directories structure
+    let dir_ret = make_dirs(name.as_str());
+    match dir_ret {
+        Err(e) => {
+            eprintln!("error: {}", e);
+            exit(4);
+        }
+        Ok(_) => (),
+    }
+    // Make file structures
+    let file_ret = make_file(
+        format!("{name}/__init__.py").as_str(),
+        "#! /usr/env python3".to_string(),
+    );
+    match file_ret {
+        Err(e) => {
+            eprintln!("error: {}", e);
+            exit(4);
+        }
+        Ok(_) => (),
+    }
 }
 
 fn main() {
