@@ -76,6 +76,8 @@ fn prj_name() {
 }
 
 fn main() {
-    println!("Hello by PSP (Python Scaffolding Projects!)");
-    println!("This project is a WIP! Be careful!");
+    // Check if Python 3 is installed
+    check_tool("/usr/bin/python3");
+    // Create project structure by name
+    prj_name();
 }
