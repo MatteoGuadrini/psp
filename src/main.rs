@@ -43,7 +43,11 @@ fn make_file(file: &str, content: String) -> std::io::Result<()> {
 
 // Function for prompt text
 fn prompt_text(question: &str, default: &str) -> String {
-    let answer = Text::new(question).with_default(default).prompt();
+    let answer = if let "None" = default {
+        Text::new(question).prompt()
+    } else {
+        Text::new(question).with_default(default).prompt()
+    };
     answer.unwrap().to_string()
 }
 
