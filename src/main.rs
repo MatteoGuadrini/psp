@@ -42,11 +42,13 @@ fn make_file(file: &str, content: String) -> std::io::Result<()> {
 }
 
 // Function for prompt text
-fn prompt_text(question: &str, default: &str) -> String {
-    let answer = if let "None" = default {
-        Text::new(question).prompt()
-    } else {
+fn prompt_text(question: &str, default: &str, help: &str) -> String {
+    let answer = if default != "None" {
         Text::new(question).with_default(default).prompt()
+    } else if help != "None" {
+        Text::new(question).with_help_message(help).prompt()
+    } else {
+        Text::new(question).prompt()
     };
     answer.unwrap().to_string()
 }
@@ -55,7 +57,7 @@ fn prompt_text(question: &str, default: &str) -> String {
 
 // Project name
 fn prj_name() -> String {
-    let name = prompt_text("Name of Python project:", "src");
+    let name = prompt_text("Name of Python project:", "src", "None");
     // Make directories structure
     let dir_ret = make_dirs(format!("{name}_src/{name}").as_str());
     match dir_ret {
@@ -68,7 +70,7 @@ fn prj_name() -> String {
     // Make file structures
     let file_ret = make_file(
         format!("{name}_src/{name}/__init__.py").as_str(),
-        "#! /usr/env python3".to_string(),
+        "#! /usr/env python3\n\n".to_string(),
     );
     match file_ret {
         Err(e) => {
