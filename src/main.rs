@@ -50,8 +50,8 @@ fn prompt_text(question: &str, default: &str) -> String {
 // Core functions
 
 // Project name
-fn prj_name() {
-    let name = prompt_text("Name of Python project: ", "None");
+fn prj_name() -> String {
+    let name = prompt_text("Name of Python project:", "src");
     // Make directories structure
     let dir_ret = make_dirs(name.as_str());
     match dir_ret {
@@ -73,11 +73,12 @@ fn prj_name() {
         }
         Ok(_) => (),
     }
+    name
 }
 
 fn main() {
     // Check if Python 3 is installed
     check_tool("/usr/bin/python3");
     // Create project structure by name
-    prj_name();
+    let name = prj_name();
 }
