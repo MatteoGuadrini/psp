@@ -4,13 +4,36 @@
 
 ```console
 psp   # Press Enter
+Welcome to PSP (Python Scaffolding Projects): 0.0.1
+> Name of Python project: test
 ```
 
 > This project is WIP
 
+## Installation
+
+To install compiled file into your machine, download it:
+
+```console
+# For Linux
+sudo curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.0.1/psp_linux > /usr/bin/psp
+sudo chmod +x /usr/bin/psp
+
+# For MacOS
+sudo curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.0.1/psp_macos > /usr/bin/psp
+sudo chmod +x /usr/bin/psp
+```
+
+Instead, if you compile this project as own, follow this steps:
+
+```console
+git clone https://github.com/MatteoGuadrini/psp.git
+cd psp && cargo build && sudo cp -var target/debug/psp /usr/bin/psp
+```
+
 ## Features
 
-- [ ] Scaffold file and folder structures for your Python project
+- [x] Scaffolding file and folder structures for your Python project
 - [ ] Prepare git and gitignore
 - [ ] Prepare unit test files (also with pytest)
 - [ ] Prepare virtual environment
@@ -22,6 +45,7 @@ psp   # Press Enter
 - [ ] Prepare tox environment
 - [ ] Prepare docs folder for sphinx/mkdocs documentation
 - [ ] Prepare README, LICENSE, CONTRIBUTING, CODE_OF_CONDUCT and CHANGES files
+- [ ] Add _quick_ argument for rapid configuration
 
 ## Open source
 _psp_ is an open source project. Any contribute, It's welcome.
@@ -57,6 +81,8 @@ By contributing to the Treeware forest you’ll be creating employment for local
 Thanks to Jim Blandy, Jason Orendorff and Nora Tindall for writing the  _Programming Rust_ book that make up my Rust foundation.
 
 Thanks to Tim McNamara for writing the _Rust in Action_ book.
+
+Thanks to [Zed IDE](https://zed.dev/) and for license of [RustRover](https://www.jetbrains.com/rust/) offered by Jetbrains.
 
 Special thanks go to my wife, who understood the hours of absence for this development.
 Thanks to my children, for the daily inspiration they give me and to make me realize, that life must be simple.
