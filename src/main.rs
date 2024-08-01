@@ -1,4 +1,4 @@
-use inquire::Text;
+use inquire::{Confirm, Text};
 use std::{
     fs::{create_dir_all, File},
     io::Write,
@@ -56,6 +56,18 @@ fn prompt_text(question: &str, default: &str, help: &str) -> String {
     answer.unwrap().to_string()
 }
 
+fn prompt_confirm(question: &str, default: bool, help: &str) -> bool {
+    let answer = if help != "None" {
+        Confirm::new(question)
+            .with_default(default)
+            .with_help_message(help)
+            .prompt()
+    } else {
+        Confirm::new(question).with_default(default).prompt()
+    };
+    answer.unwrap()
+}
+
 // Core functions
 
 // Project name
@@ -95,6 +107,8 @@ fn main() {
     check_tool("/usr/bin/python3");
     // Create project structure by name
     let name = prj_name();
+    // Start git
+    check_tool("/usr/bin/git");
     // Finish scaffolding process
     println!("Project `{name}` created")
 }
