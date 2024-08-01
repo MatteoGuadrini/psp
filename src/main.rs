@@ -61,8 +61,11 @@ fn prompt_text(question: &str, default: &str, help: &str) -> String {
 // Project name
 fn prj_name() -> String {
     let name = prompt_text("Name of Python project:", "prj", "None");
+    let root = format!("{name}");
+    let package = format!("{}", name.to_lowercase());
+    let project = format!("{root}/{package}");
     // Make directories structure
-    let dir_ret = make_dirs(format!("{name}/{name}").as_str());
+    let dir_ret = make_dirs(format!("{project}").as_str());
     match dir_ret {
         Err(e) => {
             eprintln!("error: {}", e);
@@ -72,7 +75,7 @@ fn prj_name() -> String {
     }
     // Make file structures
     let file_ret = make_file(
-        format!("{name}/{name}/__init__.py").as_str(),
+        format!("{project}/__init__.py").as_str(),
         "#! /usr/env python3\n\n".to_string(),
     );
     match file_ret {
