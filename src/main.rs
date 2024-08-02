@@ -1,4 +1,4 @@
-use inquire::Text;
+use inquire::{Confirm, Text};
 use std::{
     fs::{create_dir_all, File},
     io::Write,
@@ -7,7 +7,7 @@ use std::{
 };
 
 // Constants
-const VERSION: &str = "0.0.1";
+const VERSION: &str = "0.0.2";
 
 // Utility functions
 
@@ -56,13 +56,28 @@ fn prompt_text(question: &str, default: &str, help: &str) -> String {
     answer.unwrap().to_string()
 }
 
+fn prompt_confirm(question: &str, default: bool, help: &str) -> bool {
+    let answer = if help != "None" {
+        Confirm::new(question)
+            .with_default(default)
+            .with_help_message(help)
+            .prompt()
+    } else {
+        Confirm::new(question).with_default(default).prompt()
+    };
+    answer.unwrap()
+}
+
 // Core functions
 
 // Project name
 fn prj_name() -> String {
     let name = prompt_text("Name of Python project:", "prj", "None");
+    let root = format!("{name}");
+    let package = format!("{}", name.to_lowercase());
+    let project = format!("{root}/{package}");
     // Make directories structure
-    let dir_ret = make_dirs(format!("{name}/{name}").as_str());
+    let dir_ret = make_dirs(format!("{project}").as_str());
     match dir_ret {
         Err(e) => {
             eprintln!("error: {}", e);
@@ -72,7 +87,7 @@ fn prj_name() -> String {
     }
     // Make file structures
     let file_ret = make_file(
-        format!("{name}/{name}/__init__.py").as_str(),
+        format!("{project}/__init__.py").as_str(),
         "#! /usr/env python3\n\n".to_string(),
     );
     match file_ret {
@@ -85,6 +100,65 @@ fn prj_name() -> String {
     name
 }
 
+fn prj_git(name: &str) {
+    let confirm = prompt_confirm("Do you want start git repository?", true, "None");
+    if confirm {
+        let output = std::process::Command::new("git")
+            .arg("init")
+            .current_dir(name)
+            .output()
+            .expect("error: something wrong with `git init`");
+        // Check if command exit successfully
+        if !output.status.success() {
+            exit(5)
+        }
+        // Create .gitignore file
+        let file_ret = make_file(
+            format!("{name}/.gitignore").as_str(),
+            "### Python ###\n\
+                __pycache__/\n\
+                *.py[cod]\n\
+                *$py.class\n\
+                build/\n\
+                develop-eggs/\n\
+                dist/\n\
+                downloads/\n\
+                eggs/\n\
+                .eggs/\n\
+                lib/\n\
+                lib64/\n\
+                parts/\n\
+                sdist/\n\
+                var/\n\
+                wheels/\n\
+                share/python-wheels/\n\
+                *.egg-info/\n\
+                .installed.cfg\n\
+                *.egg\n\
+                # Environments\n\
+                .env\n\
+                .venv\n\
+                env/\n\
+                venv/\n\
+                ENV/\n\
+                env.bak/\n\
+                venv.bak/\n\
+                # Sphinx documentation\n\
+                docs/_build/\n\
+                # mkdocs documentation\n\
+                /site\n"
+                .to_string(),
+        );
+        match file_ret {
+            Err(e) => {
+                eprintln!("error: {}", e);
+                exit(5);
+            }
+            Ok(_) => (),
+        }
+    }
+}
+
 fn main() {
     // Print welcome screen and version
     println!("Welcome to PSP (Python Scaffolding Projects): {VERSION}");
@@ -92,6 +166,9 @@ fn main() {
     check_tool("/usr/bin/python3");
     // Create project structure by name
     let name = prj_name();
+    // Start git
+    check_tool("/usr/bin/git");
+    prj_git(&name);
     // Finish scaffolding process
     println!("Project `{name}` created")
 }
