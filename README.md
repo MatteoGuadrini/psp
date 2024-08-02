@@ -4,8 +4,10 @@
 
 ```console
 psp   # Press Enter
-Welcome to PSP (Python Scaffolding Projects): 0.0.1
+Welcome to PSP (Python Scaffolding Projects): 0.0.2
 > Name of Python project: test
+> Do you want start git repository? Yes
+Project `test` created
 ```
 
 > This project is WIP
@@ -34,7 +36,7 @@ cd psp && cargo build && sudo cp -var target/debug/psp /usr/bin/psp
 ## Features
 
 - [x] Scaffolding file and folder structures for your Python project
-- [ ] Prepare git and gitignore
+- [x] Prepare git and gitignore
 - [ ] Prepare unit test files (also with pytest)
 - [ ] Prepare virtual environment
 - [ ] Install dependencies
