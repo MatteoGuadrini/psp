@@ -100,6 +100,65 @@ fn prj_name() -> String {
     name
 }
 
+fn prj_git(name: &str) {
+    let confirm = prompt_confirm("Do you want start git repository?", true, "None");
+    if confirm {
+        let output = std::process::Command::new("git")
+            .arg("init")
+            .current_dir(name)
+            .output()
+            .expect("error: something wrong with `git init`");
+        // Check if command exit successfully
+        if !output.status.success() {
+            exit(5)
+        }
+        // Create .gitignore file
+        let file_ret = make_file(
+            format!("{name}/.gitignore").as_str(),
+            "### Python ###\n\
+                __pycache__/\n\
+                *.py[cod]\n\
+                *$py.class\n\
+                build/\n\
+                develop-eggs/\n\
+                dist/\n\
+                downloads/\n\
+                eggs/\n\
+                .eggs/\n\
+                lib/\n\
+                lib64/\n\
+                parts/\n\
+                sdist/\n\
+                var/\n\
+                wheels/\n\
+                share/python-wheels/\n\
+                *.egg-info/\n\
+                .installed.cfg\n\
+                *.egg\n\
+                # Environments\n\
+                .env\n\
+                .venv\n\
+                env/\n\
+                venv/\n\
+                ENV/\n\
+                env.bak/\n\
+                venv.bak/\n\
+                # Sphinx documentation\n\
+                docs/_build/\n\
+                # mkdocs documentation\n\
+                /site\n"
+                .to_string(),
+        );
+        match file_ret {
+            Err(e) => {
+                eprintln!("error: {}", e);
+                exit(5);
+            }
+            Ok(_) => (),
+        }
+    }
+}
+
 fn main() {
     // Print welcome screen and version
     println!("Welcome to PSP (Python Scaffolding Projects): {VERSION}");
@@ -109,6 +168,7 @@ fn main() {
     let name = prj_name();
     // Start git
     check_tool("/usr/bin/git");
+    prj_git(&name);
     // Finish scaffolding process
     println!("Project `{name}` created")
 }
