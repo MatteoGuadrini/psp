@@ -100,7 +100,7 @@ fn prj_name() -> String {
     name
 }
 
-fn prj_git(name: &str) {
+fn prj_git(name: &str) -> bool {
     let confirm = prompt_confirm("Do you want start git repository?", true, "None");
     if confirm {
         let output = std::process::Command::new("git")
@@ -149,14 +149,16 @@ fn prj_git(name: &str) {
                 /site\n"
                 .to_string(),
         );
-        match file_ret {
+        let ret = match file_ret {
             Err(e) => {
                 eprintln!("error: {}", e);
                 exit(5);
             }
-            Ok(_) => (),
-        }
+            Ok(_) => true,
+        };
+        return ret;
     }
+    false
 }
 
 fn main() {
@@ -168,7 +170,7 @@ fn main() {
     let name = prj_name();
     // Start git
     check_tool("/usr/bin/git");
-    prj_git(&name);
+    let git = prj_git(&name);
     // Finish scaffolding process
     println!("Project `{name}` created")
 }
