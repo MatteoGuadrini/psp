@@ -100,6 +100,7 @@ fn prj_name() -> String {
     name
 }
 
+// Project git
 fn prj_git(name: &str) -> bool {
     let confirm = prompt_confirm("Do you want start git repository?", true, "None");
     if confirm {
@@ -161,6 +162,54 @@ fn prj_git(name: &str) -> bool {
     false
 }
 
+// Project unit tests
+fn prj_test(name: &str) {
+    let confirm = prompt_confirm("Do you want unit test files?", true, "None");
+    if confirm {
+        // Make directories structure
+        let dir_ret = make_dirs(format!("{name}/tests").as_str());
+        match dir_ret {
+            Err(e) => {
+                eprintln!("error: {}", e);
+                exit(6);
+            }
+            Ok(_) => (),
+        }
+        // Make file structures
+        let init_file = make_file(
+            format!("{name}/tests/__init__.py").as_str(),
+            "#! /usr/env python3\n\n".to_string(),
+        );
+        match init_file {
+            Err(e) => {
+                eprintln!("error: {}", e);
+                exit(6);
+            }
+            Ok(_) => (),
+        }
+        let all_module = make_file(
+            format!("{name}/tests/all.py").as_str(),
+            format!(
+                "#! /usr/env python3\n\n\n\
+            import unittest\n\n\n\
+            class TestAll(unittest.TestCase):\n\n\
+            \tdef test_all(self):\n\
+            \t\tprint('Test all {name} successfully!')\n\n\n\
+            if __name__ == '__main__':\n\
+            \tunittest.main()"
+            )
+            .to_string(),
+        );
+        match all_module {
+            Err(e) => {
+                eprintln!("error: {}", e);
+                exit(6);
+            }
+            Ok(_) => (),
+        }
+    }
+}
+
 fn main() {
     // Print welcome screen and version
     println!("Welcome to PSP (Python Scaffolding Projects): {VERSION}");
@@ -170,7 +219,9 @@ fn main() {
     let name = prj_name();
     // Start git
     check_tool("/usr/bin/git");
-    let git = prj_git(&name);
+    let _git = prj_git(&name);
+    // Unit tests
+    prj_test(&name);
     // Finish scaffolding process
     println!("Project `{name}` created")
 }
