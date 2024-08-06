@@ -88,7 +88,7 @@ fn prj_name() -> String {
     // Make file structures
     let file_ret = make_file(
         format!("{project}/__init__.py").as_str(),
-        "#! /usr/env python3\n\n".to_string(),
+        "#! /usr/bin/env python3\n\n".to_string(),
     );
     match file_ret {
         Err(e) => {
@@ -178,7 +178,7 @@ fn prj_test(name: &str) {
         // Make file structures
         let init_file = make_file(
             format!("{name}/tests/__init__.py").as_str(),
-            "#! /usr/env python3\n\n".to_string(),
+            "#! /usr/bin/env python3\n\n".to_string(),
         );
         match init_file {
             Err(e) => {
@@ -190,13 +190,14 @@ fn prj_test(name: &str) {
         let all_module = make_file(
             format!("{name}/tests/all.py").as_str(),
             format!(
-                "#! /usr/env python3\n\n\n\
+                "#! /usr/bin/env python3\n\n\n\
             import unittest\n\n\n\
             class TestAll(unittest.TestCase):\n\n\
             \tdef test_all(self):\n\
-            \t\tprint('Test all {name} successfully!')\n\n\n\
+            \t\tprint('Test all {} successfully!')\n\n\n\
             if __name__ == '__main__':\n\
-            \tunittest.main()"
+            \tunittest.main()",
+                name.to_lowercase()
             )
             .to_string(),
         );
