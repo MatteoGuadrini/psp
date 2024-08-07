@@ -13,8 +13,9 @@ const VERSION: &str = "0.0.2";
 
 // Function for check if tool is installed
 fn check_tool(tool: &str) {
-    if !Path::new(tool).exists() {
-        eprintln!("error: the tool {} not installed", tool);
+    let root_bin = format!("/usr/bin/{tool}");
+    if !Path::new(&root_bin).exists() {
+        eprintln!("error: {} is not installed", tool);
         exit(1);
     }
 }
@@ -215,11 +216,11 @@ fn main() {
     // Print welcome screen and version
     println!("Welcome to PSP (Python Scaffolding Projects): {VERSION}");
     // Check if Python 3 is installed
-    check_tool("/usr/bin/python3");
+    check_tool("python3");
     // Create project structure by name
     let name = prj_name();
     // Start git
-    check_tool("/usr/bin/git");
+    check_tool("git");
     let _git = prj_git(&name);
     // Unit tests
     prj_test(&name);
