@@ -1,5 +1,6 @@
 use inquire::{Confirm, Text};
 use std::{
+    env::var,
     fs::{create_dir_all, File},
     io::Write,
     path::Path,
@@ -13,8 +14,10 @@ const VERSION: &str = "0.0.2";
 
 // Function for check if tool is installed
 fn check_tool(tool: &str) {
+    let home = var("HOME").unwrap();
     let root_bin = format!("/usr/bin/{tool}");
-    if !Path::new(&root_bin).exists() {
+    let user_bin = format!("{home}/.local/bin/{tool}");
+    if !Path::new(&root_bin).exists() && !Path::new(&user_bin).exists() {
         eprintln!("error: {} is not installed", tool);
         exit(1);
     }
