@@ -1,5 +1,6 @@
 use inquire::{Confirm, Text};
 use std::{
+    env::var,
     fs::{create_dir_all, File},
     io::Write,
     path::Path,
@@ -7,14 +8,17 @@ use std::{
 };
 
 // Constants
-const VERSION: &str = "0.0.2";
+const VERSION: &str = "0.0.3";
 
 // Utility functions
 
 // Function for check if tool is installed
 fn check_tool(tool: &str) {
-    if !Path::new(tool).exists() {
-        eprintln!("error: the tool {} not installed", tool);
+    let home = var("HOME").unwrap();
+    let root_bin = format!("/usr/bin/{tool}");
+    let user_bin = format!("{home}/.local/bin/{tool}");
+    if !Path::new(&root_bin).exists() && !Path::new(&user_bin).exists() {
+        eprintln!("error: {} is not installed", tool);
         exit(1);
     }
 }
@@ -88,7 +92,7 @@ fn prj_name() -> String {
     // Make file structures
     let file_ret = make_file(
         format!("{project}/__init__.py").as_str(),
-        "#! /usr/env python3\n\n".to_string(),
+        "#! /usr/bin/env python3\n\n".to_string(),
     );
     match file_ret {
         Err(e) => {
@@ -100,7 +104,8 @@ fn prj_name() -> String {
     name
 }
 
-fn prj_git(name: &str) {
+// Project git
+fn prj_git(name: &str) -> bool {
     let confirm = prompt_confirm("Do you want start git repository?", true, "None");
     if confirm {
         let output = std::process::Command::new("git")
@@ -149,10 +154,61 @@ fn prj_git(name: &str) {
                 /site\n"
                 .to_string(),
         );
-        match file_ret {
+        let ret = match file_ret {
             Err(e) => {
                 eprintln!("error: {}", e);
                 exit(5);
+            }
+            Ok(_) => true,
+        };
+        return ret;
+    }
+    false
+}
+
+// Project unit tests
+fn prj_test(name: &str) {
+    let confirm = prompt_confirm("Do you want unit test files?", true, "None");
+    if confirm {
+        // Make directories structure
+        let dir_ret = make_dirs(format!("{name}/tests").as_str());
+        match dir_ret {
+            Err(e) => {
+                eprintln!("error: {}", e);
+                exit(6);
+            }
+            Ok(_) => (),
+        }
+        // Make file structures
+        let init_file = make_file(
+            format!("{name}/tests/__init__.py").as_str(),
+            "#! /usr/bin/env python3\n\n".to_string(),
+        );
+        match init_file {
+            Err(e) => {
+                eprintln!("error: {}", e);
+                exit(6);
+            }
+            Ok(_) => (),
+        }
+        let all_module = make_file(
+            format!("{name}/tests/all.py").as_str(),
+            format!(
+                "#! /usr/bin/env python3\n\n\n\
+            import unittest\n\n\n\
+            class TestAll(unittest.TestCase):\n\n\
+            \tdef test_all(self):\n\
+            \t\tprint('Test all {} successfully!')\n\n\n\
+            if __name__ == '__main__':\n\
+            \tunittest.main()",
+                name.to_lowercase()
+            )
+            .to_string(),
+        );
+        match all_module {
+            Err(e) => {
+                eprintln!("error: {}", e);
+                exit(6);
             }
             Ok(_) => (),
         }
@@ -163,12 +219,14 @@ fn main() {
     // Print welcome screen and version
     println!("Welcome to PSP (Python Scaffolding Projects): {VERSION}");
     // Check if Python 3 is installed
-    check_tool("/usr/bin/python3");
+    check_tool("python3");
     // Create project structure by name
     let name = prj_name();
     // Start git
-    check_tool("/usr/bin/git");
-    prj_git(&name);
+    check_tool("git");
+    let _git = prj_git(&name);
+    // Unit tests
+    prj_test(&name);
     // Finish scaffolding process
     println!("Project `{name}` created")
 }
