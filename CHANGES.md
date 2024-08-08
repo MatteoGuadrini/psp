@@ -1,5 +1,12 @@
 # Release notes
 
+## 0.0.3
+Aug 08, 2024
+- Add **prj_test** function
+- Add user's bin path into **check_tool** function
+- Fix return type to **prj_git** function
+- Fix env path into files
+
 ## 0.0.2
 Aug 02, 2024
 - Add **prompt_confirm** function

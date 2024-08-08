@@ -8,7 +8,7 @@ use std::{
 };
 
 // Constants
-const VERSION: &str = "0.0.2";
+const VERSION: &str = "0.0.3";
 
 // Utility functions
 
