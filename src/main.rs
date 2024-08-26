@@ -60,6 +60,7 @@ fn prompt_text(question: &str, default: &str, help: &str) -> String {
     answer.unwrap().to_string()
 }
 
+// Function for prompt confirm (yes/no)
 fn prompt_confirm(question: &str, default: bool, help: &str) -> bool {
     let answer = if help != "None" {
         Confirm::new(question)
@@ -192,7 +193,7 @@ fn prj_test(name: &str) {
             Ok(_) => (),
         }
         let all_module = make_file(
-            format!("{name}/tests/all.py").as_str(),
+            format!("{name}/tests/test_{name}.py").as_str(),
             format!(
                 "#! /usr/bin/env python3\n\n\n\
             import unittest\n\n\n\
