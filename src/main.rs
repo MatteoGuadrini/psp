@@ -113,9 +113,10 @@ fn prj_git(name: &str) -> bool {
             .arg("init")
             .current_dir(name)
             .output()
-            .expect("error: something wrong with `git init`");
+            .expect("git should be installed");
         // Check if command exit successfully
         if !output.status.success() {
+            eprintln!("error: something wrong with `git init`");
             exit(5)
         }
         // Create .gitignore file
@@ -224,9 +225,10 @@ fn prj_venv(name: &str) -> bool {
             .args(["-m", "venv", "venv"])
             .current_dir(name)
             .output()
-            .expect("error: `venv` creation failed");
+            .expect("python should be installed");
         // Check if command exit successfully
         if !output.status.success() {
+            eprintln!("error: `venv` creation failed");
             exit(7)
         } else {
             return true;
