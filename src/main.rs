@@ -216,6 +216,25 @@ fn prj_test(name: &str) {
     }
 }
 
+// Project venv
+fn prj_venv(name: &str) -> bool {
+    let confirm = prompt_confirm("Do you want to create a virtual environment?", true, "None");
+    if confirm {
+        let output = std::process::Command::new("python3")
+            .args(["-m", "venv", "venv"])
+            .current_dir(name)
+            .output()
+            .expect("error: `venv` creation failed");
+        // Check if command exit successfully
+        if !output.status.success() {
+            exit(7)
+        } else {
+            return true;
+        }
+    }
+    false
+}
+
 fn main() {
     // Print welcome screen and version
     println!("Welcome to PSP (Python Scaffolding Projects): {VERSION}");
@@ -228,6 +247,8 @@ fn main() {
     let _git = prj_git(&name);
     // Unit tests
     prj_test(&name);
+    // Virtual Environment
+    let _venv = prj_venv(&name);
     // Finish scaffolding process
     println!("Project `{name}` created")
 }
