@@ -240,12 +240,13 @@ fn prj_venv(name: &str) -> bool {
 fn main() {
     // Print welcome screen and version
     println!("Welcome to PSP (Python Scaffolding Projects): {VERSION}");
-    // Check if Python 3 is installed
+    // Check dependencies tools
     check_tool("python3");
+    check_tool("git");
+    check_tool("pip3");
     // Create project structure by name
     let name = prj_name();
     // Start git
-    check_tool("git");
     let _git = prj_git(&name);
     // Unit tests
     prj_test(&name);
