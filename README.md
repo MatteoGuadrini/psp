@@ -16,9 +16,9 @@ Project `test` created
 ## Prerequisites
 
 `psp` has three prerequisetes installed on own machine:
-- git
-- python3
-- pip
+- `git`
+- `python3`
+- `pip`
 
 ## Installation
 
