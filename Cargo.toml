@@ -1,8 +1,11 @@
 [package]
 name = "psp"
-version = "0.0.3"
+version = "0.0.4"
 edition = "2021"
-authors = ["matteoguadrini"]
+authors = ["matteoguadrini <matteo.guadrini@hotmail.it>"]
+description = "PSP (Python Scaffolding Projects)"
+readme = "README.md"
+repository = "https://github.com/MatteoGuadrini/psp"
 
 [dependencies]
 inquire = "0.7"

@@ -8,7 +8,7 @@ use std::{
 };
 
 // Constants
-const VERSION: &str = "0.0.3";
+const VERSION: &str = "0.0.4";
 
 // Utility functions
 
@@ -60,6 +60,7 @@ fn prompt_text(question: &str, default: &str, help: &str) -> String {
     answer.unwrap().to_string()
 }
 
+// Function for prompt confirm (yes/no)
 fn prompt_confirm(question: &str, default: bool, help: &str) -> bool {
     let answer = if help != "None" {
         Confirm::new(question)
@@ -106,15 +107,16 @@ fn prj_name() -> String {
 
 // Project git
 fn prj_git(name: &str) -> bool {
-    let confirm = prompt_confirm("Do you want start git repository?", true, "None");
+    let confirm = prompt_confirm("Do you want to start git repository?", true, "None");
     if confirm {
         let output = std::process::Command::new("git")
             .arg("init")
             .current_dir(name)
             .output()
-            .expect("error: something wrong with `git init`");
+            .expect("git should be installed");
         // Check if command exit successfully
         if !output.status.success() {
+            eprintln!("error: something wrong with `git init`");
             exit(5)
         }
         // Create .gitignore file
@@ -192,7 +194,7 @@ fn prj_test(name: &str) {
             Ok(_) => (),
         }
         let all_module = make_file(
-            format!("{name}/tests/all.py").as_str(),
+            format!("{name}/tests/test_{name}.py").as_str(),
             format!(
                 "#! /usr/bin/env python3\n\n\n\
             import unittest\n\n\n\
@@ -215,18 +217,41 @@ fn prj_test(name: &str) {
     }
 }
 
+// Project venv
+fn prj_venv(name: &str) -> bool {
+    let confirm = prompt_confirm("Do you want to create a virtual environment?", true, "None");
+    if confirm {
+        let output = std::process::Command::new("python3")
+            .args(["-m", "venv", "venv"])
+            .current_dir(name)
+            .output()
+            .expect("python should be installed");
+        // Check if command exit successfully
+        if !output.status.success() {
+            eprintln!("error: `venv` creation failed");
+            exit(7)
+        } else {
+            return true;
+        }
+    }
+    false
+}
+
 fn main() {
     // Print welcome screen and version
     println!("Welcome to PSP (Python Scaffolding Projects): {VERSION}");
-    // Check if Python 3 is installed
+    // Check dependencies tools
     check_tool("python3");
+    check_tool("git");
+    check_tool("pip3");
     // Create project structure by name
     let name = prj_name();
     // Start git
-    check_tool("git");
     let _git = prj_git(&name);
     // Unit tests
     prj_test(&name);
+    // Virtual Environment
+    let _venv = prj_venv(&name);
     // Finish scaffolding process
     println!("Project `{name}` created")
 }

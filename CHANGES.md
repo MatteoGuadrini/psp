@@ -1,5 +1,11 @@
 # Release notes
 
+## 0.0.4
+Aug 29, 2024
+- Add **prj_venv** function
+- Fix grouped check tools
+- Fix prompt errors
+
 ## 0.0.3
 Aug 08, 2024
 - Add **prj_test** function

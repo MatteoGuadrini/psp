@@ -4,10 +4,11 @@
 
 ```console
 psp   # Press Enter
-Welcome to PSP (Python Scaffolding Projects): 0.0.3
+Welcome to PSP (Python Scaffolding Projects): 0.0.4
 > Name of Python project: test
-> Do you want start git repository? Yes
+> Do you want to start git repository? Yes
 > Do you want unit test files? Yes
+> Do you want to create a virtual environment? Yes
 Project `test` created
 ```
 
@@ -16,9 +17,9 @@ Project `test` created
 ## Prerequisites
 
 `psp` has three prerequisetes installed on own machine:
-- git
-- python3
-- pip
+- `git`
+- `python3`
+- `pip`
 
 ## Installation
 
@@ -27,16 +28,17 @@ To install compiled file into your machine, download it:
 ```console
 # For Linux (all users)
 sudo -i
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.0.3/psp_linux > /usr/bin/psp
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.0.4/psp_linux > /usr/bin/psp
 chmod +x /usr/bin/psp
 
 # For Linux (current user)
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.0.3/psp_linux > $HOME/.local/bin/psp
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.0.4/psp_linux > $HOME/.local/bin/psp
 chmod +x $HOME/.local/bin/psp
 
 # For MacOS
-sudo curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.0.3/psp_macos > /usr/bin/psp
-sudo chmod +x /usr/bin/psp
+sudo su -
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.0.4/psp_macos > /usr/bin/psp
+chmod +x /usr/bin/psp
 ```
 
 Instead, if you compile this project as own, follow this steps:
@@ -51,7 +53,7 @@ cd psp && cargo build && sudo cp -var target/debug/psp /usr/bin/psp
 - [x] Scaffolding file and folder structures for your Python project
 - [x] Prepare git and gitignore
 - [x] Prepare unit test files (also with pytest)
-- [ ] Prepare virtual environment
+- [x] Prepare virtual environment
 - [ ] Install dependencies
 - [ ] Prepare pyproject.toml
 - [ ] Prepare CI configuration files
