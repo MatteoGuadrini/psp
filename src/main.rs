@@ -8,7 +8,7 @@ use std::{
 };
 
 // Constants
-const VERSION: &str = "0.0.3";
+const VERSION: &str = "0.0.4";
 
 // Utility functions
 
@@ -107,7 +107,7 @@ fn prj_name() -> String {
 
 // Project git
 fn prj_git(name: &str) -> bool {
-    let confirm = prompt_confirm("Do you want start git repository?", true, "None");
+    let confirm = prompt_confirm("Do you want to start git repository?", true, "None");
     if confirm {
         let output = std::process::Command::new("git")
             .arg("init")
