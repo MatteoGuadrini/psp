@@ -237,6 +237,41 @@ fn prj_venv(name: &str) -> bool {
     false
 }
 
+// Project dependencies
+fn prj_deps(name: &str, venv: bool) -> Vec<String> {
+    let deps = prompt_text(
+        "Install dependencies:",
+        "No",
+        "Write package(s) separates with spaces or empty",
+    );
+    // Split String into Vector
+    let dependencies: Vec<String> = deps
+        .as_str()
+        .split_whitespace()
+        .map(|s| s.to_string())
+        .collect();
+    if deps != "No" {
+        // Activate venv
+        if venv {
+            let output = std::process::Command::new("pip3")
+                .env("PATH", "venv/bin")
+                .arg("install")
+                .arg("--timeout=10")
+                .args(&dependencies)
+                .current_dir(&name)
+                .output()
+                .expect("pip should be installed");
+            // Check if command exit successfully
+            if !output.status.success() {
+                eprintln!("error: dependencies installation failed");
+                exit(8)
+            }
+        }
+    }
+    dependencies
+}
+
+// Main program
 fn main() {
     // Print welcome screen and version
     println!("Welcome to PSP (Python Scaffolding Projects): {VERSION}");
@@ -251,7 +286,9 @@ fn main() {
     // Unit tests
     prj_test(&name);
     // Virtual Environment
-    let _venv = prj_venv(&name);
+    let venv = prj_venv(&name);
+    // Install dependencies
+    let _deps = prj_deps(&name, venv);
     // Finish scaffolding process
     println!("Project `{name}` created")
 }
