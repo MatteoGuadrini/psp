@@ -45,7 +45,7 @@ Instead, if you compile this project as own, follow this steps:
 
 ```console
 git clone https://github.com/MatteoGuadrini/psp.git
-cd psp && cargo build && sudo cp -var target/debug/psp /usr/bin/psp
+cd psp && cargo build && sudo cp -var target/release/psp /usr/bin/psp
 ```
 
 ## Features

@@ -229,7 +229,6 @@ fn prj_venv(name: &str) -> bool {
         // Check if command exit successfully
         if !output.status.success() {
             eprintln!("error: `venv` creation failed");
-            exit(7)
         } else {
             return true;
         }
@@ -251,21 +250,22 @@ fn prj_deps(name: &str, venv: bool) -> Vec<String> {
         .map(|s| s.to_string())
         .collect();
     if deps != "No" {
+        let mut pip = std::process::Command::new("pip3");
         // Activate venv
         if venv {
-            let output = std::process::Command::new("pip3")
-                .env("PATH", "venv/bin")
-                .arg("install")
-                .arg("--timeout=10")
-                .args(&dependencies)
-                .current_dir(&name)
-                .output()
-                .expect("pip should be installed");
-            // Check if command exit successfully
-            if !output.status.success() {
-                eprintln!("error: dependencies installation failed");
-                exit(8)
-            }
+            pip.env("PATH", "venv/bin");
+        }
+        let output = pip
+            .arg("install")
+            .arg("--timeout=10")
+            .arg("--retries=1")
+            .args(&dependencies)
+            .current_dir(&name)
+            .output()
+            .expect("pip should be installed");
+        // Check if command exit successfully
+        if !output.status.success() {
+            eprintln!("error: dependencies ({deps}) installation failed");
         }
     }
     dependencies
