@@ -8,7 +8,7 @@ use std::{
 };
 
 // Constants
-const VERSION: &str = "0.0.4";
+const VERSION: &str = "0.0.5";
 
 // Utility functions
 
@@ -229,7 +229,6 @@ fn prj_venv(name: &str) -> bool {
         // Check if command exit successfully
         if !output.status.success() {
             eprintln!("error: `venv` creation failed");
-            exit(7)
         } else {
             return true;
         }
@@ -237,6 +236,42 @@ fn prj_venv(name: &str) -> bool {
     false
 }
 
+// Project dependencies
+fn prj_deps(name: &str, venv: bool) -> Vec<String> {
+    let deps = prompt_text(
+        "Install dependencies:",
+        "No",
+        "Write package(s) separates with spaces or empty",
+    );
+    // Split String into Vector
+    let dependencies: Vec<String> = deps
+        .as_str()
+        .split_whitespace()
+        .map(|s| s.to_string())
+        .collect();
+    if deps != "No" {
+        let mut pip = std::process::Command::new("pip3");
+        // Activate venv
+        if venv {
+            pip.env("PATH", "venv/bin");
+        }
+        let output = pip
+            .arg("install")
+            .arg("--timeout=10")
+            .arg("--retries=1")
+            .args(&dependencies)
+            .current_dir(&name)
+            .output()
+            .expect("pip should be installed");
+        // Check if command exit successfully
+        if !output.status.success() {
+            eprintln!("error: dependencies ({deps}) installation failed");
+        }
+    }
+    dependencies
+}
+
+// Main program
 fn main() {
     // Print welcome screen and version
     println!("Welcome to PSP (Python Scaffolding Projects): {VERSION}");
@@ -251,7 +286,9 @@ fn main() {
     // Unit tests
     prj_test(&name);
     // Virtual Environment
-    let _venv = prj_venv(&name);
+    let venv = prj_venv(&name);
+    // Install dependencies
+    let _deps = prj_deps(&name, venv);
     // Finish scaffolding process
     println!("Project `{name}` created")
 }

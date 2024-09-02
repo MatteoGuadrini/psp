@@ -1,5 +1,9 @@
 # Release notes
 
+## 0.0.5
+Sep 02, 2024
+- Add **prj_deps** function
+
 ## 0.0.4
 Aug 29, 2024
 - Add **prj_venv** function
