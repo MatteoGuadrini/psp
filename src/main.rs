@@ -271,6 +271,43 @@ fn prj_deps(name: &str, venv: bool) -> Vec<String> {
     dependencies
 }
 
+// Project pyproject.toml
+fn prj_toml(name: &str, deps: Vec<String>) {
+    let content = format!(
+        "[build-system]\n\
+        requires = ['setuptools', 'wheel']\n\
+        build-backend = 'setuptools.build_meta'\n\n\
+        [project]\n\
+        name = '{}'\n\
+        version = '0.0.1'\n\
+        readme = 'README.md'\n\
+        license = {{}}\n\
+        authors = [{{name = 'psp', email = 'psp@example.com'}}]\n\
+        maintainers = [{{name = 'psp', email = 'psp@example.com'}}]\n\
+        description = 'A simple but structured Python project'\n\
+        requires-python = '>=3.12'\n\
+        classifiers = ['Programming Language :: Python :: 3']\n\
+        dependencies = {:?}\n\n\
+        [project.urls]\n\
+        homepage = ''\n\
+        documentation = ''\n\
+        repository = ''\n\
+        changelog = ''\n
+        ",
+        name.to_lowercase(),
+        deps
+    );
+    // Write pyproject.toml
+    let pyproject = make_file(format!("{name}/pyproject.toml").as_str(), content);
+    match pyproject {
+        Err(e) => {
+            eprintln!("error: {}", e);
+            exit(7);
+        }
+        Ok(_) => (),
+    }
+}
+
 // Main program
 fn main() {
     // Print welcome screen and version
@@ -288,7 +325,9 @@ fn main() {
     // Virtual Environment
     let venv = prj_venv(&name);
     // Install dependencies
-    let _deps = prj_deps(&name, venv);
+    let deps = prj_deps(&name, venv);
+    // Write pyproject.toml
+    prj_toml(&name, deps);
     // Finish scaffolding process
     println!("Project `{name}` created")
 }
