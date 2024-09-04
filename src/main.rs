@@ -1,4 +1,4 @@
-use inquire::{Confirm, Text};
+use inquire::{Confirm, Select, Text};
 use std::{
     env::var,
     fs::{create_dir_all, File},
@@ -71,6 +71,18 @@ fn prompt_confirm(question: &str, default: bool, help: &str) -> bool {
         Confirm::new(question).with_default(default).prompt()
     };
     answer.unwrap()
+}
+
+// Function for prompt selections
+fn prompt_select(question: &str, options: Vec<&str>, help: &str) -> String {
+    let answer = if help != "None" {
+        Select::new(question, options)
+            .with_help_message(help)
+            .prompt()
+    } else {
+        Select::new(question, options).prompt()
+    };
+    answer.unwrap().to_string()
 }
 
 // Core functions
@@ -272,7 +284,7 @@ fn prj_deps(name: &str, venv: bool) -> Vec<String> {
 }
 
 // Project pyproject.toml
-fn prj_toml(name: &str, deps: Vec<String>) {
+fn prj_toml(name: &str, deps: &Vec<String>) {
     let content = format!(
         "[build-system]\n\
         requires = ['setuptools', 'wheel']\n\
@@ -327,7 +339,7 @@ fn main() {
     // Install dependencies
     let deps = prj_deps(&name, venv);
     // Write pyproject.toml
-    prj_toml(&name, deps);
+    prj_toml(&name, &deps);
     // Finish scaffolding process
     println!("Project `{name}` created")
 }
