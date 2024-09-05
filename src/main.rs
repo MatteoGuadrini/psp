@@ -285,6 +285,11 @@ fn prj_deps(name: &str, venv: bool) -> Vec<String> {
 
 // Project pyproject.toml
 fn prj_toml(name: &str, deps: &Vec<String>) {
+    let requirements = if deps.contains(&"No".to_string()) {
+        "[]".to_string()
+    } else {
+        format!("{deps:?}")
+    };
     let content = format!(
         "[build-system]\n\
         requires = ['setuptools', 'wheel']\n\
@@ -293,21 +298,21 @@ fn prj_toml(name: &str, deps: &Vec<String>) {
         name = '{}'\n\
         version = '0.0.1'\n\
         readme = 'README.md'\n\
-        license = {{}}\n\
+        license = ''\n\
         authors = [{{name = 'psp', email = 'psp@example.com'}}]\n\
         maintainers = [{{name = 'psp', email = 'psp@example.com'}}]\n\
         description = 'A simple but structured Python project'\n\
         requires-python = '>=3.12'\n\
         classifiers = ['Programming Language :: Python :: 3']\n\
-        dependencies = {:?}\n\n\
+        dependencies = {}\n\n\
         [project.urls]\n\
-        homepage = ''\n\
-        documentation = ''\n\
-        repository = ''\n\
-        changelog = ''\n
+        homepage =\n\
+        documentation =\n\
+        repository =\n\
+        changelog =\n
         ",
         name.to_lowercase(),
-        deps
+        requirements
     );
     // Write pyproject.toml
     let pyproject = make_file(format!("{name}/pyproject.toml").as_str(), content);
