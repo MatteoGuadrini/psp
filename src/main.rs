@@ -320,6 +320,49 @@ fn prj_toml(name: &str, deps: &Vec<String>) {
     }
 }
 
+// Project CI
+fn prj_ci(name: &str, deps: &Vec<String>) {
+    let options = vec!["None", "TravisCI", "CircleCI"];
+    let ci = prompt_select("Select CI provider:", options, "None");
+    let requirements = if deps.contains(&"No".to_string()) {
+        "".to_string()
+    } else {
+        deps.join(" ")
+    };
+    // Travis or CircleCI
+    if ci.as_str() == "TravisCI" {
+        let travis = make_file(
+            format!("{name}/.travis.yml").as_str(),
+            format!(
+                "language: python\n\
+                cache: pip\n\
+                python:\n\
+                  \t- 3.10\n\
+                  \t- 3.11\n\
+                  \t- 3.12\n\
+                before_install:\n\
+                  \t- sudo apt-get update\n\
+                  \t- sudo apt-get install python3-pip\n\
+                  \t- sudo apt-get install python3-pytest\n\
+                install:\n\
+                  \t- pip install {requirements} pipenv\n\
+                  \t- pipenv install --dev\n\
+                script:\n\
+                  \t- python -m unittest discover tests\n\
+                  \t- pytest tests
+            "
+            ),
+        );
+        match travis {
+            Err(e) => {
+                eprintln!("error: {}", e);
+            }
+            Ok(_) => (),
+        }
+    } else if ci.as_str() == "CircleCI" {
+    }
+}
+
 // Main program
 fn main() {
     // Print welcome screen and version
@@ -338,6 +381,8 @@ fn main() {
     let venv = prj_venv(&name);
     // Install dependencies
     let deps = prj_deps(&name, venv);
+    // CI configuration
+    prj_ci(&name, &deps);
     // Write pyproject.toml
     prj_toml(&name, &deps);
     // Finish scaffolding process
