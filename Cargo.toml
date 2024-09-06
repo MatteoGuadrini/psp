@@ -1,6 +1,6 @@
 [package]
 name = "psp"
-version = "0.0.5"
+version = "0.0.6"
 edition = "2021"
 authors = ["matteoguadrini <matteo.guadrini@hotmail.it>"]
 description = "PSP (Python Scaffolding Projects)"

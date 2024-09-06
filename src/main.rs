@@ -1,4 +1,4 @@
-use inquire::{Confirm, Text};
+use inquire::{Confirm, Select, Text};
 use std::{
     env::var,
     fs::{create_dir_all, File},
@@ -8,7 +8,7 @@ use std::{
 };
 
 // Constants
-const VERSION: &str = "0.0.5";
+const VERSION: &str = "0.0.6";
 
 // Utility functions
 
@@ -73,6 +73,18 @@ fn prompt_confirm(question: &str, default: bool, help: &str) -> bool {
     answer.unwrap()
 }
 
+// Function for prompt selections
+fn prompt_select(question: &str, options: Vec<&str>, help: &str) -> String {
+    let answer = if help != "None" {
+        Select::new(question, options)
+            .with_help_message(help)
+            .prompt()
+    } else {
+        Select::new(question, options).prompt()
+    };
+    answer.unwrap().to_string()
+}
+
 // Core functions
 
 // Project name
@@ -93,7 +105,10 @@ fn prj_name() -> String {
     // Make file structures
     let file_ret = make_file(
         format!("{project}/__init__.py").as_str(),
-        "#! /usr/bin/env python3\n\n".to_string(),
+        "#! /usr/bin/env python3\n\
+    # -*- encoding: utf-8 -*-\n\
+    # vim: se ts=4 et syn=python:\n\n\n"
+            .to_string(),
     );
     match file_ret {
         Err(e) => {
@@ -184,7 +199,10 @@ fn prj_test(name: &str) {
         // Make file structures
         let init_file = make_file(
             format!("{name}/tests/__init__.py").as_str(),
-            "#! /usr/bin/env python3\n\n".to_string(),
+            "#! /usr/bin/env python3\n\
+        # -*- encoding: utf-8 -*-\n\
+        # vim: se ts=4 et syn=python:\n\n\n"
+                .to_string(),
         );
         match init_file {
             Err(e) => {
@@ -193,17 +211,22 @@ fn prj_test(name: &str) {
             }
             Ok(_) => (),
         }
+        let project_name = name.to_lowercase();
         let all_module = make_file(
             format!("{name}/tests/test_{name}.py").as_str(),
             format!(
-                "#! /usr/bin/env python3\n\n\n\
+                "#! /usr/bin/env python3\n\
+            # -*- encoding: utf-8 -*-\n\
+            # vim: se ts=4 et syn=python:\n\n\n\
             import unittest\n\n\n\
             class TestAll(unittest.TestCase):\n\n\
             \tdef test_all(self):\n\
-            \t\tprint('Test all {} successfully!')\n\n\n\
+            \t\tprint('Test all {project_name} successfully!')\n\n\n\
+            # Test functions for pytest\n\
+            def test_all():\n\
+            \tassert '{project_name}' == '{project_name}'\n\n\n\
             if __name__ == '__main__':\n\
-            \tunittest.main()",
-                name.to_lowercase()
+            \tunittest.main()"
             )
             .to_string(),
         );
@@ -271,6 +294,133 @@ fn prj_deps(name: &str, venv: bool) -> Vec<String> {
     dependencies
 }
 
+// Project pyproject.toml
+fn prj_toml(name: &str, deps: &Vec<String>) {
+    let requirements = if deps.contains(&"No".to_string()) {
+        "[]".to_string()
+    } else {
+        format!("{deps:?}")
+    };
+    let content = format!(
+        "[build-system]\n\
+        requires = ['setuptools', 'wheel']\n\
+        build-backend = 'setuptools.build_meta'\n\n\
+        [project]\n\
+        name = '{}'\n\
+        version = '0.0.1'\n\
+        readme = 'README.md'\n\
+        license = ''\n\
+        authors = [{{name = 'psp', email = 'psp@example.com'}}]\n\
+        maintainers = [{{name = 'psp', email = 'psp@example.com'}}]\n\
+        description = 'A simple but structured Python project'\n\
+        requires-python = '>=3.12'\n\
+        classifiers = ['Programming Language :: Python :: 3']\n\
+        dependencies = {}\n\n\
+        [project.urls]\n\
+        homepage = ''\n\
+        documentation = ''\n\
+        repository = ''\n\
+        changelog = ''\n
+        ",
+        name.to_lowercase(),
+        requirements
+    );
+    // Write pyproject.toml
+    let pyproject = make_file(format!("{name}/pyproject.toml").as_str(), content);
+    match pyproject {
+        Err(e) => {
+            eprintln!("error: {}", e);
+            exit(7);
+        }
+        Ok(_) => (),
+    }
+}
+
+// Project CI
+fn prj_ci(name: &str, deps: &Vec<String>) {
+    let options = vec!["None", "TravisCI", "CircleCI"];
+    let ci = prompt_select("Select CI provider:", options, "None");
+    let requirements = if deps.contains(&"No".to_string()) {
+        "".to_string()
+    } else {
+        deps.join(" ")
+    };
+    // Travis or CircleCI
+    if ci.as_str() == "TravisCI" {
+        let travis = make_file(
+            format!("{name}/.travis.yml").as_str(),
+            format!(
+                "language: python\n\
+                cache: pip\n\
+                python:\n\
+                  \t- 3.10\n\
+                  \t- 3.11\n\
+                  \t- 3.12\n\
+                before_install:\n\
+                  \t- sudo apt-get update\n\
+                  \t- sudo apt-get install python3-pip\n\
+                  \t- sudo apt-get install python3-pytest\n\
+                install:\n\
+                  \t- pip install {requirements} pipenv\n\
+                  \t- pipenv install --dev\n\
+                script:\n\
+                  \t- python -m unittest discover tests\n\
+                  \t- pytest tests
+            "
+            ),
+        );
+        match travis {
+            Err(e) => {
+                eprintln!("error: {}", e);
+            }
+            Ok(_) => (),
+        }
+    } else if ci.as_str() == "CircleCI" {
+        let dir_ret = make_dirs(format!("{name}/.circleci").as_str());
+        match dir_ret {
+            Err(e) => {
+                eprintln!("error: {}", e);
+            }
+            Ok(_) => (),
+        }
+        let circle = make_file(
+            format!("{name}/.circleci/config.yml").as_str(),
+            format!(
+                "version: 2.1\n\
+                jobs:\n\
+                  \tbuild-and-test:\n\
+                    \t\tdocker:\n\
+                      \t\t\t- image: circleci/python\n\
+                    \t\tsteps:\n\
+                      \t\t\t- checkout\n\
+                      \t\t\t- run:\n\
+                          \t\t\t\t\tname: Install pytest\n\
+                          \t\t\t\t\tcommand: pip install pytest\n\
+                      \t\t\t- run:\n\
+                          \t\t\t\t\tname: Install dependencies\n\
+                          \t\t\t\t\tcommand: pip install {requirements}\n\
+                      \t\t\t- run:\n\
+                          \t\t\t\t\tname: Install package\n\
+                          \t\t\t\t\tcommand: pip install .\n\
+                      \t\t\t- run:\n\
+                          \t\t\t\t\tname: Run tests\n\
+                          \t\t\t\t\tcommand: python -m pytest tests\n\
+                \tworkflows:\n\
+                  \t\tmain:\n\
+                    \t\t\tjobs:\n\
+                      \t\t\t\t- build-and-test\n
+            "
+            ),
+        );
+        match circle {
+            Err(e) => {
+                eprintln!("error: {}", e);
+            }
+            Ok(_) => (),
+        }
+    }
+}
+
 // Main program
 fn main() {
     // Print welcome screen and version
@@ -288,7 +438,11 @@ fn main() {
     // Virtual Environment
     let venv = prj_venv(&name);
     // Install dependencies
-    let _deps = prj_deps(&name, venv);
+    let deps = prj_deps(&name, venv);
+    // CI configuration
+    prj_ci(&name, &deps);
+    // Write pyproject.toml
+    prj_toml(&name, &deps);
     // Finish scaffolding process
     println!("Project `{name}` created")
 }

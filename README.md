@@ -4,20 +4,39 @@
 
 ```console
 psp   # Press Enter
-Welcome to PSP (Python Scaffolding Projects): 0.0.5
+Welcome to PSP (Python Scaffolding Projects): 0.0.6
 > Name of Python project: test
 > Do you want to start git repository? Yes
 > Do you want unit test files? Yes
 > Do you want to create a virtual environment? Yes
 > Install dependencies: scipy numpy
+> Select CI provider: CircleCI
 Project `test` created
 ```
 
 The result is
 
 ```console
-tree test --filelimit=8
+tree test --filelimit=8 -a
 test                  # project folder
+├── pyproject.toml    # python package configuration file
+├── .circleci         # CI folder
+│   └── config.yml    # CI configuration file
+├── .git              # git folder
+│   ├── branches
+│   ├── config
+│   ├── description
+│   ├── HEAD
+│   ├── hooks  [14 entries exceeds filelimit, not opening dir]
+│   ├── info
+│   │   └── exclude
+│   ├── objects
+│   │   ├── info
+│   │   └── pack
+│   └── refs
+│       ├── heads
+│       └── tags
+├── .gitignore        # git ignore file
 ├── test              # python package
 │   └── __init__.py
 ├── tests             # tests package for modules
@@ -72,7 +91,7 @@ test                  # project folder
     ├── lib64 -> lib
     └── pyvenv.cfg
 
-22 directories, 32 files
+33 directories, 39 files
 ```
 
 > This project is WIP
@@ -91,16 +110,16 @@ To install compiled file into your machine, download it:
 ```console
 # For Linux (all users)
 sudo -i
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.0.5/psp_linux > /usr/bin/psp
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.0.6/psp_linux > /usr/bin/psp
 chmod +x /usr/bin/psp
 
 # For Linux (current user)
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.0.5/psp_linux > $HOME/.local/bin/psp
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.0.6/psp_linux > $HOME/.local/bin/psp
 chmod +x $HOME/.local/bin/psp
 
 # For MacOS
 sudo su -
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.0.5/psp_macos > /usr/bin/psp
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.0.6/psp_macos > /usr/bin/psp
 chmod +x /usr/bin/psp
 ```
 
@@ -117,11 +136,10 @@ cd psp && cargo build && sudo cp -var target/release/psp /usr/bin/psp
 - [x] Prepare git and gitignore
 - [x] Prepare unit test files (also with pytest)
 - [x] Prepare virtual environment
-- [ ] Install dependencies
-- [ ] Prepare pyproject.toml
-- [ ] Prepare CI configuration files
+- [x] Install dependencies
+- [x] Prepare pyproject.toml
+- [x] Prepare CI configuration files
 - [ ] Prepare Github/Gitlab files
-- [ ] Prepare virtual environment
 - [ ] Prepare tox environment
 - [ ] Prepare docs folder for sphinx/mkdocs documentation
 - [ ] Prepare README, LICENSE, CONTRIBUTING, CODE_OF_CONDUCT and CHANGES files
