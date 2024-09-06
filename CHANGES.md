@@ -1,5 +1,10 @@
 # Release notes
 
+## 0.0.6
+Sep 06, 2024
+- Add **prj_ci** function
+- Fix _pyproject.toml_ file
+
 ## 0.0.5
 Sep 02, 2024
 - Add **prj_deps** function
