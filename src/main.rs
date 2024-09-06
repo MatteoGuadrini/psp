@@ -376,6 +376,48 @@ fn prj_ci(name: &str, deps: &Vec<String>) {
             Ok(_) => (),
         }
     } else if ci.as_str() == "CircleCI" {
+        let dir_ret = make_dirs(format!("{name}/.circleci").as_str());
+        match dir_ret {
+            Err(e) => {
+                eprintln!("error: {}", e);
+            }
+            Ok(_) => (),
+        }
+        let circle = make_file(
+            format!("{name}/.circleci/config.yml").as_str(),
+            format!(
+                "version: 2.1\n\
+                jobs:\n\
+                  \tbuild-and-test:\n\
+                    \t\tdocker:\n\
+                      \t\t\t- image: circleci/python\n\
+                    \t\tsteps:\n\
+                      \t\t\t- checkout\n\
+                      \t\t\t- run:\n\
+                          \t\t\t\t\tname: Install pytest\n\
+                          \t\t\t\t\tcommand: pip install pytest\n\
+                      \t\t\t- run:\n\
+                          \t\t\t\t\tname: Install dependencies\n\
+                          \t\t\t\t\tcommand: pip install {requirements}\n\
+                      \t\t\t- run:\n\
+                          \t\t\t\t\tname: Install package\n\
+                          \t\t\t\t\tcommand: pip install .\n\
+                      \t\t\t- run:\n\
+                          \t\t\t\t\tname: Run tests\n\
+                          \t\t\t\t\tcommand: python -m pytest tests\n\
+                \tworkflows:\n\
+                  \t\tmain:\n\
+                    \t\t\tjobs:\n\
+                      \t\t\t\t- build-and-test\n
+            "
+            ),
+        );
+        match circle {
+            Err(e) => {
+                eprintln!("error: {}", e);
+            }
+            Ok(_) => (),
+        }
     }
 }
 
