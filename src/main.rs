@@ -105,7 +105,10 @@ fn prj_name() -> String {
     // Make file structures
     let file_ret = make_file(
         format!("{project}/__init__.py").as_str(),
-        "#! /usr/bin/env python3\n\n".to_string(),
+        "#! /usr/bin/env python3\n\
+    # -*- encoding: utf-8 -*-\n\
+    # vim: se ts=4 et syn=python:\n\n\n"
+            .to_string(),
     );
     match file_ret {
         Err(e) => {
@@ -196,7 +199,10 @@ fn prj_test(name: &str) {
         // Make file structures
         let init_file = make_file(
             format!("{name}/tests/__init__.py").as_str(),
-            "#! /usr/bin/env python3\n\n".to_string(),
+            "#! /usr/bin/env python3\n\
+        # -*- encoding: utf-8 -*-\n\
+        # vim: se ts=4 et syn=python:\n\n\n"
+                .to_string(),
         );
         match init_file {
             Err(e) => {
@@ -205,17 +211,22 @@ fn prj_test(name: &str) {
             }
             Ok(_) => (),
         }
+        let project_name = name.to_lowercase();
         let all_module = make_file(
             format!("{name}/tests/test_{name}.py").as_str(),
             format!(
-                "#! /usr/bin/env python3\n\n\n\
+                "#! /usr/bin/env python3\n\
+            # -*- encoding: utf-8 -*-\n\
+            # vim: se ts=4 et syn=python:\n\n\n\
             import unittest\n\n\n\
             class TestAll(unittest.TestCase):\n\n\
             \tdef test_all(self):\n\
-            \t\tprint('Test all {} successfully!')\n\n\n\
+            \t\tprint('Test all {project_name} successfully!')\n\n\n\
+            # Test functions for pytest\n\
+            def test_all():\n\
+            \tassert '{project_name}' == '{project_name}'\n\n\n\
             if __name__ == '__main__':\n\
-            \tunittest.main()",
-                name.to_lowercase()
+            \tunittest.main()"
             )
             .to_string(),
         );
@@ -306,10 +317,10 @@ fn prj_toml(name: &str, deps: &Vec<String>) {
         classifiers = ['Programming Language :: Python :: 3']\n\
         dependencies = {}\n\n\
         [project.urls]\n\
-        homepage =\n\
-        documentation =\n\
-        repository =\n\
-        changelog =\n
+        homepage = ''\n\
+        documentation = ''\n\
+        repository = ''\n\
+        changelog = ''\n
         ",
         name.to_lowercase(),
         requirements
