@@ -421,6 +421,13 @@ fn prj_ci(name: &str, deps: &Vec<String>) {
     }
 }
 
+// Project Gitlab/Github
+fn prj_remote(name: &str) {
+    let options = vec!["None", "Gitlab", "Github"];
+    let remote = prompt_select("Select git remote provider:", options, "None");
+    if remote.as_str() == "None" {}
+}
+
 // Main program
 fn main() {
     // Print welcome screen and version
@@ -441,6 +448,8 @@ fn main() {
     let deps = prj_deps(&name, venv);
     // CI configuration
     prj_ci(&name, &deps);
+    // Git remote
+    prj_remote(&name);
     // Write pyproject.toml
     prj_toml(&name, &deps);
     // Finish scaffolding process
