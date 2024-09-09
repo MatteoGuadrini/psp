@@ -427,20 +427,55 @@ fn prj_remote(name: &str) {
     let remote = prompt_select("Select git remote provider:", options, "None");
     if remote.as_str() != "None" {
         let username = prompt_text(format!("Username of {remote}:").as_str(), "None", "None");
-        let issue_templates = if remote.as_str() == "Gitlab" {
-            format!(".{}/issue_templates", remote.to_lowercase())
-        } else if remote.as_str() == "Github" {
-            format!(".{}/ISSUE_TEMPLATE", remote.to_lowercase())
-        } else {
-            "".to_string()
-        };
-        // Make remote folders
-        let dir_ret = make_dirs(format!("{}/{}", name, issue_templates).as_str());
-        match dir_ret {
-            Err(e) => {
-                eprintln!("error: {}", e);
+        // Make remote files and folders
+        if remote.as_str() == "Gitlab" {
+            let issue_folder = format!("{}/.{}/issue_templates", name, remote.to_lowercase());
+            let merge_folder = format!(
+                "{}/.{}/merge_request_templates",
+                name,
+                remote.to_lowercase()
+            );
+            let dir_ret = make_dirs(issue_folder.as_str());
+            match dir_ret {
+                Err(e) => {
+                    eprintln!("error: {}", e);
+                }
+                Ok(_) => (),
             }
-            Ok(_) => (),
+            let dir_ret = make_dirs(merge_folder.as_str());
+            match dir_ret {
+                Err(e) => {
+                    eprintln!("error: {}", e);
+                }
+                Ok(_) => (),
+            }
+            let feature_content = format!(
+                "## Description\n\n\
+            Description of the proposal\n\n\
+            ## Proposed names of the parameters (short and long)\n\n\
+            * name parameter\n\
+            * possible argument(s)\n\n\
+            Additional context\n"
+            );
+            let feature_issue = make_file(
+                format!("{issue_folder}/feature.md").as_str(),
+                feature_content,
+            );
+            match feature_issue {
+                Err(e) => {
+                    eprintln!("error: {}", e);
+                }
+                Ok(_) => (),
+            }
+        } else if remote.as_str() == "Github" {
+            let issue_folder = format!("{}/.{}/ISSUE_TEMPLATE", name, remote.to_lowercase());
+            let dir_ret = make_dirs(issue_folder.as_str());
+            match dir_ret {
+                Err(e) => {
+                    eprintln!("error: {}", e);
+                }
+                Ok(_) => (),
+            }
         }
     }
 }
