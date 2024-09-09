@@ -425,7 +425,24 @@ fn prj_ci(name: &str, deps: &Vec<String>) {
 fn prj_remote(name: &str) {
     let options = vec!["None", "Gitlab", "Github"];
     let remote = prompt_select("Select git remote provider:", options, "None");
-    if remote.as_str() == "None" {}
+    if remote.as_str() != "None" {
+        let username = prompt_text(format!("Username of {remote}:").as_str(), "None", "None");
+        let issue_templates = if remote.as_str() == "Gitlab" {
+            format!(".{}/issue_templates", remote.to_lowercase())
+        } else if remote.as_str() == "Github" {
+            format!(".{}/ISSUE_TEMPLATE", remote.to_lowercase())
+        } else {
+            "".to_string()
+        };
+        // Make remote folders
+        let dir_ret = make_dirs(format!("{}/{}", name, issue_templates).as_str());
+        match dir_ret {
+            Err(e) => {
+                eprintln!("error: {}", e);
+            }
+            Ok(_) => (),
+        }
+    }
 }
 
 // Main program
