@@ -452,10 +452,11 @@ fn prj_remote(name: &str) {
             let feature_content = format!(
                 "## Description\n\n\
             Description of the proposal\n\n\
-            ## Proposed names of the parameters (short and long)\n\n\
-            * name parameter\n\
+            ## Proposed names of the new function, class or variables\n\n\
+            * function or class name\n\
             * possible argument(s)\n\n\
-            Additional context\n"
+            Additional context\n\n\
+            /label ~CR\n"
             );
             let feature_issue = make_file(
                 format!("{issue_folder}/feature.md").as_str(),
