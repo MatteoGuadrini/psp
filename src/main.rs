@@ -468,6 +468,27 @@ fn prj_remote(name: &str) {
                 }
                 Ok(_) => (),
             }
+            let bug_content = format!(
+                "## Description of problem\n\n\
+                Provide a concise description of the bug\n\n\
+                ## Steps to Reproduce\n\n\
+                Lines of code\n\n\
+                ## Expected Behaviour\n\n\
+                Description of what is expected\n\n\
+                ## Your Environment\n\n\
+                * {} version used:\n\
+                * Operating System and version:\n\
+                Additional context\n\n\
+            /label ~Bug\n",
+                name.to_lowercase()
+            );
+            let bug_issue = make_file(format!("{issue_folder}/bug.md").as_str(), bug_content);
+            match bug_issue {
+                Err(e) => {
+                    eprintln!("error: {}", e);
+                }
+                Ok(_) => (),
+            }
         } else if remote.as_str() == "Github" {
             let issue_folder = format!("{}/.{}/ISSUE_TEMPLATE", name, remote.to_lowercase());
             let dir_ret = make_dirs(issue_folder.as_str());
