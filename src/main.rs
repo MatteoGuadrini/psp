@@ -452,11 +452,12 @@ fn prj_remote(name: &str) {
             let feature_content = format!(
                 "## Description\n\n\
             Description of the proposal\n\n\
-            ## Proposed names of the new function, class or variables\n\n\
+            ## Proposed names of the new function, class or variables of {} package\n\n\
             * function or class name\n\
             * possible argument(s)\n\n\
             Additional context\n\n\
-            /label ~CR\n"
+            /label ~CR\n",
+                name.to_lowercase()
             );
             let feature_issue = make_file(
                 format!("{issue_folder}/feature.md").as_str(),
@@ -484,6 +485,29 @@ fn prj_remote(name: &str) {
             );
             let bug_issue = make_file(format!("{issue_folder}/bug.md").as_str(), bug_content);
             match bug_issue {
+                Err(e) => {
+                    eprintln!("error: {}", e);
+                }
+                Ok(_) => (),
+            }
+            let merge_content = format!(
+                "## What does this MR do and why?\n\n\
+                %{{first_multiline_commit}}\n\n\
+                ## MR acceptance checklist of {}\n\n\
+                **Please evaluate this MR against the [MR acceptance checklist](https://docs.gitlab.com/ee/development/code_review.html#acceptance-checklist).**\n\
+                It helps you analyze changes to reduce risks in quality, performance, reliability, security, and maintainability.\n\n\
+                ## Screenshots or screen recordings\n\n\
+                Screenshots are required for UI changes, and strongly recommended for all other merge requests.\n\n\
+                | Before | After  |\n\
+                | ------ | ------ |\n\
+                |        |        |\n\n\
+                ## How to set up and validate locally\n\n\
+                Numbered steps to set up and validate the change are strongly suggested.\n\n\
+                /assign me\n",
+                name.to_lowercase()
+            );
+            let merge_issue = make_file(format!("{merge_folder}/merge.md").as_str(), merge_content);
+            match merge_issue {
                 Err(e) => {
                     eprintln!("error: {}", e);
                 }
