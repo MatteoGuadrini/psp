@@ -451,12 +451,12 @@ fn prj_remote(name: &str) {
             }
             let feature_content = format!(
                 "## Description\n\n\
-            Description of the proposal\n\n\
-            ## Proposed names of the new function, class or variables of {} package\n\n\
-            * function or class name\n\
-            * possible argument(s)\n\n\
-            Additional context\n\n\
-            /label ~CR\n",
+                Description of the proposal\n\n\
+                ## Proposed names of the new function, class or variables of {} package\n\n\
+                * function or class name\n\
+                * possible argument(s)\n\n\
+                Additional context\n\n\
+                /label ~CR\n",
                 name.to_lowercase()
             );
             let feature_issue = make_file(
@@ -517,6 +517,17 @@ fn prj_remote(name: &str) {
             let issue_folder = format!("{}/.{}/ISSUE_TEMPLATE", name, remote.to_lowercase());
             let dir_ret = make_dirs(issue_folder.as_str());
             match dir_ret {
+                Err(e) => {
+                    eprintln!("error: {}", e);
+                }
+                Ok(_) => (),
+            }
+            let config_content = "blank_issues_enabled: false\n".to_string();
+            let config_file = make_file(
+                format!("{issue_folder}/config.yml").as_str(),
+                config_content,
+            );
+            match config_file {
                 Err(e) => {
                     eprintln!("error: {}", e);
                 }
