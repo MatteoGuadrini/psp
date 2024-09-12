@@ -105,10 +105,14 @@ fn prj_name() -> String {
     // Make file structures
     let file_ret = make_file(
         format!("{project}/__init__.py").as_str(),
-        "#! /usr/bin/env python3\n\
-    # -*- encoding: utf-8 -*-\n\
-    # vim: se ts=4 et syn=python:\n\n\n"
-            .to_string(),
+        "#! /usr/bin/env python3
+# -*- encoding: utf-8 -*-
+# vim: se ts=4 et syn=python:
+
+
+
+"
+        .to_string(),
     );
     match file_ret {
         Err(e) => {
@@ -137,38 +141,40 @@ fn prj_git(name: &str) -> bool {
         // Create .gitignore file
         let file_ret = make_file(
             format!("{name}/.gitignore").as_str(),
-            "### Python ###\n\
-                __pycache__/\n\
-                *.py[cod]\n\
-                *$py.class\n\
-                build/\n\
-                develop-eggs/\n\
-                dist/\n\
-                downloads/\n\
-                eggs/\n\
-                .eggs/\n\
-                lib/\n\
-                lib64/\n\
-                parts/\n\
-                sdist/\n\
-                var/\n\
-                wheels/\n\
-                share/python-wheels/\n\
-                *.egg-info/\n\
-                .installed.cfg\n\
-                *.egg\n\
-                # Environments\n\
-                .env\n\
-                .venv\n\
-                env/\n\
-                venv/\n\
-                ENV/\n\
-                env.bak/\n\
-                venv.bak/\n\
-                # Sphinx documentation\n\
-                docs/_build/\n\
-                # mkdocs documentation\n\
-                /site\n"
+            "### Python ###
+__pycache__/
+*.py[cod]
+*$py.class
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Environments
+.env/
+.venv/
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Sphinx documentation
+docs/_build/
+# mkdocs documentation
+/site"
                 .to_string(),
         );
         let ret = match file_ret {
@@ -199,10 +205,13 @@ fn prj_test(name: &str) {
         // Make file structures
         let init_file = make_file(
             format!("{name}/tests/__init__.py").as_str(),
-            "#! /usr/bin/env python3\n\
-        # -*- encoding: utf-8 -*-\n\
-        # vim: se ts=4 et syn=python:\n\n\n"
-                .to_string(),
+            "#! /usr/bin/env python3
+# -*- encoding: utf-8 -*-
+# vim: se ts=4 et syn=python:
+
+
+"
+            .to_string(),
         );
         match init_file {
             Err(e) => {
@@ -215,18 +224,27 @@ fn prj_test(name: &str) {
         let all_module = make_file(
             format!("{name}/tests/test_{name}.py").as_str(),
             format!(
-                "#! /usr/bin/env python3\n\
-            # -*- encoding: utf-8 -*-\n\
-            # vim: se ts=4 et syn=python:\n\n\n\
-            import unittest\n\n\n\
-            class TestAll(unittest.TestCase):\n\n\
-            \tdef test_all(self):\n\
-            \t\tprint('Test all {project_name} successfully!')\n\n\n\
-            # Test functions for pytest\n\
-            def test_all():\n\
-            \tassert '{project_name}' == '{project_name}'\n\n\n\
-            if __name__ == '__main__':\n\
-            \tunittest.main()"
+                "#! /usr/bin/env python3
+# -*- encoding: utf-8 -*-
+# vim: se ts=4 et syn=python:
+
+
+import unittest
+
+
+class TestAll(unittest.TestCase):
+
+    def test_all(self):
+        print('Test all {project_name} successfully!')
+
+
+# Test functions for pytest
+def test_all():
+    assert '{project_name}' == '{project_name}'
+
+
+if __name__ == '__main__':
+    unittest.main()"
             )
             .to_string(),
         );
@@ -302,26 +320,28 @@ fn prj_toml(name: &str, deps: &Vec<String>) {
         format!("{deps:?}")
     };
     let content = format!(
-        "[build-system]\n\
-        requires = ['setuptools', 'wheel']\n\
-        build-backend = 'setuptools.build_meta'\n\n\
-        [project]\n\
-        name = '{}'\n\
-        version = '0.0.1'\n\
-        readme = 'README.md'\n\
-        license = ''\n\
-        authors = [{{name = 'psp', email = 'psp@example.com'}}]\n\
-        maintainers = [{{name = 'psp', email = 'psp@example.com'}}]\n\
-        description = 'A simple but structured Python project'\n\
-        requires-python = '>=3.12'\n\
-        classifiers = ['Programming Language :: Python :: 3']\n\
-        dependencies = {}\n\n\
-        [project.urls]\n\
-        homepage = ''\n\
-        documentation = ''\n\
-        repository = ''\n\
-        changelog = ''\n
-        ",
+        "[build-system]
+requires = ['setuptools', 'wheel']
+build-backend = 'setuptools.build_meta'
+
+[project]
+name = '{}'
+version = '0.0.1'
+readme = 'README.md'
+license = ''
+authors = [{{name = 'psp', email = 'psp@example.com'}}]
+maintainers = [{{name = 'psp', email = 'psp@example.com'}}]
+description = 'A simple but structured Python project'
+requires-python = '>=3.12'
+classifiers = ['Programming Language :: Python :: 3']
+dependencies = {}
+
+[project.urls]
+homepage = ''
+documentation = ''
+repository = ''
+changelog = ''
+",
         name.to_lowercase(),
         requirements
     );
@@ -350,23 +370,22 @@ fn prj_ci(name: &str, deps: &Vec<String>) {
         let travis = make_file(
             format!("{name}/.travis.yml").as_str(),
             format!(
-                "language: python\n\
-                cache: pip\n\
-                python:\n\
-                  \t- 3.10\n\
-                  \t- 3.11\n\
-                  \t- 3.12\n\
-                before_install:\n\
-                  \t- sudo apt-get update\n\
-                  \t- sudo apt-get install python3-pip\n\
-                  \t- sudo apt-get install python3-pytest\n\
-                install:\n\
-                  \t- pip install {requirements} pipenv\n\
-                  \t- pipenv install --dev\n\
-                script:\n\
-                  \t- python -m unittest discover tests\n\
-                  \t- pytest tests
-            "
+                "language: python
+cache: pip
+python:
+  - 3.10
+  - 3.11
+  - 3.12
+before_install:
+  - sudo apt-get update
+  - sudo apt-get install python3-pip
+  - sudo apt-get install python3-pytest
+install:
+  - pip install {requirements} pipenv
+  - pipenv install --dev
+script:
+  - python -m unittest discover tests
+  - pytest tests"
             ),
         );
         match travis {
@@ -386,30 +405,30 @@ fn prj_ci(name: &str, deps: &Vec<String>) {
         let circle = make_file(
             format!("{name}/.circleci/config.yml").as_str(),
             format!(
-                "version: 2.1\n\
-                jobs:\n\
-                  \tbuild-and-test:\n\
-                    \t\tdocker:\n\
-                      \t\t\t- image: circleci/python\n\
-                    \t\tsteps:\n\
-                      \t\t\t- checkout\n\
-                      \t\t\t- run:\n\
-                          \t\t\t\t\tname: Install pytest\n\
-                          \t\t\t\t\tcommand: pip install pytest\n\
-                      \t\t\t- run:\n\
-                          \t\t\t\t\tname: Install dependencies\n\
-                          \t\t\t\t\tcommand: pip install {requirements}\n\
-                      \t\t\t- run:\n\
-                          \t\t\t\t\tname: Install package\n\
-                          \t\t\t\t\tcommand: pip install .\n\
-                      \t\t\t- run:\n\
-                          \t\t\t\t\tname: Run tests\n\
-                          \t\t\t\t\tcommand: python -m pytest tests\n\
-                \tworkflows:\n\
-                  \t\tmain:\n\
-                    \t\t\tjobs:\n\
-                      \t\t\t\t- build-and-test\n
-            "
+                "version: 2.1
+jobs:
+  build-and-test:
+    docker:
+      - image: circleci/python
+    steps:
+      - checkout
+      - run:
+          name: Install pytest
+          command: pip install pytest
+      - run:
+          name: Install dependencies
+          command: pip install {requirements}
+      - run:
+          name: Install package
+          command: pip install .
+      - run:
+          name: Run tests
+          command: python -m pytest tests
+  workflows:
+    main:
+      jobs:
+        - build-and-test
+"
             ),
         );
         match circle {
@@ -450,13 +469,18 @@ fn prj_remote(name: &str) {
                 Ok(_) => (),
             }
             let feature_content = format!(
-                "## Description\n\n\
-                Description of the proposal\n\n\
-                ## Proposed names of the new function, class or variables of {} package\n\n\
-                * function or class name\n\
-                * possible argument(s)\n\n\
-                Additional context\n\n\
-                /label ~CR\n",
+                "## Description
+
+Description of the proposal
+
+## Proposed names of the new function, class or variables of {} package
+
+* function or class name
+* possible argument(s)
+
+Additional context
+
+/label ~CR",
                 name.to_lowercase()
             );
             let feature_issue = make_file(
@@ -470,17 +494,26 @@ fn prj_remote(name: &str) {
                 Ok(_) => (),
             }
             let bug_content = format!(
-                "## Description of problem\n\n\
-                Provide a concise description of the bug\n\n\
-                ## Steps to Reproduce\n\n\
-                Lines of code\n\n\
-                ## Expected Behaviour\n\n\
-                Description of what is expected\n\n\
-                ## Your Environment\n\n\
-                * {} version used:\n\
-                * Operating System and version:\n\
-                Additional context\n\n\
-            /label ~Bug\n",
+                "## Description of problem
+
+Provide a concise description of the bug
+
+## Steps to Reproduce
+
+Lines of code
+
+## Expected Behaviour
+
+Description of what is expected
+
+## Your Environment
+
+* {} version used:
+* Operating System and version:
+
+Additional context
+
+/label ~Bug",
                 name.to_lowercase()
             );
             let bug_issue = make_file(format!("{issue_folder}/bug.md").as_str(), bug_content);
@@ -491,19 +524,28 @@ fn prj_remote(name: &str) {
                 Ok(_) => (),
             }
             let merge_content = format!(
-                "## What does this MR do and why?\n\n\
-                %{{first_multiline_commit}}\n\n\
-                ## MR acceptance checklist of {}\n\n\
-                **Please evaluate this MR against the [MR acceptance checklist](https://docs.gitlab.com/ee/development/code_review.html#acceptance-checklist).**\n\
-                It helps you analyze changes to reduce risks in quality, performance, reliability, security, and maintainability.\n\n\
-                ## Screenshots or screen recordings\n\n\
-                Screenshots are required for UI changes, and strongly recommended for all other merge requests.\n\n\
-                | Before | After  |\n\
-                | ------ | ------ |\n\
-                |        |        |\n\n\
-                ## How to set up and validate locally\n\n\
-                Numbered steps to set up and validate the change are strongly suggested.\n\n\
-                /assign me\n",
+                "## What does this MR do and why?
+
+%{{first_multiline_commit}}
+
+## MR acceptance checklist of {}
+
+**Please evaluate this MR against the [MR acceptance checklist](https://docs.gitlab.com/ee/development/code_review.html#acceptance-checklist).**
+It helps you analyze changes to reduce risks in quality, performance, reliability, security, and maintainability.
+
+## Screenshots or screen recordings
+
+Screenshots are required for UI changes, and strongly recommended for all other merge requests.
+
+| Before | After  |
+| ------ | ------ |
+|        |        |
+
+## How to set up and validate locally
+
+Numbered steps to set up and validate the change are strongly suggested.
+
+/assign me",
                 name.to_lowercase()
             );
             let merge_issue = make_file(format!("{merge_folder}/merge.md").as_str(), merge_content);
@@ -534,7 +576,7 @@ fn prj_remote(name: &str) {
                 Ok(_) => (),
             }
             let feature_content = format!(
-"name: Feature Request
+                "name: Feature Request
 description: File a feature request.
 title: '[Feature]: '
 labels: ['enhancement']
