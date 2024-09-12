@@ -533,6 +533,55 @@ fn prj_remote(name: &str) {
                 }
                 Ok(_) => (),
             }
+            let feature_content = format!(
+"name: Feature Request
+description: File a feature request.
+title: '[Feature]: '
+labels: ['enhancement']
+assignees:
+  - {}
+body:
+  - type: markdown
+    id: markdown
+    value: '## Feature Request for {}!'
+      validations:
+      required: false
+  - type: textarea
+    attributes:
+      label: Description
+      description: A concise description of what you're experiencing.
+      placeholder: Description of the proposal
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: New proposed
+      description: Proposed names of the new function, class or variables.
+      placeholder: |
+        * function or class name
+        * possible argument(s)
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Additional context
+      description: Other considerizations
+    validations:
+      required: false
+",
+                username,
+                name.to_lowercase()
+            );
+            let feature_issue = make_file(
+                format!("{issue_folder}/feature.yml").as_str(),
+                feature_content,
+            );
+            match feature_issue {
+                Err(e) => {
+                    eprintln!("error: {}", e);
+                }
+                Ok(_) => (),
+            }
         }
     }
 }
