@@ -584,10 +584,8 @@ assignees:
   - {}
 body:
   - type: markdown
-    id: markdown
-    value: '## Feature Request for {}!'
-      validations:
-      required: false
+    attributes:
+      value: '## Feature Request for {}!'
   - type: textarea
     attributes:
       label: Description
@@ -619,6 +617,64 @@ body:
                 feature_content,
             );
             match feature_issue {
+                Err(e) => {
+                    eprintln!("error: {}", e);
+                }
+                Ok(_) => (),
+            }
+            let bug_content = format!(
+                "name: Bug Report
+description: File a bug report.
+title: '[Bug]: '
+labels: ['bug']
+assignees:
+  - {}
+body:
+  - type: markdown
+    attributes:
+      value: '## Bug Report for {}!'
+  - type: textarea
+    attributes:
+      label: Description of problem
+      description: Provide a concise description of the bug.
+      placeholder: Describe here the problem
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Steps to Reproduce
+      description: Lines of code.
+      placeholder: Paste here backtrace or lines of code
+    validations:
+      required: false
+  - type: textarea
+    attributes:
+      label: Expected Behaviour
+      description: Description of what is expected.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Your Environment
+      description: Description of your environment.
+      placeholder: |
+        * {} version used:
+        * Operating System and version:
+    validations:
+      required: false
+  - type: textarea
+    attributes:
+      label: Additional context
+      description: Other considerizations
+    validations:
+      required: false
+",
+                username,
+                name.to_lowercase(),
+                name.to_lowercase()
+            );
+            let bug_issue = make_file(format!("{issue_folder}/bug.yml").as_str(), bug_content);
+            match bug_issue {
                 Err(e) => {
                     eprintln!("error: {}", e);
                 }
