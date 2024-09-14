@@ -447,6 +447,7 @@ fn prj_remote(name: &str) {
     if remote.as_str() != "None" {
         let username = prompt_text(format!("Username of {remote}:").as_str(), "None", "None");
         // Make remote files and folders
+        // Gitlab
         if remote.as_str() == "Gitlab" {
             let issue_folder = format!("{}/.{}/issue_templates", name, remote.to_lowercase());
             let merge_folder = format!(
@@ -533,14 +534,6 @@ Additional context
 **Please evaluate this MR against the [MR acceptance checklist](https://docs.gitlab.com/ee/development/code_review.html#acceptance-checklist).**
 It helps you analyze changes to reduce risks in quality, performance, reliability, security, and maintainability.
 
-## Screenshots or screen recordings
-
-Screenshots are required for UI changes, and strongly recommended for all other merge requests.
-
-| Before | After  |
-| ------ | ------ |
-|        |        |
-
 ## How to set up and validate locally
 
 Numbered steps to set up and validate the change are strongly suggested.
@@ -555,9 +548,18 @@ Numbered steps to set up and validate the change are strongly suggested.
                 }
                 Ok(_) => (),
             }
+        // Github
         } else if remote.as_str() == "Github" {
             let issue_folder = format!("{}/.{}/ISSUE_TEMPLATE", name, remote.to_lowercase());
+            let merge_folder = format!("{}/.{}/PULL_REQUEST_TEMPLATE", name, remote.to_lowercase());
             let dir_ret = make_dirs(issue_folder.as_str());
+            match dir_ret {
+                Err(e) => {
+                    eprintln!("error: {}", e);
+                }
+                Ok(_) => (),
+            }
+            let dir_ret = make_dirs(merge_folder.as_str());
             match dir_ret {
                 Err(e) => {
                     eprintln!("error: {}", e);
@@ -675,6 +677,37 @@ body:
             );
             let bug_issue = make_file(format!("{issue_folder}/bug.yml").as_str(), bug_content);
             match bug_issue {
+                Err(e) => {
+                    eprintln!("error: {}", e);
+                }
+                Ok(_) => (),
+            }
+            let merge_content = format!(
+                "# Title of Pull Request
+---
+name: Tracking issue
+about: Use this template for tracking new features.
+title: '[DATE]: [FEATURE NAME]'
+labels: enhancement
+assignees: {}
+---
+## Describe your changes
+
+## Issue ticket number and link
+
+## Checklist before requesting a review
+- [ ] I have performed a self-review of my code
+- [ ] If it is a core feature, I have added thorough tests.
+- [ ] Do we need to implement analytics?
+- [ ] Will this be part of a product update? If yes, please write one phrase about this update.
+",
+                username
+            );
+            let merge_issue = make_file(
+                format!("{merge_folder}/pull_request_template.md").as_str(),
+                merge_content,
+            );
+            match merge_issue {
                 Err(e) => {
                     eprintln!("error: {}", e);
                 }
