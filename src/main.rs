@@ -445,7 +445,12 @@ fn prj_remote(name: &str) {
     let options = vec!["None", "Gitlab", "Github"];
     let remote = prompt_select("Select git remote provider:", options, "None");
     if remote.as_str() != "None" {
+        // Username of remote git service
         let username = prompt_text(format!("Username of {remote}:").as_str(), "None", "None");
+        if username.is_empty() {
+            eprintln!("error: the username must be not empty");
+            return;
+        }
         // Make remote files and folders
         // Gitlab
         if remote.as_str() == "Gitlab" {
