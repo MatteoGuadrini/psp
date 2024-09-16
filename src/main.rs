@@ -451,6 +451,25 @@ fn prj_remote(name: &str) {
             eprintln!("error: the username must be not empty");
             return;
         }
+        // Add git remote path
+        let remote_path = format!(
+            "git@{}.com:{}/{}.git",
+            remote.to_lowercase(),
+            username,
+            name.to_lowercase()
+        );
+        let output = std::process::Command::new("git")
+            .args(["remote", "add", "origin", &remote_path])
+            .current_dir(name)
+            .output()
+            .expect("git should be installed");
+        // Check if command exit successfully
+        if !output.status.success() {
+            eprintln!(
+                "error: remote repository {} setting failed",
+                remote.to_lowercase()
+            );
+        }
         // Make remote files and folders
         // Gitlab
         if remote.as_str() == "Gitlab" {
