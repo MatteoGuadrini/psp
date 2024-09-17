@@ -8,7 +8,7 @@ use std::{
 };
 
 // Constants
-const VERSION: &str = "0.0.6";
+const VERSION: &str = "0.0.7";
 
 // Utility functions
 
@@ -105,10 +105,14 @@ fn prj_name() -> String {
     // Make file structures
     let file_ret = make_file(
         format!("{project}/__init__.py").as_str(),
-        "#! /usr/bin/env python3\n\
-    # -*- encoding: utf-8 -*-\n\
-    # vim: se ts=4 et syn=python:\n\n\n"
-            .to_string(),
+        "#! /usr/bin/env python3
+# -*- encoding: utf-8 -*-
+# vim: se ts=4 et syn=python:
+
+
+
+"
+        .to_string(),
     );
     match file_ret {
         Err(e) => {
@@ -137,38 +141,40 @@ fn prj_git(name: &str) -> bool {
         // Create .gitignore file
         let file_ret = make_file(
             format!("{name}/.gitignore").as_str(),
-            "### Python ###\n\
-                __pycache__/\n\
-                *.py[cod]\n\
-                *$py.class\n\
-                build/\n\
-                develop-eggs/\n\
-                dist/\n\
-                downloads/\n\
-                eggs/\n\
-                .eggs/\n\
-                lib/\n\
-                lib64/\n\
-                parts/\n\
-                sdist/\n\
-                var/\n\
-                wheels/\n\
-                share/python-wheels/\n\
-                *.egg-info/\n\
-                .installed.cfg\n\
-                *.egg\n\
-                # Environments\n\
-                .env\n\
-                .venv\n\
-                env/\n\
-                venv/\n\
-                ENV/\n\
-                env.bak/\n\
-                venv.bak/\n\
-                # Sphinx documentation\n\
-                docs/_build/\n\
-                # mkdocs documentation\n\
-                /site\n"
+            "### Python ###
+__pycache__/
+*.py[cod]
+*$py.class
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Environments
+.env/
+.venv/
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Sphinx documentation
+docs/_build/
+# mkdocs documentation
+/site"
                 .to_string(),
         );
         let ret = match file_ret {
@@ -199,10 +205,13 @@ fn prj_test(name: &str) {
         // Make file structures
         let init_file = make_file(
             format!("{name}/tests/__init__.py").as_str(),
-            "#! /usr/bin/env python3\n\
-        # -*- encoding: utf-8 -*-\n\
-        # vim: se ts=4 et syn=python:\n\n\n"
-                .to_string(),
+            "#! /usr/bin/env python3
+# -*- encoding: utf-8 -*-
+# vim: se ts=4 et syn=python:
+
+
+"
+            .to_string(),
         );
         match init_file {
             Err(e) => {
@@ -215,18 +224,27 @@ fn prj_test(name: &str) {
         let all_module = make_file(
             format!("{name}/tests/test_{name}.py").as_str(),
             format!(
-                "#! /usr/bin/env python3\n\
-            # -*- encoding: utf-8 -*-\n\
-            # vim: se ts=4 et syn=python:\n\n\n\
-            import unittest\n\n\n\
-            class TestAll(unittest.TestCase):\n\n\
-            \tdef test_all(self):\n\
-            \t\tprint('Test all {project_name} successfully!')\n\n\n\
-            # Test functions for pytest\n\
-            def test_all():\n\
-            \tassert '{project_name}' == '{project_name}'\n\n\n\
-            if __name__ == '__main__':\n\
-            \tunittest.main()"
+                "#! /usr/bin/env python3
+# -*- encoding: utf-8 -*-
+# vim: se ts=4 et syn=python:
+
+
+import unittest
+
+
+class TestAll(unittest.TestCase):
+
+    def test_all(self):
+        print('Test all {project_name} successfully!')
+
+
+# Test functions for pytest
+def test_all():
+    assert '{project_name}' == '{project_name}'
+
+
+if __name__ == '__main__':
+    unittest.main()"
             )
             .to_string(),
         );
@@ -302,26 +320,28 @@ fn prj_toml(name: &str, deps: &Vec<String>) {
         format!("{deps:?}")
     };
     let content = format!(
-        "[build-system]\n\
-        requires = ['setuptools', 'wheel']\n\
-        build-backend = 'setuptools.build_meta'\n\n\
-        [project]\n\
-        name = '{}'\n\
-        version = '0.0.1'\n\
-        readme = 'README.md'\n\
-        license = ''\n\
-        authors = [{{name = 'psp', email = 'psp@example.com'}}]\n\
-        maintainers = [{{name = 'psp', email = 'psp@example.com'}}]\n\
-        description = 'A simple but structured Python project'\n\
-        requires-python = '>=3.12'\n\
-        classifiers = ['Programming Language :: Python :: 3']\n\
-        dependencies = {}\n\n\
-        [project.urls]\n\
-        homepage = ''\n\
-        documentation = ''\n\
-        repository = ''\n\
-        changelog = ''\n
-        ",
+        "[build-system]
+requires = ['setuptools', 'wheel']
+build-backend = 'setuptools.build_meta'
+
+[project]
+name = '{}'
+version = '0.0.1'
+readme = 'README.md'
+license = ''
+authors = [{{name = 'psp', email = 'psp@example.com'}}]
+maintainers = [{{name = 'psp', email = 'psp@example.com'}}]
+description = 'A simple but structured Python project'
+requires-python = '>=3.12'
+classifiers = ['Programming Language :: Python :: 3']
+dependencies = {}
+
+[project.urls]
+homepage = ''
+documentation = ''
+repository = ''
+changelog = ''
+",
         name.to_lowercase(),
         requirements
     );
@@ -350,23 +370,22 @@ fn prj_ci(name: &str, deps: &Vec<String>) {
         let travis = make_file(
             format!("{name}/.travis.yml").as_str(),
             format!(
-                "language: python\n\
-                cache: pip\n\
-                python:\n\
-                  \t- 3.10\n\
-                  \t- 3.11\n\
-                  \t- 3.12\n\
-                before_install:\n\
-                  \t- sudo apt-get update\n\
-                  \t- sudo apt-get install python3-pip\n\
-                  \t- sudo apt-get install python3-pytest\n\
-                install:\n\
-                  \t- pip install {requirements} pipenv\n\
-                  \t- pipenv install --dev\n\
-                script:\n\
-                  \t- python -m unittest discover tests\n\
-                  \t- pytest tests
-            "
+                "language: python
+cache: pip
+python:
+  - 3.10
+  - 3.11
+  - 3.12
+before_install:
+  - sudo apt-get update
+  - sudo apt-get install python3-pip
+  - sudo apt-get install python3-pytest
+install:
+  - pip install {requirements} pipenv
+  - pipenv install --dev
+script:
+  - python -m unittest discover tests
+  - pytest tests"
             ),
         );
         match travis {
@@ -386,30 +405,30 @@ fn prj_ci(name: &str, deps: &Vec<String>) {
         let circle = make_file(
             format!("{name}/.circleci/config.yml").as_str(),
             format!(
-                "version: 2.1\n\
-                jobs:\n\
-                  \tbuild-and-test:\n\
-                    \t\tdocker:\n\
-                      \t\t\t- image: circleci/python\n\
-                    \t\tsteps:\n\
-                      \t\t\t- checkout\n\
-                      \t\t\t- run:\n\
-                          \t\t\t\t\tname: Install pytest\n\
-                          \t\t\t\t\tcommand: pip install pytest\n\
-                      \t\t\t- run:\n\
-                          \t\t\t\t\tname: Install dependencies\n\
-                          \t\t\t\t\tcommand: pip install {requirements}\n\
-                      \t\t\t- run:\n\
-                          \t\t\t\t\tname: Install package\n\
-                          \t\t\t\t\tcommand: pip install .\n\
-                      \t\t\t- run:\n\
-                          \t\t\t\t\tname: Run tests\n\
-                          \t\t\t\t\tcommand: python -m pytest tests\n\
-                \tworkflows:\n\
-                  \t\tmain:\n\
-                    \t\t\tjobs:\n\
-                      \t\t\t\t- build-and-test\n
-            "
+                "version: 2.1
+jobs:
+  build-and-test:
+    docker:
+      - image: circleci/python
+    steps:
+      - checkout
+      - run:
+          name: Install pytest
+          command: pip install pytest
+      - run:
+          name: Install dependencies
+          command: pip install {requirements}
+      - run:
+          name: Install package
+          command: pip install .
+      - run:
+          name: Run tests
+          command: python -m pytest tests
+  workflows:
+    main:
+      jobs:
+        - build-and-test
+"
             ),
         );
         match circle {
@@ -417,6 +436,307 @@ fn prj_ci(name: &str, deps: &Vec<String>) {
                 eprintln!("error: {}", e);
             }
             Ok(_) => (),
+        }
+    }
+}
+
+// Project Gitlab/Github
+fn prj_remote(name: &str) {
+    let options = vec!["None", "Gitlab", "Github"];
+    let remote = prompt_select("Select git remote provider:", options, "None");
+    if remote.as_str() != "None" {
+        // Username of remote git service
+        let username = prompt_text(format!("Username of {remote}:").as_str(), "None", "None");
+        if username.is_empty() {
+            eprintln!("error: the username must be not empty");
+            return;
+        }
+        // Add git remote path
+        let remote_path = format!(
+            "git@{}.com:{}/{}.git",
+            remote.to_lowercase(),
+            username,
+            name.to_lowercase()
+        );
+        let output = std::process::Command::new("git")
+            .args(["remote", "add", "origin", &remote_path])
+            .current_dir(name)
+            .output()
+            .expect("git should be installed");
+        // Check if command exit successfully
+        if !output.status.success() {
+            eprintln!(
+                "error: remote repository {} setting failed",
+                remote.to_lowercase()
+            );
+        }
+        // Make remote files and folders
+        // Gitlab
+        if remote.as_str() == "Gitlab" {
+            let issue_folder = format!("{}/.{}/issue_templates", name, remote.to_lowercase());
+            let merge_folder = format!(
+                "{}/.{}/merge_request_templates",
+                name,
+                remote.to_lowercase()
+            );
+            let dir_ret = make_dirs(issue_folder.as_str());
+            match dir_ret {
+                Err(e) => {
+                    eprintln!("error: {}", e);
+                }
+                Ok(_) => (),
+            }
+            let dir_ret = make_dirs(merge_folder.as_str());
+            match dir_ret {
+                Err(e) => {
+                    eprintln!("error: {}", e);
+                }
+                Ok(_) => (),
+            }
+            let feature_content = format!(
+                "## Description
+
+Description of the proposal
+
+## Proposed names of the new function, class or variables of {} package
+
+* function or class name
+* possible argument(s)
+
+Additional context
+
+/label ~CR",
+                name.to_lowercase()
+            );
+            let feature_issue = make_file(
+                format!("{issue_folder}/feature.md").as_str(),
+                feature_content,
+            );
+            match feature_issue {
+                Err(e) => {
+                    eprintln!("error: {}", e);
+                }
+                Ok(_) => (),
+            }
+            let bug_content = format!(
+                "## Description of problem
+
+Provide a concise description of the bug
+
+## Steps to Reproduce
+
+Lines of code
+
+## Expected Behaviour
+
+Description of what is expected
+
+## Your Environment
+
+* {} version used:
+* Operating System and version:
+
+Additional context
+
+/label ~Bug",
+                name.to_lowercase()
+            );
+            let bug_issue = make_file(format!("{issue_folder}/bug.md").as_str(), bug_content);
+            match bug_issue {
+                Err(e) => {
+                    eprintln!("error: {}", e);
+                }
+                Ok(_) => (),
+            }
+            let merge_content = format!(
+                "## What does this MR do and why?
+
+%{{first_multiline_commit}}
+
+## MR acceptance checklist of {}
+
+**Please evaluate this MR against the [MR acceptance checklist](https://docs.gitlab.com/ee/development/code_review.html#acceptance-checklist).**
+It helps you analyze changes to reduce risks in quality, performance, reliability, security, and maintainability.
+
+## How to set up and validate locally
+
+Numbered steps to set up and validate the change are strongly suggested.
+
+/assign me",
+                name.to_lowercase()
+            );
+            let merge_issue = make_file(format!("{merge_folder}/merge.md").as_str(), merge_content);
+            match merge_issue {
+                Err(e) => {
+                    eprintln!("error: {}", e);
+                }
+                Ok(_) => (),
+            }
+        // Github
+        } else if remote.as_str() == "Github" {
+            let issue_folder = format!("{}/.{}/ISSUE_TEMPLATE", name, remote.to_lowercase());
+            let merge_folder = format!("{}/.{}/PULL_REQUEST_TEMPLATE", name, remote.to_lowercase());
+            let dir_ret = make_dirs(issue_folder.as_str());
+            match dir_ret {
+                Err(e) => {
+                    eprintln!("error: {}", e);
+                }
+                Ok(_) => (),
+            }
+            let dir_ret = make_dirs(merge_folder.as_str());
+            match dir_ret {
+                Err(e) => {
+                    eprintln!("error: {}", e);
+                }
+                Ok(_) => (),
+            }
+            let config_content = "blank_issues_enabled: false\n".to_string();
+            let config_file = make_file(
+                format!("{issue_folder}/config.yml").as_str(),
+                config_content,
+            );
+            match config_file {
+                Err(e) => {
+                    eprintln!("error: {}", e);
+                }
+                Ok(_) => (),
+            }
+            let feature_content = format!(
+                "name: Feature Request
+description: File a feature request.
+title: '[Feature]: '
+labels: ['enhancement']
+assignees:
+  - {}
+body:
+  - type: markdown
+    attributes:
+      value: '## Feature Request for {}!'
+  - type: textarea
+    attributes:
+      label: Description
+      description: A concise description of what you're experiencing.
+      placeholder: Description of the proposal
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: New proposed
+      description: Proposed names of the new function, class or variables.
+      placeholder: |
+        * function or class name
+        * possible argument(s)
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Additional context
+      description: Other considerizations
+    validations:
+      required: false
+",
+                username,
+                name.to_lowercase()
+            );
+            let feature_issue = make_file(
+                format!("{issue_folder}/feature.yml").as_str(),
+                feature_content,
+            );
+            match feature_issue {
+                Err(e) => {
+                    eprintln!("error: {}", e);
+                }
+                Ok(_) => (),
+            }
+            let bug_content = format!(
+                "name: Bug Report
+description: File a bug report.
+title: '[Bug]: '
+labels: ['bug']
+assignees:
+  - {}
+body:
+  - type: markdown
+    attributes:
+      value: '## Bug Report for {}!'
+  - type: textarea
+    attributes:
+      label: Description of problem
+      description: Provide a concise description of the bug.
+      placeholder: Describe here the problem
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Steps to Reproduce
+      description: Lines of code.
+      placeholder: Paste here backtrace or lines of code
+    validations:
+      required: false
+  - type: textarea
+    attributes:
+      label: Expected Behaviour
+      description: Description of what is expected.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Your Environment
+      description: Description of your environment.
+      placeholder: |
+        * {} version used:
+        * Operating System and version:
+    validations:
+      required: false
+  - type: textarea
+    attributes:
+      label: Additional context
+      description: Other considerizations
+    validations:
+      required: false
+",
+                username,
+                name.to_lowercase(),
+                name.to_lowercase()
+            );
+            let bug_issue = make_file(format!("{issue_folder}/bug.yml").as_str(), bug_content);
+            match bug_issue {
+                Err(e) => {
+                    eprintln!("error: {}", e);
+                }
+                Ok(_) => (),
+            }
+            let merge_content = format!(
+                "# Title of Pull Request
+---
+name: Tracking issue
+about: Use this template for tracking new features.
+title: '[DATE]: [FEATURE NAME]'
+labels: enhancement
+assignees: {}
+---
+## Describe your changes
+
+## Issue ticket number and link
+
+## Checklist before requesting a review
+- [ ] I have performed a self-review of my code
+- [ ] If it is a core feature, I have added thorough tests.
+- [ ] Do we need to implement analytics?
+- [ ] Will this be part of a product update? If yes, please write one phrase about this update.
+",
+                username
+            );
+            let merge_issue = make_file(
+                format!("{merge_folder}/pull_request_template.md").as_str(),
+                merge_content,
+            );
+            match merge_issue {
+                Err(e) => {
+                    eprintln!("error: {}", e);
+                }
+                Ok(_) => (),
+            }
         }
     }
 }
@@ -432,7 +752,7 @@ fn main() {
     // Create project structure by name
     let name = prj_name();
     // Start git
-    let _git = prj_git(&name);
+    let git = prj_git(&name);
     // Unit tests
     prj_test(&name);
     // Virtual Environment
@@ -441,6 +761,10 @@ fn main() {
     let deps = prj_deps(&name, venv);
     // CI configuration
     prj_ci(&name, &deps);
+    // Git remote
+    if git {
+        prj_remote(&name);
+    }
     // Write pyproject.toml
     prj_toml(&name, &deps);
     // Finish scaffolding process

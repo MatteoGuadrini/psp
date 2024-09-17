@@ -1,5 +1,9 @@
 # Release notes
 
+## 0.0.7
+Sep 17, 2024
+- Add **prj_remote** function
+
 ## 0.0.6
 Sep 06, 2024
 - Add **prj_ci** function
