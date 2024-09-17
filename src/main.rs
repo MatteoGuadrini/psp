@@ -8,7 +8,7 @@ use std::{
 };
 
 // Constants
-const VERSION: &str = "0.0.6";
+const VERSION: &str = "0.0.7";
 
 // Utility functions
 
@@ -752,7 +752,7 @@ fn main() {
     // Create project structure by name
     let name = prj_name();
     // Start git
-    let _git = prj_git(&name);
+    let git = prj_git(&name);
     // Unit tests
     prj_test(&name);
     // Virtual Environment
@@ -762,7 +762,9 @@ fn main() {
     // CI configuration
     prj_ci(&name, &deps);
     // Git remote
-    prj_remote(&name);
+    if git {
+        prj_remote(&name);
+    }
     // Write pyproject.toml
     prj_toml(&name, &deps);
     // Finish scaffolding process
