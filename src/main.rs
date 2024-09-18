@@ -741,6 +741,32 @@ assignees: {}
     }
 }
 
+// Project tox
+fn prj_tox(name: &str, venv: bool) {
+    // Create tox ini
+    let confirm = prompt_confirm("Do you want to configure tox?", false, "None");
+    if confirm {
+        let mut pip = std::process::Command::new("pip3");
+        // Activate venv
+        if venv {
+            pip.env("PATH", "venv/bin");
+        }
+        let output = pip
+            .arg("install")
+            .arg("--timeout=10")
+            .arg("--retries=1")
+            .arg("tox")
+            .current_dir(&name)
+            .output()
+            .expect("pip should be installed");
+        // Check if command exit successfully
+        if !output.status.success() {
+            eprintln!("error: tox installation failed");
+            return;
+        }
+    }
+}
+
 // Main program
 fn main() {
     // Print welcome screen and version
@@ -767,6 +793,8 @@ fn main() {
     }
     // Write pyproject.toml
     prj_toml(&name, &deps);
+    // Tox
+    prj_tox(&name, venv);
     // Finish scaffolding process
     println!("Project `{name}` created")
 }
