@@ -764,6 +764,23 @@ fn prj_tox(name: &str, venv: bool) {
             eprintln!("error: tox installation failed");
             return;
         }
+        // Write tox.ini
+        let tox_ini_content = "[tox]
+envlist = py310, py311, py312
+isolated_build = True
+
+[testenv]
+labels = test, core
+deps = pytest
+commands = pytest tests"
+            .to_string();
+        let tox_ini = make_file(format!("{name}/tox.ini").as_str(), tox_ini_content);
+        match tox_ini {
+            Err(e) => {
+                eprintln!("error: {}", e);
+            }
+            Ok(_) => (),
+        }
     }
 }
 
