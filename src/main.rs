@@ -26,12 +26,11 @@ fn check_tool(tool: &str) {
 // Function for creating folders and parents
 fn make_dirs(dir: &str) -> std::io::Result<()> {
     let result = create_dir_all(dir);
-    match result {
-        Err(e) => {
-            eprintln!("error: {}", e);
-            exit(2);
-        }
-        Ok(_) => Ok(()),
+    if let Err(e) = result {
+        eprintln!("error: {}", e);
+        exit(2);
+    } else {
+        Ok(())
     }
 }
 
@@ -39,12 +38,11 @@ fn make_dirs(dir: &str) -> std::io::Result<()> {
 fn make_file(file: &str, content: String) -> std::io::Result<()> {
     let mut file = File::create(file)?;
     let result = file.write_all(&content.as_bytes());
-    match result {
-        Err(e) => {
-            eprintln!("error: {}", e);
-            exit(3);
-        }
-        Ok(_) => Ok(()),
+    if let Err(e) = result {
+        eprintln!("error: {}", e);
+        exit(3);
+    } else {
+        Ok(())
     }
 }
 
@@ -95,12 +93,9 @@ fn prj_name() -> String {
     let project = format!("{root}/{package}");
     // Make directories structure
     let dir_ret = make_dirs(format!("{project}").as_str());
-    match dir_ret {
-        Err(e) => {
-            eprintln!("error: {}", e);
-            exit(4);
-        }
-        Ok(_) => (),
+    if let Err(e) = dir_ret {
+        eprintln!("error: {}", e);
+        exit(4);
     }
     // Make file structures
     let file_ret = make_file(
@@ -114,12 +109,9 @@ fn prj_name() -> String {
 "
         .to_string(),
     );
-    match file_ret {
-        Err(e) => {
-            eprintln!("error: {}", e);
-            exit(4);
-        }
-        Ok(_) => (),
+    if let Err(e) = file_ret {
+        eprintln!("error: {}", e);
+        exit(4);
     }
     name
 }
@@ -177,12 +169,11 @@ docs/_build/
 /site"
                 .to_string(),
         );
-        let ret = match file_ret {
-            Err(e) => {
-                eprintln!("error: {}", e);
-                exit(5);
-            }
-            Ok(_) => true,
+        let ret = if let Err(e) = file_ret {
+            eprintln!("error: {}", e);
+            exit(5);
+        } else {
+            true
         };
         return ret;
     }
@@ -195,12 +186,9 @@ fn prj_test(name: &str) {
     if confirm {
         // Make directories structure
         let dir_ret = make_dirs(format!("{name}/tests").as_str());
-        match dir_ret {
-            Err(e) => {
-                eprintln!("error: {}", e);
-                exit(6);
-            }
-            Ok(_) => (),
+        if let Err(e) = dir_ret {
+            eprintln!("error: {}", e);
+            exit(6);
         }
         // Make file structures
         let init_file = make_file(
@@ -213,12 +201,9 @@ fn prj_test(name: &str) {
 "
             .to_string(),
         );
-        match init_file {
-            Err(e) => {
-                eprintln!("error: {}", e);
-                exit(6);
-            }
-            Ok(_) => (),
+        if let Err(e) = init_file {
+            eprintln!("error: {}", e);
+            exit(6);
         }
         let project_name = name.to_lowercase();
         let all_module = make_file(
@@ -248,12 +233,9 @@ if __name__ == '__main__':
             )
             .to_string(),
         );
-        match all_module {
-            Err(e) => {
-                eprintln!("error: {}", e);
-                exit(6);
-            }
-            Ok(_) => (),
+        if let Err(e) = all_module {
+            eprintln!("error: {}", e);
+            exit(6);
         }
     }
 }
@@ -347,12 +329,9 @@ changelog = ''
     );
     // Write pyproject.toml
     let pyproject = make_file(format!("{name}/pyproject.toml").as_str(), content);
-    match pyproject {
-        Err(e) => {
-            eprintln!("error: {}", e);
-            exit(7);
-        }
-        Ok(_) => (),
+    if let Err(e) = pyproject {
+        eprintln!("error: {}", e);
+        exit(7);
     }
 }
 
@@ -388,19 +367,13 @@ script:
   - pytest tests"
             ),
         );
-        match travis {
-            Err(e) => {
-                eprintln!("error: {}", e);
-            }
-            Ok(_) => (),
+        if let Err(e) = travis {
+            eprintln!("error: {}", e);
         }
     } else if ci.as_str() == "CircleCI" {
         let dir_ret = make_dirs(format!("{name}/.circleci").as_str());
-        match dir_ret {
-            Err(e) => {
-                eprintln!("error: {}", e);
-            }
-            Ok(_) => (),
+        if let Err(e) = dir_ret {
+            eprintln!("error: {}", e);
         }
         let circle = make_file(
             format!("{name}/.circleci/config.yml").as_str(),
@@ -431,11 +404,8 @@ jobs:
 "
             ),
         );
-        match circle {
-            Err(e) => {
-                eprintln!("error: {}", e);
-            }
-            Ok(_) => (),
+        if let Err(e) = circle {
+            eprintln!("error: {}", e);
         }
     }
 }
@@ -480,18 +450,12 @@ fn prj_remote(name: &str) {
                 remote.to_lowercase()
             );
             let dir_ret = make_dirs(issue_folder.as_str());
-            match dir_ret {
-                Err(e) => {
-                    eprintln!("error: {}", e);
-                }
-                Ok(_) => (),
+            if let Err(e) = dir_ret {
+                eprintln!("error: {}", e);
             }
             let dir_ret = make_dirs(merge_folder.as_str());
-            match dir_ret {
-                Err(e) => {
-                    eprintln!("error: {}", e);
-                }
-                Ok(_) => (),
+            if let Err(e) = dir_ret {
+                eprintln!("error: {}", e);
             }
             let feature_content = format!(
                 "## Description
@@ -512,11 +476,8 @@ Additional context
                 format!("{issue_folder}/feature.md").as_str(),
                 feature_content,
             );
-            match feature_issue {
-                Err(e) => {
-                    eprintln!("error: {}", e);
-                }
-                Ok(_) => (),
+            if let Err(e) = feature_issue {
+                eprintln!("error: {}", e);
             }
             let bug_content = format!(
                 "## Description of problem
@@ -542,11 +503,8 @@ Additional context
                 name.to_lowercase()
             );
             let bug_issue = make_file(format!("{issue_folder}/bug.md").as_str(), bug_content);
-            match bug_issue {
-                Err(e) => {
-                    eprintln!("error: {}", e);
-                }
-                Ok(_) => (),
+            if let Err(e) = bug_issue {
+                eprintln!("error: {}", e);
             }
             let merge_content = format!(
                 "## What does this MR do and why?
@@ -566,40 +524,28 @@ Numbered steps to set up and validate the change are strongly suggested.
                 name.to_lowercase()
             );
             let merge_issue = make_file(format!("{merge_folder}/merge.md").as_str(), merge_content);
-            match merge_issue {
-                Err(e) => {
-                    eprintln!("error: {}", e);
-                }
-                Ok(_) => (),
+            if let Err(e) = merge_issue {
+                eprintln!("error: {}", e);
             }
         // Github
         } else if remote.as_str() == "Github" {
             let issue_folder = format!("{}/.{}/ISSUE_TEMPLATE", name, remote.to_lowercase());
             let merge_folder = format!("{}/.{}/PULL_REQUEST_TEMPLATE", name, remote.to_lowercase());
             let dir_ret = make_dirs(issue_folder.as_str());
-            match dir_ret {
-                Err(e) => {
-                    eprintln!("error: {}", e);
-                }
-                Ok(_) => (),
+            if let Err(e) = dir_ret {
+                eprintln!("error: {}", e);
             }
             let dir_ret = make_dirs(merge_folder.as_str());
-            match dir_ret {
-                Err(e) => {
-                    eprintln!("error: {}", e);
-                }
-                Ok(_) => (),
+            if let Err(e) = dir_ret {
+                eprintln!("error: {}", e);
             }
             let config_content = "blank_issues_enabled: false\n".to_string();
             let config_file = make_file(
                 format!("{issue_folder}/config.yml").as_str(),
                 config_content,
             );
-            match config_file {
-                Err(e) => {
-                    eprintln!("error: {}", e);
-                }
-                Ok(_) => (),
+            if let Err(e) = config_file {
+                eprintln!("error: {}", e);
             }
             let feature_content = format!(
                 "name: Feature Request
@@ -642,11 +588,8 @@ body:
                 format!("{issue_folder}/feature.yml").as_str(),
                 feature_content,
             );
-            match feature_issue {
-                Err(e) => {
-                    eprintln!("error: {}", e);
-                }
-                Ok(_) => (),
+            if let Err(e) = feature_issue {
+                eprintln!("error: {}", e);
             }
             let bug_content = format!(
                 "name: Bug Report
@@ -700,11 +643,8 @@ body:
                 name.to_lowercase()
             );
             let bug_issue = make_file(format!("{issue_folder}/bug.yml").as_str(), bug_content);
-            match bug_issue {
-                Err(e) => {
-                    eprintln!("error: {}", e);
-                }
-                Ok(_) => (),
+            if let Err(e) = bug_issue {
+                eprintln!("error: {}", e);
             }
             let merge_content = format!(
                 "# Title of Pull Request
@@ -731,11 +671,8 @@ assignees: {}
                 format!("{merge_folder}/pull_request_template.md").as_str(),
                 merge_content,
             );
-            match merge_issue {
-                Err(e) => {
-                    eprintln!("error: {}", e);
-                }
-                Ok(_) => (),
+            if let Err(e) = merge_issue {
+                eprintln!("error: {}", e);
             }
         }
     }
@@ -775,11 +712,8 @@ deps = pytest
 commands = pytest tests"
             .to_string();
         let tox_ini = make_file(format!("{name}/tox.ini").as_str(), tox_ini_content);
-        match tox_ini {
-            Err(e) => {
-                eprintln!("error: {}", e);
-            }
-            Ok(_) => (),
+        if let Err(e) = tox_ini {
+            eprintln!("error: {}", e);
         }
     }
 }
