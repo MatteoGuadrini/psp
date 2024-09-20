@@ -718,6 +718,30 @@ commands = pytest tests"
     }
 }
 
+fn prj_docs(name: &str, venv: bool) {
+    let options = vec!["None", "Sphinx", "MKDocs"];
+    let docs = prompt_select("Select document generator:", options, "None");
+    if docs.as_str() == "Sphinx" {
+        let mut pip = std::process::Command::new("pip3");
+        // Activate venv
+        if venv {
+            pip.env("PATH", "venv/bin");
+        }
+        let output = pip
+            .arg("install")
+            .arg("--timeout=10")
+            .arg("--retries=1")
+            .arg("sphinx")
+            .current_dir(&name)
+            .output()
+            .expect("pip should be installed");
+        // Check if command exit successfully
+        if !output.status.success() {
+            eprintln!("error: sphinx installation failed");
+        }
+    }
+}
+
 // Main program
 fn main() {
     // Print welcome screen and version
@@ -746,6 +770,8 @@ fn main() {
     prj_toml(&name, &deps);
     // Tox
     prj_tox(&name, venv);
+    // Documentation
+    prj_docs(&name, venv);
     // Finish scaffolding process
     println!("Project `{name}` created")
 }
