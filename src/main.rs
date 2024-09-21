@@ -721,7 +721,15 @@ commands = pytest tests"
 fn prj_docs(name: &str, venv: bool) {
     let options = vec!["None", "Sphinx", "MKDocs"];
     let docs = prompt_select("Select document generator:", options, "None");
+    let docs_home = format!("{name}/docs");
     if docs.as_str() == "Sphinx" {
+        // Create docs folder
+        let docs = make_dirs(format!("{docs_home}").as_str());
+        if let Err(e) = docs {
+            eprintln!("error: {}", e);
+            exit(4);
+        }
+        // Install sphinx
         let mut pip = std::process::Command::new("pip3");
         // Activate venv
         if venv {
@@ -735,6 +743,31 @@ fn prj_docs(name: &str, venv: bool) {
             .current_dir(&name)
             .output()
             .expect("pip should be installed");
+        // Check if command exit successfully
+        if !output.status.success() {
+            eprintln!("error: sphinx installation failed");
+            return;
+        }
+        // Start documentation;
+        let sphinx_bin = format!("../venv/bin/sphinx-quickstart");
+        let mut sphinx_quickstart = std::process::Command::new(sphinx_bin);
+        // Activate venv
+        if venv {
+            sphinx_quickstart.env("PATH", "venv/bin");
+        }
+        let output = sphinx_quickstart
+            .arg("--quiet")
+            .arg("--sep")
+            .arg(format!("--project={}", name.to_lowercase()))
+            .arg("--author=''")
+            .arg("-v='0.0.1'")
+            .arg("--ext-autodoc")
+            .arg("--ext-doctest")
+            .arg("--ext-viewcode")
+            .arg("--makefile")
+            .current_dir(docs_home)
+            .output()
+            .expect("sphinx-quickstart should be installed");
         // Check if command exit successfully
         if !output.status.success() {
             eprintln!("error: sphinx installation failed");
