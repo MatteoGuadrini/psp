@@ -722,13 +722,13 @@ fn prj_docs(name: &str, venv: bool) {
     let options = vec!["None", "Sphinx", "MKDocs"];
     let docs = prompt_select("Select document generator:", options, "None");
     let docs_home = format!("{name}/docs");
+    // Create docs folder
+    let docs_folder = make_dirs(format!("{docs_home}").as_str());
+    if let Err(e) = docs_folder {
+        eprintln!("error: {}", e);
+        exit(4);
+    }
     if docs.as_str() == "Sphinx" {
-        // Create docs folder
-        let docs = make_dirs(format!("{docs_home}").as_str());
-        if let Err(e) = docs {
-            eprintln!("error: {}", e);
-            exit(4);
-        }
         // Install sphinx
         let mut pip = std::process::Command::new("pip3");
         // Activate venv
@@ -770,7 +770,45 @@ fn prj_docs(name: &str, venv: bool) {
             .expect("sphinx-quickstart should be installed");
         // Check if command exit successfully
         if !output.status.success() {
-            eprintln!("error: sphinx installation failed");
+            eprintln!("error: sphinx documentation creation failed");
+        }
+    } else if docs.as_str() == "MKDocs" {
+        // Install mkdocs
+        let mut pip = std::process::Command::new("pip3");
+        // Activate venv
+        if venv {
+            pip.env("PATH", "venv/bin");
+        }
+        let output = pip
+            .arg("install")
+            .arg("--timeout=10")
+            .arg("--retries=1")
+            .arg("mkdocs")
+            .current_dir(&name)
+            .output()
+            .expect("pip should be installed");
+        // Check if command exit successfully
+        if !output.status.success() {
+            eprintln!("error: mkdocs installation failed");
+            return;
+        }
+        // Start documentation;
+        let mkdocs_bin = format!("venv/bin/mkdocs");
+        let mut mkdocs_new = std::process::Command::new(mkdocs_bin);
+        // Activate venv
+        if venv {
+            mkdocs_new.env("PATH", "venv/bin");
+        }
+        let output = mkdocs_new
+            .arg("new")
+            .arg("--quiet")
+            .arg(".")
+            .current_dir(&name)
+            .output()
+            .expect("mkdocs should be installed");
+        // Check if command exit successfully
+        if !output.status.success() {
+            eprintln!("error: mkdocs documentation creation failed");
         }
     }
 }
