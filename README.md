@@ -1,10 +1,15 @@
 # **psp** (Python Scaffolding Projects)
 
-`psp` is a blazing fast command line utility to scaffold your Python project, written in Rust.
+`psp` is a blazing fast command line utility to scaffold your _Python_ project, written in Rust.
+
+> [!NOTE]
+> This project is WIP: beta
+
+![Demo](https://i.ibb.co/KcZtw58/psp008.gif)
 
 ```console
 psp   # Press Enter
-Welcome to PSP (Python Scaffolding Projects): 0.0.7
+Welcome to PSP (Python Scaffolding Projects): 0.0.8
 > Name of Python project: test
 > Do you want to start git repository? Yes
 > Do you want unit test files? Yes
@@ -13,17 +18,28 @@ Welcome to PSP (Python Scaffolding Projects): 0.0.7
 > Select CI provider: CircleCI
 > Select git remote provider: Github
 > Username of Github: MatteoGuadrini
+> Do you want to configure tox? Yes
+> Select document generator: Sphinx
 Project `test` created
 ```
 
 The result is:
 
 ```console
-tree test --filelimit=8 -a
+tree test --filelimit=10 -a
 test                  # project folder
 ├── pyproject.toml    # python package configuration file
 ├── .circleci         # CI folder
 │   └── config.yml    # CI configuration file
+├── docs              # documentation folder: Sphinx/MKDocs
+│   ├── build
+│   ├── make.bat
+│   ├── Makefile
+│   └── source
+│       ├── conf.py
+│       ├── index.rst
+│       ├── _static
+│       └── _templates
 ├── .git              # git folder
 │   ├── branches
 │   ├── config
@@ -51,59 +67,19 @@ test                  # project folder
 ├── tests             # tests package for modules
 │   ├── __init__.py
 │   └── test_test.py  # test module "test_<name_python_package>"
+├── tox.ini           # Tox configuration files
 └── venv              # virtual environment
-    ├── bin  [12 entries exceeds filelimit, not opening dir]
+    ├── bin  [33 entries exceeds filelimit, not opening dir]
     ├── include
     │   └── python3.12
     ├── lib
     │   └── python3.12
-    │       └── site-packages
-    │           ├── numpy  [46 entries exceeds filelimit, not opening dir]
-    │           ├── numpy-2.1.0.dist-info
-    │           │   ├── entry_points.txt
-    │           │   ├── INSTALLER
-    │           │   ├── LICENSE.txt
-    │           │   ├── METADATA
-    │           │   ├── RECORD
-    │           │   ├── REQUESTED
-    │           │   └── WHEEL
-    │           ├── numpy.libs
-    │           │   ├── libgfortran-040039e1-0352e75f.so.5.0.0
-    │           │   ├── libquadmath-96973f99-934c22de.so.0.0.0
-    │           │   └── libscipy_openblas64_-ff651d7f.so
-    │           ├── pip
-    │           │   ├── __init__.py
-    │           │   ├── _internal  [23 entries exceeds filelimit, not opening dir]
-    │           │   ├── __main__.py
-    │           │   ├── __pip-runner__.py
-    │           │   ├── __pycache__
-    │           │   │   ├── __init__.cpython-312.pyc
-    │           │   │   ├── __main__.cpython-312.pyc
-    │           │   │   └── __pip-runner__.cpython-312.pyc
-    │           │   ├── py.typed
-    │           │   └── _vendor  [27 entries exceeds filelimit, not opening dir]
-    │           ├── pip-23.3.2.dist-info  [9 entries exceeds filelimit, not opening dir]
-    │           ├── scipy  [28 entries exceeds filelimit, not opening dir]
-    │           ├── scipy-1.14.1.dist-info
-    │           │   ├── INSTALLER
-    │           │   ├── LICENSE.txt
-    │           │   ├── METADATA
-    │           │   ├── RECORD
-    │           │   ├── REQUESTED
-    │           │   └── WHEEL
-    │           └── scipy.libs
-    │               ├── libgfortran-040039e1-0352e75f.so.5.0.0
-    │               ├── libgfortran-040039e1.so.5.0.0
-    │               ├── libquadmath-96973f99-934c22de.so.0.0.0
-    │               ├── libquadmath-96973f99.so.0.0.0
-    │               └── libscipy_openblas-c128ec02.so
+    │       └── site-packages  [68 entries exceeds filelimit, not opening dir]
     ├── lib64 -> lib
     └── pyvenv.cfg
 
-36 directories, 43 files
+30 directories, 20 files
 ```
-
-> This project is WIP: beta
 
 ## Prerequisites
 
@@ -121,13 +97,13 @@ To install compiled file into your machine, download it:
 For all users:
 ```console
 sudo -i
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.0.7/psp_linux > /usr/bin/psp
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.0.8/psp_linux > /usr/bin/psp
 chmod +x /usr/bin/psp
 ```
 
 For current user:
 ```console
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.0.7/psp_linux > $HOME/.local/bin/psp
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.0.8/psp_linux > $HOME/.local/bin/psp
 chmod +x $HOME/.local/bin/psp
 ```
 
@@ -135,7 +111,7 @@ chmod +x $HOME/.local/bin/psp
 
 ```console
 sudo su -
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.0.7/psp_macos > /usr/bin/psp
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.0.8/psp_macos > /usr/bin/psp
 chmod +x /usr/bin/psp
 ```
 
@@ -156,10 +132,11 @@ cd psp && cargo build && sudo cp -var target/release/psp /usr/bin/psp
 - [x] Prepare pyproject.toml
 - [x] Prepare CI configuration files
 - [x] Prepare Github/Gitlab files
-- [ ] Prepare tox environment
-- [ ] Prepare docs folder for sphinx/mkdocs documentation
+- [x] Prepare tox environment
+- [x] Prepare docs folder for sphinx/mkdocs documentation
 - [ ] Prepare README, LICENSE, CONTRIBUTING, CODE_OF_CONDUCT and CHANGES files
-- [ ] Add _quick_ argument for rapid configuration
+- [ ] Add build and deploy dependencies to distribute package
+- [ ] Add _quick_, _nodocs_ and _full_ argument for rapid configuration
 
 ## Open source
 _psp_ is an open source project. Any contribute, It's welcome.

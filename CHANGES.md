@@ -1,5 +1,10 @@
 # Release notes
 
+## 0.0.8
+Sep 23, 2024
+- Add **prj_tox** function
+- Add **prj_docs** function
+
 ## 0.0.7
 Sep 17, 2024
 - Add **prj_remote** function
