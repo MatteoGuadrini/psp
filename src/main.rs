@@ -720,7 +720,7 @@ commands = pytest tests"
 
 fn prj_docs(name: &str, venv: bool) {
     let options = vec!["None", "Sphinx", "MKDocs"];
-    let docs = prompt_select("Select document generator:", options, "None");
+    let docs = prompt_select("Select documention generator:", options, "None");
     let docs_home = format!("{name}/docs");
     // Create docs folder
     let docs_folder = make_dirs(format!("{docs_home}").as_str());
@@ -749,7 +749,7 @@ fn prj_docs(name: &str, venv: bool) {
             return;
         }
         // Start documentation;
-        let sphinx_bin = format!("../venv/bin/sphinx-quickstart");
+        let sphinx_bin = "../venv/bin/sphinx-quickstart".to_string();
         let mut sphinx_quickstart = std::process::Command::new(sphinx_bin);
         // Activate venv
         if venv {
@@ -793,7 +793,7 @@ fn prj_docs(name: &str, venv: bool) {
             return;
         }
         // Start documentation;
-        let mkdocs_bin = format!("venv/bin/mkdocs");
+        let mkdocs_bin = "venv/bin/mkdocs".to_string();
         let mut mkdocs_new = std::process::Command::new(mkdocs_bin);
         // Activate venv
         if venv {
@@ -809,6 +809,32 @@ fn prj_docs(name: &str, venv: bool) {
         // Check if command exit successfully
         if !output.status.success() {
             eprintln!("error: mkdocs documentation creation failed");
+        }
+    }
+}
+
+fn prj_files(name: &str) {
+    let confirm = prompt_confirm(
+        "Do you want create common files?",
+        true,
+        "Create README, CONTRIBUTING, CODE_OF_CONDUCT and CHANGES",
+    );
+    if confirm {
+        // Create README
+        let readme_content = format!(
+            "# Welcome to {name}
+
+## Install {name}
+```console
+pip install .
+```
+
+## Acknowledgments
+Thanks Python Community!"
+        );
+        let readme = make_file(format!("{name}/README.md").as_str(), readme_content);
+        if let Err(e) = readme {
+            eprintln!("error: {}", e);
         }
     }
 }
@@ -843,6 +869,8 @@ fn main() {
     prj_tox(&name, venv);
     // Documentation
     prj_docs(&name, venv);
+    // Common files
+    prj_files(&name);
     // Finish scaffolding process
     println!("Project `{name}` created")
 }
