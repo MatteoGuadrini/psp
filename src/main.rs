@@ -836,6 +836,17 @@ Thanks Python Community!"
         if let Err(e) = readme {
             eprintln!("error: {}", e);
         }
+        // Create CHANGES
+        let changes_content = format!(
+            "# Release notes of {name}
+
+## 0.0.1
+- Start **{name}** project"
+        );
+        let changes = make_file(format!("{name}/CHANGES.md").as_str(), changes_content);
+        if let Err(e) = changes {
+            eprintln!("error: {}", e);
+        }
     }
 }
 
