@@ -847,6 +847,42 @@ Thanks Python Community!"
         if let Err(e) = changes {
             eprintln!("error: {}", e);
         }
+        // Create CONTRIBUTING
+        let contributing_content = format!(
+            "# Contributing to {name}
+
+Bug fixes, feature additions, tests, documentation and more can be contributed via issues and/or pull requests.
+**All contributions are welcome**.
+
+## Bug fixes, feature additions, etc.
+
+Please send a pull request to the `main` branch.
+Please include documentation and tests for new features.
+Tests or documentation without bug fixes or feature additions are welcome too.
+Feel free to ask questions via issues, discussions, or mail.
+
+- Fork the {name} repository.
+- Create a branch from `main`.
+- Develop bug fixes, features, tests, etc.
+- Run the test suite.
+- Create a pull request to pull the changes from your branch to the {name} `main`.
+
+### Guidelines
+
+- Separate code commits from reformatting commits.
+- Provide tests for any newly added code.
+- Follow PEP 8.
+- Include release notes as needed or appropriate with your bug fixes, feature additions and tests.
+- Do not add to the changelog for proposed changes, as that is updated after changes are merged.
+"
+        );
+        let contributing = make_file(
+            format!("{name}/CONTRIBUTING.md").as_str(),
+            contributing_content,
+        );
+        if let Err(e) = contributing {
+            eprintln!("error: {}", e);
+        }
     }
 }
 
