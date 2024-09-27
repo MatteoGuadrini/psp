@@ -883,6 +883,17 @@ Feel free to ask questions via issues, discussions, or mail.
         if let Err(e) = contributing {
             eprintln!("error: {}", e);
         }
+        // Create CODE_OF_CONDUCT
+        let output = std::process::Command::new("curl")
+            .arg("-o CODE_OF_CONDUCT.md")
+            .arg("https://www.contributor-covenant.org/version/2/1/code_of_conduct/code_of_conduct.md")
+            .current_dir(&name)
+            .output()
+            .expect("curl should be installed");
+        // Check if command exit successfully
+        if !output.status.success() {
+            eprintln!("error: CODE_OF_CONDUCT download failed");
+        }
     }
 }
 
@@ -894,6 +905,7 @@ fn main() {
     check_tool("python3");
     check_tool("git");
     check_tool("pip3");
+    check_tool("curl");
     // Create project structure by name
     let name = prj_name();
     // Start git
