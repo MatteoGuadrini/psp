@@ -721,94 +721,96 @@ commands = pytest tests"
 fn prj_docs(name: &str, venv: bool) {
     let options = vec!["None", "Sphinx", "MKDocs"];
     let docs = prompt_select("Select documention generator:", options, "None");
-    let docs_home = format!("{name}/docs");
-    // Create docs folder
-    let docs_folder = make_dirs(format!("{docs_home}").as_str());
-    if let Err(e) = docs_folder {
-        eprintln!("error: {}", e);
-        exit(4);
-    }
-    if docs.as_str() == "Sphinx" {
-        // Install sphinx
-        let mut pip = std::process::Command::new("pip3");
-        // Activate venv
-        if venv {
-            pip.env("PATH", "venv/bin");
+    if docs != "None" {
+        let docs_home = format!("{name}/docs");
+        // Create docs folder
+        let docs_folder = make_dirs(format!("{docs_home}").as_str());
+        if let Err(e) = docs_folder {
+            eprintln!("error: {}", e);
+            exit(4);
         }
-        let output = pip
-            .arg("install")
-            .arg("--timeout=10")
-            .arg("--retries=1")
-            .arg("sphinx")
-            .current_dir(&name)
-            .output()
-            .expect("pip should be installed");
-        // Check if command exit successfully
-        if !output.status.success() {
-            eprintln!("error: sphinx installation failed");
-            return;
-        }
-        // Start documentation;
-        let sphinx_bin = "../venv/bin/sphinx-quickstart".to_string();
-        let mut sphinx_quickstart = std::process::Command::new(sphinx_bin);
-        // Activate venv
-        if venv {
-            sphinx_quickstart.env("PATH", "venv/bin");
-        }
-        let output = sphinx_quickstart
-            .arg("--quiet")
-            .arg("--sep")
-            .arg(format!("--project={}", name.to_lowercase()))
-            .arg("--author=''")
-            .arg("-v='0.0.1'")
-            .arg("--ext-autodoc")
-            .arg("--ext-doctest")
-            .arg("--ext-viewcode")
-            .arg("--makefile")
-            .current_dir(docs_home)
-            .output()
-            .expect("sphinx-quickstart should be installed");
-        // Check if command exit successfully
-        if !output.status.success() {
-            eprintln!("error: sphinx documentation creation failed");
-        }
-    } else if docs.as_str() == "MKDocs" {
-        // Install mkdocs
-        let mut pip = std::process::Command::new("pip3");
-        // Activate venv
-        if venv {
-            pip.env("PATH", "venv/bin");
-        }
-        let output = pip
-            .arg("install")
-            .arg("--timeout=10")
-            .arg("--retries=1")
-            .arg("mkdocs")
-            .current_dir(&name)
-            .output()
-            .expect("pip should be installed");
-        // Check if command exit successfully
-        if !output.status.success() {
-            eprintln!("error: mkdocs installation failed");
-            return;
-        }
-        // Start documentation;
-        let mkdocs_bin = "venv/bin/mkdocs".to_string();
-        let mut mkdocs_new = std::process::Command::new(mkdocs_bin);
-        // Activate venv
-        if venv {
-            mkdocs_new.env("PATH", "venv/bin");
-        }
-        let output = mkdocs_new
-            .arg("new")
-            .arg("--quiet")
-            .arg(".")
-            .current_dir(&name)
-            .output()
-            .expect("mkdocs should be installed");
-        // Check if command exit successfully
-        if !output.status.success() {
-            eprintln!("error: mkdocs documentation creation failed");
+        if docs.as_str() == "Sphinx" {
+            // Install sphinx
+            let mut pip = std::process::Command::new("pip3");
+            // Activate venv
+            if venv {
+                pip.env("PATH", "venv/bin");
+            }
+            let output = pip
+                .arg("install")
+                .arg("--timeout=10")
+                .arg("--retries=1")
+                .arg("sphinx")
+                .current_dir(&name)
+                .output()
+                .expect("pip should be installed");
+            // Check if command exit successfully
+            if !output.status.success() {
+                eprintln!("error: sphinx installation failed");
+                return;
+            }
+            // Start documentation;
+            let sphinx_bin = "../venv/bin/sphinx-quickstart".to_string();
+            let mut sphinx_quickstart = std::process::Command::new(sphinx_bin);
+            // Activate venv
+            if venv {
+                sphinx_quickstart.env("PATH", "venv/bin");
+            }
+            let output = sphinx_quickstart
+                .arg("--quiet")
+                .arg("--sep")
+                .arg(format!("--project={}", name.to_lowercase()))
+                .arg("--author=''")
+                .arg("-v='0.0.1'")
+                .arg("--ext-autodoc")
+                .arg("--ext-doctest")
+                .arg("--ext-viewcode")
+                .arg("--makefile")
+                .current_dir(docs_home)
+                .output()
+                .expect("sphinx-quickstart should be installed");
+            // Check if command exit successfully
+            if !output.status.success() {
+                eprintln!("error: sphinx documentation creation failed");
+            }
+        } else if docs.as_str() == "MKDocs" {
+            // Install mkdocs
+            let mut pip = std::process::Command::new("pip3");
+            // Activate venv
+            if venv {
+                pip.env("PATH", "venv/bin");
+            }
+            let output = pip
+                .arg("install")
+                .arg("--timeout=10")
+                .arg("--retries=1")
+                .arg("mkdocs")
+                .current_dir(&name)
+                .output()
+                .expect("pip should be installed");
+            // Check if command exit successfully
+            if !output.status.success() {
+                eprintln!("error: mkdocs installation failed");
+                return;
+            }
+            // Start documentation;
+            let mkdocs_bin = "venv/bin/mkdocs".to_string();
+            let mut mkdocs_new = std::process::Command::new(mkdocs_bin);
+            // Activate venv
+            if venv {
+                mkdocs_new.env("PATH", "venv/bin");
+            }
+            let output = mkdocs_new
+                .arg("new")
+                .arg("--quiet")
+                .arg(".")
+                .current_dir(&name)
+                .output()
+                .expect("mkdocs should be installed");
+            // Check if command exit successfully
+            if !output.status.success() {
+                eprintln!("error: mkdocs documentation creation failed");
+            }
         }
     }
 }
@@ -886,6 +888,7 @@ Feel free to ask questions via issues, discussions, or mail.
         // Create CODE_OF_CONDUCT
         let output = std::process::Command::new("curl")
             .arg("-o CODE_OF_CONDUCT.md")
+            .arg("-k")
             .arg("https://www.contributor-covenant.org/version/2/1/code_of_conduct/code_of_conduct.md")
             .current_dir(&name)
             .output()
