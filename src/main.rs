@@ -900,6 +900,46 @@ Feel free to ask questions via issues, discussions, or mail.
     }
 }
 
+fn prj_license(name: &str) -> String {
+    // Select license
+    let options = vec![
+        "None",
+        "MIT",
+        "Apache",
+        "Creative Commons",
+        "Mozilla",
+        "Gnu Public License",
+    ];
+    let license = prompt_select("Select license:", options, "None");
+    let mut license_url = String::new();
+    if license == "MIT" {
+        license_url.push_str("https://www.mit.edu/~amini/LICENSE.md")
+    } else if license == "Apache" {
+        license_url.push_str("https://www.apache.org/licenses/LICENSE-2.0.txt")
+    } else if license == "Creative Commons" {
+        license_url.push_str("https://creativecommons.org/licenses/by/4.0/legalcode.txt")
+    } else if license == "Mozilla" {
+        license_url.push_str("https://www.mozilla.org/media/MPL/2.0/index.f75d2927d3c1.txt")
+    } else if license == "Gnu Public License" {
+        license_url.push_str("https://www.gnu.org/licenses/gpl-3.0.md")
+    }
+    if !license_url.is_empty() {
+        // Create LICENSE
+        let output = std::process::Command::new("curl")
+            .arg("-o LICENSE.md")
+            .arg("-k")
+            .arg(license_url)
+            .current_dir(&name)
+            .output()
+            .expect("curl should be installed");
+        // Check if command exit successfully
+        if !output.status.success() {
+            eprintln!("error: LICENSE download failed");
+        }
+    }
+    license
+}
+
 // Main program
 fn main() {
     // Print welcome screen and version
@@ -933,6 +973,8 @@ fn main() {
     prj_docs(&name, venv);
     // Common files
     prj_files(&name);
+    // License
+    let _license = prj_license(&name);
     // Finish scaffolding process
     println!("Project `{name}` created")
 }
