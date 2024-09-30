@@ -295,12 +295,33 @@ fn prj_deps(name: &str, venv: bool) -> Vec<String> {
 }
 
 // Project pyproject.toml
-fn prj_toml(name: &str, deps: &Vec<String>) {
+fn prj_toml(name: &str, deps: &Vec<String>, mut license: String) {
+    let mut classifiers = vec!["Programming Language :: Python :: 3"];
+    // Check dependencies
     let requirements = if deps.contains(&"No".to_string()) {
         "[]".to_string()
     } else {
         format!("{deps:?}")
     };
+    // Check license
+    if license == "None" {
+        license = String::new();
+    } else if license == "MIT" {
+        license = "MIT License".to_string();
+        classifiers.push("License :: OSI Approved :: MIT License")
+    } else if license == "Apache" {
+        license = "Apache Software License".to_string();
+        classifiers.push("License :: OSI Approved :: Apache Software License")
+    } else if license == "Creative Commons" {
+        license = "Common Public License".to_string();
+        classifiers.push("License :: OSI Approved :: Common Public License")
+    } else if license == "Mozilla" {
+        license = "Mozilla Public License 2.0 (MPL 2.0)".to_string();
+        classifiers.push("License :: OSI Approved :: Mozilla Public License 2.0 (MPL 2.0)")
+    } else if license == "Gnu Public License" {
+        license = "GNU General Public License v3 (GPLv3)".to_string();
+        classifiers.push("License :: OSI Approved :: GNU General Public License v3 (GPLv3)")
+    }
     let content = format!(
         "[build-system]
 requires = ['setuptools', 'wheel']
@@ -310,12 +331,12 @@ build-backend = 'setuptools.build_meta'
 name = '{}'
 version = '0.0.1'
 readme = 'README.md'
-license = ''
+license = '{}'
 authors = [{{name = 'psp', email = 'psp@example.com'}}]
 maintainers = [{{name = 'psp', email = 'psp@example.com'}}]
 description = 'A simple but structured Python project'
 requires-python = '>=3.12'
-classifiers = ['Programming Language :: Python :: 3']
+classifiers = {:?}
 dependencies = {}
 
 [project.urls]
@@ -325,6 +346,8 @@ repository = ''
 changelog = ''
 ",
         name.to_lowercase(),
+        license,
+        classifiers,
         requirements
     );
     // Write pyproject.toml
@@ -965,8 +988,6 @@ fn main() {
     if git {
         prj_remote(&name);
     }
-    // Write pyproject.toml
-    prj_toml(&name, &deps);
     // Tox
     prj_tox(&name, venv);
     // Documentation
@@ -974,7 +995,9 @@ fn main() {
     // Common files
     prj_files(&name);
     // License
-    let _license = prj_license(&name);
+    let license = prj_license(&name);
+    // Write pyproject.toml
+    prj_toml(&name, &deps, license);
     // Finish scaffolding process
     println!("Project `{name}` created")
 }
