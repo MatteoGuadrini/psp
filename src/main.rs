@@ -974,24 +974,24 @@ fn main() {
     check_tool("curl");
     // Create project structure by name
     let name = prj_name();
-    // Start git
-    let git = prj_git(&name);
-    // Unit tests
-    prj_test(&name);
     // Virtual Environment
     let venv = prj_venv(&name);
-    // Install dependencies
-    let deps = prj_deps(&name, venv);
-    // CI configuration
-    prj_ci(&name, &deps);
+    // Start git
+    let git = prj_git(&name);
     // Git remote
     if git {
         prj_remote(&name);
     }
-    // Tox
-    prj_tox(&name, venv);
+    // Unit tests
+    prj_test(&name);
+    // Install dependencies
+    let deps = prj_deps(&name, venv);
     // Documentation
     prj_docs(&name, venv);
+    // Tox
+    prj_tox(&name, venv);
+    // CI configuration
+    prj_ci(&name, &deps);
     // Common files
     prj_files(&name);
     // License
