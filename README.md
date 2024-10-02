@@ -2,24 +2,36 @@
 
 `psp` is a blazing fast command line utility to scaffold your _Python_ project, written in Rust.
 
+- ⚡️ 10-100x faster
+- 🛠️ `pyproject.toml` support
+- 🤝 Python 3.13 compatibility
+- 📦 Unit-test and [pytest](https://docs.pytest.org/) supports
+- 🔧 Automatically dependencies installation
+- 📏 [tox](https://tox.wiki/en/stable/) configuration supports and other remotes CI
+- ⌨️ [MkDocs](https://www.mkdocs.org/) and [Sphinx](https://www.sphinx-doc.org/) documentation supports
+- 🌎 Github and Gitlab remote repository supports
+
+![Demo](https://i.ibb.co/KcZtw58/psp008.gif)
+
 > [!NOTE]
 > This project is WIP: beta
 
-![Demo](https://i.ibb.co/KcZtw58/psp008.gif)
 
 ```console
 psp   # Press Enter
 Welcome to PSP (Python Scaffolding Projects): 0.0.8
 > Name of Python project: test
-> Do you want to start git repository? Yes
-> Do you want unit test files? Yes
 > Do you want to create a virtual environment? Yes
-> Install dependencies: scipy numpy
-> Select CI provider: CircleCI
+> Do you want to start git repository? Yes
 > Select git remote provider: Github
 > Username of Github: MatteoGuadrini
+> Do you want unit test files? Yes
+> Install dependencies: scipy numpy
+> Select documention generator: Sphinx
 > Do you want to configure tox? Yes
-> Select document generator: Sphinx
+> Select CI provider: CircleCI
+> Do you want create common files? Yes
+> Select license: Gnu Public License
 Project `test` created
 ```
 
@@ -27,11 +39,16 @@ The result is:
 
 ```console
 tree test --filelimit=10 -a
-test                  # project folder
-├── pyproject.toml    # python package configuration file
-├── .circleci         # CI folder
-│   └── config.yml    # CI configuration file
-├── docs              # documentation folder: Sphinx/MKDocs
+test                    # project folder
+├── LICENSE.md          # License file
+├── pyproject.toml      # python package configuration file
+├── README.md           # Readme file
+├── CHANGES.md          # List of changes
+├── .circleci           # CI folder
+│   └── config.yml      # CI configuration file
+├── CODE_OF_CONDUCT.md  # Code of Conduct
+├── CONTRIBUTING.md     # Contributing guide lines
+├── docs                # Documentation folder: Sphinx/MKDocs
 │   ├── build
 │   ├── make.bat
 │   ├── Makefile
@@ -40,7 +57,7 @@ test                  # project folder
 │       ├── index.rst
 │       ├── _static
 │       └── _templates
-├── .git              # git folder
+├── .git                # git folder
 │   ├── branches
 │   ├── config
 │   ├── description
@@ -54,21 +71,21 @@ test                  # project folder
 │   └── refs
 │       ├── heads
 │       └── tags
-├── .github           # Github issue and merge templates
+├── .github             # Github issue and merge templates
 │   ├── ISSUE_TEMPLATE
 │   │   ├── bug.yml
 │   │   ├── config.yml
 │   │   └── feature.yml
 │   └── PULL_REQUEST_TEMPLATE
 │       └── pull_request_template.md
-├── .gitignore        # git ignore file
-├── test              # python package
+├── .gitignore          # git ignore file
+├── test                # python package
 │   └── __init__.py
-├── tests             # tests package for modules
+├── tests               # tests package for modules
 │   ├── __init__.py
-│   └── test_test.py  # test module "test_<name_python_package>"
-├── tox.ini           # Tox configuration files
-└── venv              # virtual environment
+│   └── test_test.py    # test module "test_<name_python_package>"
+├── tox.ini             # Tox configuration files
+└── venv                # virtual environment
     ├── bin  [33 entries exceeds filelimit, not opening dir]
     ├── include
     │   └── python3.12
@@ -78,15 +95,46 @@ test                  # project folder
     ├── lib64 -> lib
     └── pyvenv.cfg
 
-30 directories, 20 files
+30 directories, 39 files
+```
+
+And git status is:
+
+```console
+$> git status
+On branch main
+
+No commits yet
+...
+$> git remote get-url origin
+git@github.com:MatteoGuadrini/test.git
 ```
 
 ## Prerequisites
 
-`psp` has three prerequisetes installed on own machine:
+`psp` has four prerequisetes installed on own machine:
 - `git`
 - `python3`
 - `pip`
+- `curl`
+
+### Ubuntu prerequisites installation
+
+```console
+sudo apt install -y python3 python3-pip git curl
+```
+
+### Red Hat prerequisites installation
+
+```console
+sudo dnf install -y python3 python3-pip git curl
+```
+
+### Arch prerequisites installation
+
+```console
+sudo pacman -Qi python3 python3-pip git curl
+```
 
 ## Installation
 
@@ -134,9 +182,10 @@ cd psp && cargo build && sudo cp -var target/release/psp /usr/bin/psp
 - [x] Prepare Github/Gitlab files
 - [x] Prepare tox environment
 - [x] Prepare docs folder for sphinx/mkdocs documentation
-- [ ] Prepare README, LICENSE, CONTRIBUTING, CODE_OF_CONDUCT and CHANGES files
+- [x] Prepare README, LICENSE, CONTRIBUTING, CODE_OF_CONDUCT and CHANGES files
 - [ ] Add build and deploy dependencies to distribute package
-- [ ] Add _quick_, _nodocs_ and _full_ argument for rapid configuration
+- [ ] Add Dockerfile for your project
+- [ ] Add _quick_, _simple_ and _full_ argument for rapid configuration
 
 ## Open source
 _psp_ is an open source project. Any contribute, It's welcome.
@@ -178,4 +227,4 @@ Thanks to [Zed IDE](https://zed.dev/) and for license of [RustRover](https://www
 Special thanks go to my wife, who understood the hours of absence for this development.
 Thanks to my children, for the daily inspiration they give me and to make me realize, that life must be simple.
 
-Thanks, Rust!
+Thanks, Rust Community!
