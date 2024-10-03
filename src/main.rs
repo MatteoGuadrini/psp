@@ -347,7 +347,7 @@ build-backend = 'setuptools.build_meta'
 name = '{}'
 version = '0.0.1'
 readme = 'README.md'
-license = '{}'
+license = {{text = '{}'}}
 authors = [{{name = 'psp', email = 'psp@example.com'}}]
 maintainers = [{{name = 'psp', email = 'psp@example.com'}}]
 description = 'A simple but structured Python project'
@@ -356,10 +356,10 @@ classifiers = {:?}
 dependencies = {}
 
 [project.urls]
-homepage = ''
-documentation = ''
-repository = ''
-changelog = ''
+homepage = 'https://www.python.org/'
+documentation = 'https://docs.python.org/3/'
+repository = 'https://github.com/python'
+changelog = 'https://docs.python.org/3/whatsnew/changelog.html'
 ",
         name.to_lowercase(),
         license,
