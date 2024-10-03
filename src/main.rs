@@ -104,12 +104,28 @@ fn prj_name() -> String {
 # -*- encoding: utf-8 -*-
 # vim: se ts=4 et syn=python:
 
-
-
+__version__ = '0.0.1'
 "
         .to_string(),
     );
     if let Err(e) = file_ret {
+        eprintln!("error: {}", e);
+        exit(4);
+    }
+    let main_file = make_file(
+        format!("{project}/__main__.py").as_str(),
+        format!(
+            "#! /usr/bin/env python3
+# -*- encoding: utf-8 -*-
+# vim: se ts=4 et syn=python:
+
+from .__init__ import __version__
+print(f'{} {{__version__}}')
+",
+            name.to_lowercase()
+        ),
+    );
+    if let Err(e) = main_file {
         eprintln!("error: {}", e);
         exit(4);
     }
@@ -128,7 +144,7 @@ fn prj_git(name: &str) -> bool {
         // Check if command exit successfully
         if !output.status.success() {
             eprintln!("error: something wrong with `git init`");
-            exit(5)
+            return false;
         }
         // Create .gitignore file
         let file_ret = make_file(
@@ -171,7 +187,7 @@ docs/_build/
         );
         let ret = if let Err(e) = file_ret {
             eprintln!("error: {}", e);
-            exit(5);
+            false
         } else {
             true
         };
@@ -184,11 +200,12 @@ docs/_build/
 fn prj_test(name: &str) {
     let confirm = prompt_confirm("Do you want unit test files?", true, "None");
     if confirm {
+        let project_name = name.to_lowercase();
         // Make directories structure
         let dir_ret = make_dirs(format!("{name}/tests").as_str());
         if let Err(e) = dir_ret {
             eprintln!("error: {}", e);
-            exit(6);
+            return;
         }
         // Make file structures
         let init_file = make_file(
@@ -203,9 +220,8 @@ fn prj_test(name: &str) {
         );
         if let Err(e) = init_file {
             eprintln!("error: {}", e);
-            exit(6);
+            return;
         }
-        let project_name = name.to_lowercase();
         let all_module = make_file(
             format!("{name}/tests/test_{name}.py").as_str(),
             format!(
@@ -235,7 +251,7 @@ if __name__ == '__main__':
         );
         if let Err(e) = all_module {
             eprintln!("error: {}", e);
-            exit(6);
+            return;
         }
     }
 }
@@ -354,7 +370,7 @@ changelog = ''
     let pyproject = make_file(format!("{name}/pyproject.toml").as_str(), content);
     if let Err(e) = pyproject {
         eprintln!("error: {}", e);
-        exit(7);
+        return;
     }
 }
 
