@@ -86,16 +86,35 @@ fn prompt_select(question: &str, options: Vec<&str>, help: &str) -> String {
 // Core functions
 
 // Project name
-fn prj_name() -> String {
-    let name = prompt_text("Name of Python project:", "prj", "None");
-    let root = format!("{name}");
-    let package = format!("{}", name.to_lowercase());
+fn prj_name() -> (String, String) {
+    let name = prompt_text(
+        "Name of Python project:",
+        "None",
+        "Type name or absolute path",
+    );
+    // Check if absolute path
+    let package: String = if name.contains('/') {
+        let parts: Vec<&str> = name.split('/').collect();
+        let last = parts.last();
+        if !last.is_none() {
+            last.unwrap().to_lowercase().to_string()
+        } else {
+            String::new()
+        }
+    } else {
+        name.to_lowercase()
+    };
+    // Check if package is empty
+    if package.is_empty() {
+        eprintln!("error: remove trailing slash to {name}");
+        exit(1)
+    }
+    let root = name.clone();
     let project = format!("{root}/{package}");
     // Make directories structure
     let dir_ret = make_dirs(format!("{project}").as_str());
     if let Err(e) = dir_ret {
         eprintln!("error: {}", e);
-        exit(4);
     }
     // Make file structures
     let file_ret = make_file(
@@ -129,7 +148,7 @@ print(f'{} {{__version__}}')
         eprintln!("error: {}", e);
         exit(4);
     }
-    name
+    (root, package)
 }
 
 // Project git
@@ -223,7 +242,7 @@ fn prj_test(name: &str) {
             return;
         }
         let all_module = make_file(
-            format!("{name}/tests/test_{name}.py").as_str(),
+            format!("{name}/tests/test_all.py").as_str(),
             format!(
                 "#! /usr/bin/env python3
 # -*- encoding: utf-8 -*-
@@ -450,7 +469,7 @@ jobs:
 }
 
 // Project Gitlab/Github
-fn prj_remote(name: &str) {
+fn prj_remote(root: &str, name: &str) {
     let options = vec!["None", "Gitlab", "Github"];
     let remote = prompt_select("Select git remote provider:", options, "None");
     if remote.as_str() != "None" {
@@ -469,7 +488,7 @@ fn prj_remote(name: &str) {
         );
         let output = std::process::Command::new("git")
             .args(["remote", "add", "origin", &remote_path])
-            .current_dir(name)
+            .current_dir(root)
             .output()
             .expect("git should be installed");
         // Check if command exit successfully
@@ -482,10 +501,10 @@ fn prj_remote(name: &str) {
         // Make remote files and folders
         // Gitlab
         if remote.as_str() == "Gitlab" {
-            let issue_folder = format!("{}/.{}/issue_templates", name, remote.to_lowercase());
+            let issue_folder = format!("{}/.{}/issue_templates", root, remote.to_lowercase());
             let merge_folder = format!(
                 "{}/.{}/merge_request_templates",
-                name,
+                root,
                 remote.to_lowercase()
             );
             let dir_ret = make_dirs(issue_folder.as_str());
@@ -568,8 +587,8 @@ Numbered steps to set up and validate the change are strongly suggested.
             }
         // Github
         } else if remote.as_str() == "Github" {
-            let issue_folder = format!("{}/.{}/ISSUE_TEMPLATE", name, remote.to_lowercase());
-            let merge_folder = format!("{}/.{}/PULL_REQUEST_TEMPLATE", name, remote.to_lowercase());
+            let issue_folder = format!("{}/.{}/ISSUE_TEMPLATE", root, remote.to_lowercase());
+            let merge_folder = format!("{}/.{}/PULL_REQUEST_TEMPLATE", root, remote.to_lowercase());
             let dir_ret = make_dirs(issue_folder.as_str());
             if let Err(e) = dir_ret {
                 eprintln!("error: {}", e);
@@ -926,7 +945,7 @@ Feel free to ask questions via issues, discussions, or mail.
         }
         // Create CODE_OF_CONDUCT
         let output = std::process::Command::new("curl")
-            .arg("-o CODE_OF_CONDUCT.md")
+            .arg("-oCODE_OF_CONDUCT.md")
             .arg("-k")
             .arg("https://www.contributor-covenant.org/version/2/1/code_of_conduct/code_of_conduct.md")
             .current_dir(&name)
@@ -965,7 +984,7 @@ fn prj_license(name: &str) -> String {
     if !license_url.is_empty() {
         // Create LICENSE
         let output = std::process::Command::new("curl")
-            .arg("-o LICENSE.md")
+            .arg("-oLICENSE.md")
             .arg("-k")
             .arg(license_url)
             .current_dir(&name)
@@ -989,31 +1008,31 @@ fn main() {
     check_tool("pip3");
     check_tool("curl");
     // Create project structure by name
-    let name = prj_name();
+    let (root, name) = prj_name();
     // Virtual Environment
-    let venv = prj_venv(&name);
+    let venv = prj_venv(&root);
     // Start git
-    let git = prj_git(&name);
+    let git = prj_git(&root);
     // Git remote
     if git {
-        prj_remote(&name);
+        prj_remote(&root, &name);
     }
     // Unit tests
-    prj_test(&name);
+    prj_test(&root);
     // Install dependencies
-    let deps = prj_deps(&name, venv);
+    let deps = prj_deps(&root, venv);
     // Documentation
-    prj_docs(&name, venv);
+    prj_docs(&root, venv);
     // Tox
-    prj_tox(&name, venv);
+    prj_tox(&root, venv);
     // CI configuration
-    prj_ci(&name, &deps);
+    prj_ci(&root, &deps);
     // Common files
-    prj_files(&name);
+    prj_files(&root);
     // License
-    let license = prj_license(&name);
+    let license = prj_license(&root);
     // Write pyproject.toml
-    prj_toml(&name, &deps, license);
+    prj_toml(&root, &deps, license);
     // Finish scaffolding process
-    println!("Project `{name}` created")
+    println!("Python project `{name}` created at {root}/")
 }
