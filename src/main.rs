@@ -216,19 +216,19 @@ docs/_build/
 }
 
 // Project unit tests
-fn prj_test(name: &str) {
+fn prj_test(root: &str, name: &str) {
     let confirm = prompt_confirm("Do you want unit test files?", true, "None");
     if confirm {
         let project_name = name.to_lowercase();
         // Make directories structure
-        let dir_ret = make_dirs(format!("{name}/tests").as_str());
+        let dir_ret = make_dirs(format!("{root}/tests").as_str());
         if let Err(e) = dir_ret {
             eprintln!("error: {}", e);
             return;
         }
         // Make file structures
         let init_file = make_file(
-            format!("{name}/tests/__init__.py").as_str(),
+            format!("{root}/tests/__init__.py").as_str(),
             "#! /usr/bin/env python3
 # -*- encoding: utf-8 -*-
 # vim: se ts=4 et syn=python:
@@ -242,7 +242,7 @@ fn prj_test(name: &str) {
             return;
         }
         let all_module = make_file(
-            format!("{name}/tests/test_all.py").as_str(),
+            format!("{root}/tests/test_{project_name}.py").as_str(),
             format!(
                 "#! /usr/bin/env python3
 # -*- encoding: utf-8 -*-
@@ -330,7 +330,7 @@ fn prj_deps(name: &str, venv: bool) -> Vec<String> {
 }
 
 // Project pyproject.toml
-fn prj_toml(name: &str, deps: &Vec<String>, mut license: String) {
+fn prj_toml(root: &str, name: &str, deps: &Vec<String>, mut license: String) {
     let mut classifiers = vec!["Programming Language :: Python :: 3"];
     // Check dependencies
     let requirements = if deps.contains(&"No".to_string()) {
@@ -386,7 +386,7 @@ changelog = 'https://docs.python.org/3/whatsnew/changelog.html'
         requirements
     );
     // Write pyproject.toml
-    let pyproject = make_file(format!("{name}/pyproject.toml").as_str(), content);
+    let pyproject = make_file(format!("{root}/pyproject.toml").as_str(), content);
     if let Err(e) = pyproject {
         eprintln!("error: {}", e);
         return;
@@ -776,11 +776,11 @@ commands = pytest tests"
     }
 }
 
-fn prj_docs(name: &str, venv: bool) {
+fn prj_docs(root: &str, name: &str, venv: bool) {
     let options = vec!["None", "Sphinx", "MKDocs"];
     let docs = prompt_select("Select documention generator:", options, "None");
     if docs != "None" {
-        let docs_home = format!("{name}/docs");
+        let docs_home = format!("{root}/docs");
         // Create docs folder
         let docs_folder = make_dirs(format!("{docs_home}").as_str());
         if let Err(e) = docs_folder {
@@ -799,7 +799,7 @@ fn prj_docs(name: &str, venv: bool) {
                 .arg("--timeout=10")
                 .arg("--retries=1")
                 .arg("sphinx")
-                .current_dir(&name)
+                .current_dir(&root)
                 .output()
                 .expect("pip should be installed");
             // Check if command exit successfully
@@ -843,7 +843,7 @@ fn prj_docs(name: &str, venv: bool) {
                 .arg("--timeout=10")
                 .arg("--retries=1")
                 .arg("mkdocs")
-                .current_dir(&name)
+                .current_dir(&root)
                 .output()
                 .expect("pip should be installed");
             // Check if command exit successfully
@@ -862,7 +862,7 @@ fn prj_docs(name: &str, venv: bool) {
                 .arg("new")
                 .arg("--quiet")
                 .arg(".")
-                .current_dir(&name)
+                .current_dir(&root)
                 .output()
                 .expect("mkdocs should be installed");
             // Check if command exit successfully
@@ -873,7 +873,7 @@ fn prj_docs(name: &str, venv: bool) {
     }
 }
 
-fn prj_files(name: &str) {
+fn prj_files(root: &str, name: &str) {
     let confirm = prompt_confirm(
         "Do you want create common files?",
         true,
@@ -892,7 +892,7 @@ pip install .
 ## Acknowledgments
 Thanks Python Community!"
         );
-        let readme = make_file(format!("{name}/README.md").as_str(), readme_content);
+        let readme = make_file(format!("{root}/README.md").as_str(), readme_content);
         if let Err(e) = readme {
             eprintln!("error: {}", e);
         }
@@ -903,7 +903,7 @@ Thanks Python Community!"
 ## 0.0.1
 - Start **{name}** project"
         );
-        let changes = make_file(format!("{name}/CHANGES.md").as_str(), changes_content);
+        let changes = make_file(format!("{root}/CHANGES.md").as_str(), changes_content);
         if let Err(e) = changes {
             eprintln!("error: {}", e);
         }
@@ -937,7 +937,7 @@ Feel free to ask questions via issues, discussions, or mail.
 "
         );
         let contributing = make_file(
-            format!("{name}/CONTRIBUTING.md").as_str(),
+            format!("{root}/CONTRIBUTING.md").as_str(),
             contributing_content,
         );
         if let Err(e) = contributing {
@@ -948,7 +948,7 @@ Feel free to ask questions via issues, discussions, or mail.
             .arg("-oCODE_OF_CONDUCT.md")
             .arg("-k")
             .arg("https://www.contributor-covenant.org/version/2/1/code_of_conduct/code_of_conduct.md")
-            .current_dir(&name)
+            .current_dir(&root)
             .output()
             .expect("curl should be installed");
         // Check if command exit successfully
@@ -1018,21 +1018,21 @@ fn main() {
         prj_remote(&root, &name);
     }
     // Unit tests
-    prj_test(&root);
+    prj_test(&root, &name);
     // Install dependencies
     let deps = prj_deps(&root, venv);
     // Documentation
-    prj_docs(&root, venv);
+    prj_docs(&root, &name, venv);
     // Tox
     prj_tox(&root, venv);
     // CI configuration
     prj_ci(&root, &deps);
     // Common files
-    prj_files(&root);
+    prj_files(&root, &name);
     // License
     let license = prj_license(&root);
     // Write pyproject.toml
-    prj_toml(&root, &deps, license);
+    prj_toml(&root, &name, &deps, license);
     // Finish scaffolding process
     println!("Python project `{name}` created at {root}/")
 }
