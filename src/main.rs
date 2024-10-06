@@ -48,10 +48,15 @@ fn make_file(file: &str, content: String) -> std::io::Result<()> {
 
 // Function for prompt text
 fn prompt_text(question: &str, default: &str, help: &str) -> String {
-    let answer = if default != "None" {
-        Text::new(question).with_default(default).prompt()
+    let answer = if help != "None" && default != "None" {
+        Text::new(question)
+            .with_help_message(help)
+            .with_default(default)
+            .prompt()
     } else if help != "None" {
         Text::new(question).with_help_message(help).prompt()
+    } else if default != "None" {
+        Text::new(question).with_default(default).prompt()
     } else {
         Text::new(question).prompt()
     };
@@ -89,7 +94,7 @@ fn prompt_select(question: &str, options: Vec<&str>, help: &str) -> String {
 fn prj_name() -> (String, String) {
     let name = prompt_text(
         "Name of Python project:",
-        "None",
+        "pyprj",
         "Type name or absolute path",
     );
     // Check if absolute path
@@ -141,7 +146,7 @@ __version__ = '0.0.1'
 from .__init__ import __version__
 print(f'{} {{__version__}}')
 ",
-            name.to_lowercase()
+            package.to_lowercase()
         ),
     );
     if let Err(e) = main_file {
