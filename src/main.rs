@@ -415,9 +415,9 @@ fn prj_ci(name: &str, deps: &Vec<String>) {
                 "language: python
 cache: pip
 python:
-  - 3.10
   - 3.11
   - 3.12
+  - 3.13
 before_install:
   - sudo apt-get update
   - sudo apt-get install python3-pip
@@ -766,7 +766,7 @@ fn prj_tox(name: &str, venv: bool) {
         }
         // Write tox.ini
         let tox_ini_content = "[tox]
-envlist = py310, py311, py312
+envlist = py311, py312, py313
 isolated_build = True
 
 [testenv]
