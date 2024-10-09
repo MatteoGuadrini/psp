@@ -4,6 +4,8 @@ version = "0.0.8"
 edition = "2021"
 authors = ["matteoguadrini <matteo.guadrini@hotmail.it>"]
 description = "PSP (Python Scaffolding Projects)"
+license = "Apache-2.0"
+license-file = "LICENSE.md"
 readme = "README.md"
 repository = "https://github.com/MatteoGuadrini/psp"
 
