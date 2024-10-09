@@ -11,34 +11,15 @@
 - ⌨️ [MkDocs](https://www.mkdocs.org/) and [Sphinx](https://www.sphinx-doc.org/) documentation supports
 - 🌎 Github and Gitlab remote repository supports
 
-![Demo](https://i.ibb.co/KcZtw58/psp008.gif)
+<img src="https://i.ibb.co/SvptyfB/psp-009.png" alt="drawing" width="600"/>
 
 > [!NOTE]
 > This project is WIP: beta
 
-
-```console
-psp   # Press Enter
-Welcome to PSP (Python Scaffolding Projects): 0.0.8
-> Name of Python project: test
-> Do you want to create a virtual environment? Yes
-> Do you want to start git repository? Yes
-> Select git remote provider: Github
-> Username of Github: MatteoGuadrini
-> Do you want unit test files? Yes
-> Install dependencies: scipy numpy
-> Select documention generator: Sphinx
-> Do you want to configure tox? Yes
-> Select CI provider: CircleCI
-> Do you want create common files? Yes
-> Select license: Gnu Public License
-Project `test` created
-```
-
 The result is:
 
 ```console
-tree test --filelimit=10 -a
+tree test/ --filelimit=10 -a
 test                    # project folder
 ├── LICENSE.md          # License file
 ├── pyproject.toml      # python package configuration file
@@ -163,11 +144,28 @@ curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.0.8/psp_macos
 chmod +x /usr/bin/psp
 ```
 
+### Packages
+
+For **Debian/Ubuntu**:
+
+```console
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.0.8/psp.deb
+sudo dpkg -i psp.deb
+```
+
+For **Fedora/Mageia/OpenSuse**:
+
+```console
+sudo rpm -i https://github.com/MatteoGuadrini/psp/releases/download/v0.0.8/psp.rpm
+```
+
+### Compile as your own
+
 Instead, if you compile this project as own, follow this steps:
 
 ```console
 git clone https://github.com/MatteoGuadrini/psp.git
-cd psp && cargo build && sudo cp -var target/release/psp /usr/bin/psp
+cd psp && cargo build --release && sudo cp -var target/release/psp /usr/bin/psp
 ```
 
 ## Features
