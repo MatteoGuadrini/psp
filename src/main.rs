@@ -224,7 +224,7 @@ docs/_build/
 }
 
 // Project unit tests
-fn prj_test(root: &str, name: &str) {
+fn prj_test(root: &str, name: &str) -> bool {
     let confirm = prompt_confirm("Do you want unit test files?", true, "None");
     if confirm {
         let project_name = name.to_lowercase();
@@ -232,7 +232,7 @@ fn prj_test(root: &str, name: &str) {
         let dir_ret = make_dirs(format!("{root}/tests").as_str());
         if let Err(e) = dir_ret {
             eprintln!("error: {}", e);
-            return;
+            return false;
         }
         // Make file structures
         let init_file = make_file(
@@ -248,7 +248,7 @@ fn prj_test(root: &str, name: &str) {
         );
         if let Err(e) = init_file {
             eprintln!("error: {}", e);
-            return;
+            return false;
         }
         let all_module = make_file(
             format!("{root}/tests/test_{project_name}.py").as_str(),
@@ -280,8 +280,11 @@ if __name__ == '__main__':
         );
         if let Err(e) = all_module {
             eprintln!("error: {}", e);
-            return;
+            return false;
         }
+        return true;
+    } else {
+        return false;
     }
 }
 
@@ -1056,15 +1059,17 @@ fn main() {
         prj_remote(&root, &name);
     }
     // Unit tests
-    prj_test(&root, &name);
+    let tests = prj_test(&root, &name);
     // Install dependencies
     let deps = prj_deps(&root, venv);
     // Documentation
     prj_docs(&root, &name, venv);
-    // Tox
-    prj_tox(&root, venv);
-    // CI configuration
-    prj_ci(&root, &deps);
+    if tests {
+        // Tox
+        prj_tox(&root, venv);
+        // CI configuration
+        prj_ci(&root, &deps);
+    }
     // Common files
     prj_files(&root, &name);
     // License
