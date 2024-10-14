@@ -1044,10 +1044,10 @@ fn main() {
     // Print welcome screen and version
     println!("Welcome to PSP (Python Scaffolding Projects): {VERSION}");
     // Check dependencies tools
-    check_tool("python3");
-    check_tool("git");
-    check_tool("pip3");
-    check_tool("curl");
+    let tools = ["python3", "git", "pip3", "curl"];
+    for tool in tools {
+        check_tool(tool);
+    }
     // Create project structure by name
     let (root, name) = prj_name();
     // Virtual Environment
