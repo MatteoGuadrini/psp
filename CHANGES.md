@@ -1,5 +1,12 @@
 # Release notes
 
+## 0.0.9
+Oct 15, 2024
+- Add **prj_files** function
+- Add return bool into **prj_test** function
+- Add Apache v2 license
+- Fix creation docs folder into **prj_docs** function
+
 ## 0.0.8
 Sep 23, 2024
 - Add **prj_tox** function

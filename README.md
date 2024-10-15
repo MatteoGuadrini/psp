@@ -126,13 +126,13 @@ To install compiled file into your machine, download it:
 For all users:
 ```console
 sudo -i
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.0.8/psp_linux > /usr/bin/psp
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.0.9/psp_linux > /usr/bin/psp
 chmod +x /usr/bin/psp
 ```
 
 For current user:
 ```console
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.0.8/psp_linux > $HOME/.local/bin/psp
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.0.9/psp_linux > $HOME/.local/bin/psp
 chmod +x $HOME/.local/bin/psp
 ```
 
@@ -140,7 +140,7 @@ chmod +x $HOME/.local/bin/psp
 
 ```console
 sudo su -
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.0.8/psp_macos > /usr/bin/psp
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.0.9/psp_macos > /usr/bin/psp
 chmod +x /usr/bin/psp
 ```
 
@@ -149,14 +149,14 @@ chmod +x /usr/bin/psp
 For **Debian/Ubuntu**:
 
 ```console
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.0.8/psp.deb
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.0.9/psp.deb
 sudo dpkg -i psp.deb
 ```
 
 For **Fedora/Mageia/OpenSuse**:
 
 ```console
-sudo rpm -i https://github.com/MatteoGuadrini/psp/releases/download/v0.0.8/psp.rpm
+sudo rpm -i https://github.com/MatteoGuadrini/psp/releases/download/v0.0.9/psp.rpm
 ```
 
 ### Compile as your own
