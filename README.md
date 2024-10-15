@@ -11,7 +11,7 @@
 - ⌨️ [MkDocs](https://www.mkdocs.org/) and [Sphinx](https://www.sphinx-doc.org/) documentation supports
 - 🌎 Github and Gitlab remote repository supports
 
-<img src="https://i.ibb.co/SvptyfB/psp-009.png" alt="drawing" width="600"/>
+<img src="https://i.ibb.co/SvptyfB/psp-009.png" alt="psp" width="600"/>
 
 > [!NOTE]
 > This project is WIP: beta
@@ -19,67 +19,67 @@
 The result is:
 
 ```console
-tree test/ --filelimit=10 -a
-test                    # project folder
+$> tree test/ --filelimit=10 -a
+test                    # Project folder
 ├── LICENSE.md          # License file
-├── pyproject.toml      # python package configuration file
+├── pyproject.toml      # Python package configuration file
 ├── README.md           # Readme file
 ├── CHANGES.md          # List of changes
 ├── .circleci           # CI folder
-│   └── config.yml      # CI configuration file
+│   └── config.yml      # CI configuration file
 ├── CODE_OF_CONDUCT.md  # Code of Conduct
 ├── CONTRIBUTING.md     # Contributing guide lines
 ├── docs                # Documentation folder: Sphinx/MKDocs
-│   ├── build
-│   ├── make.bat
-│   ├── Makefile
-│   └── source
-│       ├── conf.py
-│       ├── index.rst
-│       ├── _static
-│       └── _templates
-├── .git                # git folder
-│   ├── branches
-│   ├── config
-│   ├── description
-│   ├── HEAD
-│   ├── hooks  [14 entries exceeds filelimit, not opening dir]
-│   ├── info
-│   │   └── exclude
-│   ├── objects
-│   │   ├── info
-│   │   └── pack
-│   └── refs
-│       ├── heads
-│       └── tags
+│   ├── build
+│   ├── make.bat
+│   ├── Makefile
+│   └── source
+│       ├── conf.py
+│       ├── index.rst
+│       ├── _static
+│       └── _templates
+├── .git                # Git folder
+│   ├── branches
+│   ├── config
+│   ├── description
+│   ├── HEAD
+│   ├── hooks  [14 entries exceeds filelimit, not opening dir]
+│   ├── info
+│   │   └── exclude
+│   ├── objects
+│   │   ├── info
+│   │   └── pack
+│   └── refs
+│       ├── heads
+│       └── tags
 ├── .github             # Github issue and merge templates
-│   ├── ISSUE_TEMPLATE
-│   │   ├── bug.yml
-│   │   ├── config.yml
-│   │   └── feature.yml
-│   └── PULL_REQUEST_TEMPLATE
-│       └── pull_request_template.md
-├── .gitignore          # git ignore file
-├── test                # python package
-│   └── __init__.py
-├── tests               # tests package for modules
-│   ├── __init__.py
-│   └── test_test.py    # test module "test_<name_python_package>"
+│   ├── ISSUE_TEMPLATE
+│   │   ├── bug.yml
+│   │   ├── config.yml
+│   │   └── feature.yml
+│   └── PULL_REQUEST_TEMPLATE
+│       └── pull_request_template.md
+├── .gitignore          # Git ignore file
+├── test                # Python package
+│   └── __init__.py
+├── tests               # Tests package for modules
+│   ├── __init__.py
+│   └── test_test.py    # Test module "test_<name_python_package>"
 ├── tox.ini             # Tox configuration files
-└── venv                # virtual environment
+└── venv                # Virtual environment
     ├── bin  [33 entries exceeds filelimit, not opening dir]
     ├── include
-    │   └── python3.12
+    │   └── python3.12
     ├── lib
-    │   └── python3.12
-    │       └── site-packages  [68 entries exceeds filelimit, not opening dir]
+    │   └── python3.12
+    │       └── site-packages  [68 entries exceeds filelimit, not opening dir]
     ├── lib64 -> lib
     └── pyvenv.cfg
 
 30 directories, 39 files
 ```
 
-And git status is:
+And `git` status is:
 
 ```console
 $> git status
