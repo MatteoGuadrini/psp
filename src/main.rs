@@ -1039,6 +1039,32 @@ fn prj_license(name: &str) -> String {
     license
 }
 
+fn prj_pypi(root: &str, venv: bool) {
+    let confirm = prompt_confirm("Do you want to publish your package to pypi?", true, "None");
+    if confirm {
+        // Install twine and build
+        let mut pip = std::process::Command::new("pip3");
+        // Activate venv
+        if venv {
+            pip.env("PATH", "venv/bin");
+        }
+        let output = pip
+            .arg("install")
+            .arg("--timeout=10")
+            .arg("--retries=1")
+            .arg("twine")
+            .arg("build")
+            .current_dir(&root)
+            .output()
+            .expect("pip should be installed");
+        // Check if command exit successfully
+        if !output.status.success() {
+            eprintln!("error: build and twine installation failed");
+            return;
+        }
+    }
+}
+
 // Main program
 fn main() {
     // Print welcome screen and version
@@ -1074,6 +1100,8 @@ fn main() {
     prj_files(&root, &name);
     // License
     let license = prj_license(&root);
+    // Build dependencies
+    prj_pypi(&root, venv);
     // Write pyproject.toml
     prj_toml(&root, &name, &deps, license);
     // Finish scaffolding process
