@@ -88,6 +88,13 @@ fn prompt_select(question: &str, options: Vec<&str>, help: &str) -> String {
     answer.unwrap().to_string()
 }
 
+// Function to print help
+fn print_help(exit_code: i32) {
+    println!("usage: psp [shortcut]");
+    println!("ie: psp [quick|simple|full]");
+    exit(exit_code)
+}
+
 // Core functions
 
 // Project name
@@ -811,6 +818,7 @@ commands = pytest tests"
     }
 }
 
+// Project documentation site generator
 fn prj_docs(root: &str, name: &str, venv: bool) {
     let options = vec!["None", "Sphinx", "MKDocs"];
     let docs = prompt_select("Select documention generator:", options, "None");
@@ -908,6 +916,7 @@ fn prj_docs(root: &str, name: &str, venv: bool) {
     }
 }
 
+// Project common files
 fn prj_files(root: &str, name: &str) {
     let confirm = prompt_confirm(
         "Do you want create common files?",
@@ -999,6 +1008,7 @@ Feel free to ask questions via issues, discussions, or mail.
     }
 }
 
+// Project license
 fn prj_license(name: &str) -> String {
     // Select license
     let options = vec![
@@ -1039,6 +1049,7 @@ fn prj_license(name: &str) -> String {
     license
 }
 
+// Project pypi dependencies
 fn prj_pypi(root: &str, venv: bool) {
     let confirm = prompt_confirm(
         "Do you want to install dependencies to publish on pypi?",
@@ -1069,6 +1080,7 @@ fn prj_pypi(root: &str, venv: bool) {
     }
 }
 
+// Project Docker/Podman
 fn prj_docker(root: &str, name: &str) -> bool {
     let confirm = prompt_confirm("Do you want to create a Dockerfile?", true, "None");
     if confirm {
