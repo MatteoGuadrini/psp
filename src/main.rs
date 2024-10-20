@@ -1,5 +1,6 @@
 use inquire::{Confirm, Select, Text};
 use std::{
+    env::args,
     env::var,
     fs::{create_dir_all, File},
     io::Write,
@@ -9,6 +10,7 @@ use std::{
 
 // Constants
 const VERSION: &str = "0.0.9";
+const ARGS: [&str; 3] = ["quick", "simple", "full"];
 
 // Utility functions
 
@@ -93,6 +95,17 @@ fn print_help(exit_code: i32) {
     println!("usage: psp [shortcut]");
     println!("ie: psp [quick|simple|full]");
     exit(exit_code)
+}
+
+// Function that capture keyword argument
+fn get_shortcut() -> String {
+    let args: Vec<String> = args().collect();
+    let shorcut = &args[1];
+    if !ARGS.contains(&shorcut.as_str()) {
+        eprintln!("unknown shortcut command `{}`", shorcut);
+        print_help(1);
+    }
+    shorcut.clone()
 }
 
 // Core functions
