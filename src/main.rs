@@ -100,12 +100,16 @@ fn print_help(exit_code: i32) {
 // Function that capture keyword argument
 fn get_shortcut() -> String {
     let args: Vec<String> = args().collect();
-    let shorcut = &args[1];
-    if !ARGS.contains(&shorcut.as_str()) {
-        eprintln!("unknown shortcut command `{}`", shorcut);
-        print_help(1);
+    if args.len() > 1 {
+        let shorcut = &args[1];
+        if !ARGS.contains(&shorcut.as_str()) {
+            eprintln!("unknown shortcut command `{}`", shorcut);
+            print_help(1);
+        }
+        shorcut.clone()
+    } else {
+        "None".to_string()
     }
-    shorcut.clone()
 }
 
 // Core functions
@@ -1128,6 +1132,8 @@ CMD [ 'python' ]
 
 // Main program
 fn main() {
+    // Check if argument is specified
+    let shortcut = get_shortcut();
     // Print welcome screen and version
     println!("Welcome to PSP (Python Scaffolding Projects): {VERSION}");
     // Check dependencies tools
