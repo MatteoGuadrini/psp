@@ -10,7 +10,7 @@ use std::{
 
 // Constants
 const VERSION: &str = "0.0.9";
-const ARGS: [&str; 3] = ["quick", "simple", "full"];
+const ARGS: [&str; 4] = ["help", "quick", "simple", "full"];
 
 // Utility functions
 
@@ -93,7 +93,7 @@ fn prompt_select(question: &str, options: Vec<&str>, help: &str) -> String {
 // Function to print help
 fn print_help(exit_code: i32) {
     println!("usage: psp [shortcut]");
-    println!("ie: psp [quick|simple|full]");
+    println!("ie: psp [help|quick|simple|full]");
     exit(exit_code)
 }
 
@@ -103,7 +103,7 @@ fn get_shortcut() -> String {
     if args.len() > 1 {
         let shorcut = &args[1];
         if !ARGS.contains(&shorcut.as_str()) {
-            eprintln!("unknown shortcut command `{}`", shorcut);
+            eprintln!("error: unknown shortcut command `{}`", shorcut);
             print_help(1);
         }
         shorcut.clone()
@@ -313,8 +313,15 @@ if __name__ == '__main__':
 }
 
 // Project venv
-fn prj_venv(name: &str) -> bool {
-    let confirm = prompt_confirm("Do you want to create a virtual environment?", true, "None");
+fn prj_venv(name: &str, shortcut: &String) -> bool {
+    let confirm: bool;
+    if shortcut == "quick" || shortcut == "full" {
+        confirm = true;
+    } else if shortcut == "simple" {
+        confirm = false;
+    } else {
+        confirm = prompt_confirm("Do you want to create a virtual environment?", true, "None");
+    }
     if confirm {
         let output = std::process::Command::new("python3")
             .args(["-m", "venv", "venv"])
@@ -1134,6 +1141,10 @@ CMD [ 'python' ]
 fn main() {
     // Check if argument is specified
     let shortcut = get_shortcut();
+    // Print help message
+    if shortcut == "help" {
+        print_help(0)
+    }
     // Print welcome screen and version
     println!("Welcome to PSP (Python Scaffolding Projects): {VERSION}");
     // Check dependencies tools
@@ -1144,7 +1155,7 @@ fn main() {
     // Create project structure by name
     let (root, name) = prj_name();
     // Virtual Environment
-    let venv = prj_venv(&root);
+    let venv = prj_venv(&root, &shortcut);
     // Start git
     let git = prj_git(&root);
     // Git remote
