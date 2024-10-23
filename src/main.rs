@@ -183,8 +183,15 @@ print(f'{} {{__version__}}')
 }
 
 // Project git
-fn prj_git(name: &str) -> bool {
-    let confirm = prompt_confirm("Do you want to start git repository?", true, "None");
+fn prj_git(name: &str, shortcut: &String) -> bool {
+    let confirm: bool;
+    if shortcut == "quick" || shortcut == "full" {
+        confirm = true;
+    } else if shortcut == "simple" {
+        confirm = false;
+    } else {
+        confirm = prompt_confirm("Do you want to start git repository?", true, "None");
+    }
     if confirm {
         let output = std::process::Command::new("git")
             .arg("init")
@@ -1157,7 +1164,7 @@ fn main() {
     // Virtual Environment
     let venv = prj_venv(&root, &shortcut);
     // Start git
-    let git = prj_git(&root);
+    let git = prj_git(&root, &shortcut);
     // Git remote
     if git {
         prj_remote(&root, &name);
