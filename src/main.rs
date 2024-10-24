@@ -296,17 +296,19 @@ fn prj_test(root: &str, name: &str, shortcut: &String) -> bool {
 
 
 import unittest
+from {project_name} import __version__
 
 
 class TestAll(unittest.TestCase):
 
     def test_all(self):
+        self.assertEqual(__version__, '0.0.1')
         print('Test all {project_name} successfully!')
 
 
 # Test functions for pytest
 def test_all():
-    assert '{project_name}' == '{project_name}'
+    assert __version__ == '0.0.1'
 
 
 if __name__ == '__main__':
@@ -531,9 +533,14 @@ jobs:
 }
 
 // Project Gitlab/Github
-fn prj_remote(root: &str, name: &str) {
+fn prj_remote(root: &str, name: &str, shortcut: &String) {
     let options = vec!["None", "Gitlab", "Github"];
-    let remote = prompt_select("Select git remote provider:", options, "None");
+    let remote: String;
+    if shortcut == "quick" {
+        remote = "None".to_string();
+    } else {
+        remote = prompt_select("Select git remote provider:", options, "None");
+    }
     if remote.as_str() != "None" {
         // Username of remote git service
         let username = prompt_text(format!("Username of {remote}:").as_str(), "None", "None");
@@ -1172,7 +1179,7 @@ fn main() {
     let git = prj_git(&root, &shortcut);
     // Git remote
     if git {
-        prj_remote(&root, &name);
+        prj_remote(&root, &name, &shortcut);
     }
     // Unit tests
     let tests = prj_test(&root, &name, &shortcut);
