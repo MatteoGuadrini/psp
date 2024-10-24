@@ -255,8 +255,13 @@ docs/_build/
 }
 
 // Project unit tests
-fn prj_test(root: &str, name: &str) -> bool {
-    let confirm = prompt_confirm("Do you want unit test files?", true, "None");
+fn prj_test(root: &str, name: &str, shortcut: &String) -> bool {
+    let confirm: bool;
+    if shortcut != "None" {
+        confirm = true;
+    } else {
+        confirm = prompt_confirm("Do you want unit test files?", true, "None");
+    }
     if confirm {
         let project_name = name.to_lowercase();
         // Make directories structure
@@ -1170,7 +1175,7 @@ fn main() {
         prj_remote(&root, &name);
     }
     // Unit tests
-    let tests = prj_test(&root, &name);
+    let tests = prj_test(&root, &name, &shortcut);
     // Install dependencies
     let deps = prj_deps(&root, venv);
     // Documentation
