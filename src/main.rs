@@ -353,12 +353,17 @@ fn prj_venv(name: &str, shortcut: &String) -> bool {
 }
 
 // Project dependencies
-fn prj_deps(name: &str, venv: bool) -> Vec<String> {
-    let deps = prompt_text(
-        "Install dependencies:",
-        "No",
-        "Write package(s) separates with spaces or empty",
-    );
+fn prj_deps(name: &str, venv: bool, shortcut: &String) -> Vec<String> {
+    let deps: String;
+    if shortcut == "simple" || shortcut == "quick" {
+        deps = "No".to_string();
+    } else {
+        deps = prompt_text(
+            "Install dependencies:",
+            "No",
+            "Write package(s) separates with spaces or empty",
+        );
+    }
     // Split String into Vector
     let dependencies: Vec<String> = deps
         .as_str()
@@ -1184,7 +1189,7 @@ fn main() {
     // Unit tests
     let tests = prj_test(&root, &name, &shortcut);
     // Install dependencies
-    let deps = prj_deps(&root, venv);
+    let deps = prj_deps(&root, venv, &shortcut);
     // Documentation
     prj_docs(&root, &name, venv);
     if tests {
