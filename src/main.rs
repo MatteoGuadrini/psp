@@ -867,9 +867,14 @@ commands = pytest tests"
 }
 
 // Project documentation site generator
-fn prj_docs(root: &str, name: &str, venv: bool) {
+fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) {
     let options = vec!["None", "Sphinx", "MKDocs"];
-    let docs = prompt_select("Select documention generator:", options, "None");
+    let docs: String;
+    if shortcut == "simple" {
+        docs = "None".to_string();
+    } else {
+        docs = prompt_select("Select documention generator:", options, "None");
+    }
     if docs != "None" {
         let docs_home = format!("{root}/docs");
         // Create docs folder
@@ -1191,7 +1196,7 @@ fn main() {
     // Install dependencies
     let deps = prj_deps(&root, venv, &shortcut);
     // Documentation
-    prj_docs(&root, &name, venv);
+    prj_docs(&root, &name, venv, &shortcut);
     if tests {
         // Tox
         prj_tox(&root, venv);
