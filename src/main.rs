@@ -825,9 +825,16 @@ assignees: {}
 }
 
 // Project tox
-fn prj_tox(name: &str, venv: bool) {
+fn prj_tox(name: &str, venv: bool, shortcut: &String) {
     // Create tox ini
-    let confirm = prompt_confirm("Do you want to configure tox?", false, "None");
+    let confirm: bool;
+    if shortcut == "quick" || shortcut == "simple" {
+        confirm = false;
+    } else if shortcut == "full" {
+        confirm = true;
+    } else {
+        confirm = prompt_confirm("Do you want to configure tox?", false, "None");
+    }
     if confirm {
         let mut pip = std::process::Command::new("pip3");
         // Activate venv
@@ -1199,7 +1206,7 @@ fn main() {
     prj_docs(&root, &name, venv, &shortcut);
     if tests {
         // Tox
-        prj_tox(&root, venv);
+        prj_tox(&root, venv, &shortcut);
         // CI configuration
         prj_ci(&root, &deps);
     }
