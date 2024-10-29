@@ -459,9 +459,14 @@ changelog = 'https://docs.python.org/3/whatsnew/changelog.html'
 }
 
 // Project CI
-fn prj_ci(name: &str, deps: &Vec<String>) {
+fn prj_ci(name: &str, deps: &Vec<String>, shortcut: &String) {
     let options = vec!["None", "TravisCI", "CircleCI"];
-    let ci = prompt_select("Select CI provider:", options, "None");
+    let ci: String;
+    if shortcut == "simple" || shortcut == "quick" {
+        ci = "None".to_string();
+    } else {
+        ci = prompt_select("Select remote CI provider:", options, "None");
+    }
     let requirements = if deps.contains(&"No".to_string()) {
         "".to_string()
     } else {
@@ -1212,7 +1217,7 @@ fn main() {
         // Tox
         prj_tox(&root, venv, &shortcut);
         // CI configuration
-        prj_ci(&root, &deps);
+        prj_ci(&root, &deps, &shortcut);
     }
     // Common files
     prj_files(&root, &name);
