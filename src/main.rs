@@ -982,12 +982,19 @@ fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) {
 }
 
 // Project common files
-fn prj_files(root: &str, name: &str) {
-    let confirm = prompt_confirm(
-        "Do you want create common files?",
-        true,
-        "Create README, CONTRIBUTING, CODE_OF_CONDUCT and CHANGES",
-    );
+fn prj_files(root: &str, name: &str, shortcut: &String) {
+    let confirm: bool;
+    if shortcut == "quick" || shortcut == "full" {
+        confirm = true;
+    } else if shortcut == "simple" {
+        confirm = false;
+    } else {
+        confirm = prompt_confirm(
+            "Do you want create common files?",
+            true,
+            "Create README, CONTRIBUTING, CODE_OF_CONDUCT and CHANGES",
+        );
+    }
     if confirm {
         // Create README
         let readme_content = format!(
@@ -1220,7 +1227,7 @@ fn main() {
         prj_ci(&root, &deps, &shortcut);
     }
     // Common files
-    prj_files(&root, &name);
+    prj_files(&root, &name, &shortcut);
     // License
     let license = prj_license(&root);
     // Build dependencies
