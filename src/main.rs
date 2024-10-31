@@ -1083,17 +1083,22 @@ Feel free to ask questions via issues, discussions, or mail.
 }
 
 // Project license
-fn prj_license(name: &str) -> String {
+fn prj_license(name: &str, shortcut: &String) -> String {
     // Select license
     let options = vec![
         "None",
         "MIT",
         "Apache",
-        "Creative Commons",
         "Mozilla",
+        "Creative Commons",
         "Gnu Public License",
     ];
-    let license = prompt_select("Select license:", options, "None");
+    let license: String;
+    if shortcut == "simple" {
+        license = "None".to_string();
+    } else {
+        license = prompt_select("Select license:", options, "None");
+    }
     let mut license_url = String::new();
     if license == "MIT" {
         license_url.push_str("https://www.mit.edu/~amini/LICENSE.md")
@@ -1229,7 +1234,7 @@ fn main() {
     // Common files
     prj_files(&root, &name, &shortcut);
     // License
-    let license = prj_license(&root);
+    let license = prj_license(&root, &shortcut);
     // Build dependencies
     prj_pypi(&root, venv);
     // Write pyproject.toml
