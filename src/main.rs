@@ -1131,12 +1131,19 @@ fn prj_license(name: &str, shortcut: &String) -> String {
 }
 
 // Project pypi dependencies
-fn prj_pypi(root: &str, venv: bool) {
-    let confirm = prompt_confirm(
-        "Do you want to install dependencies to publish on pypi?",
-        true,
-        "None",
-    );
+fn prj_pypi(root: &str, venv: bool, shortcut: &String) {
+    let confirm: bool;
+    if shortcut == "quick" || shortcut == "full" {
+        confirm = true;
+    } else if shortcut == "simple" {
+        confirm = false;
+    } else {
+        confirm = prompt_confirm(
+            "Do you want to install dependencies to publish on pypi?",
+            true,
+            "None",
+        );
+    }
     if confirm {
         // Install twine and build
         let mut pip = std::process::Command::new("pip3");
@@ -1209,7 +1216,7 @@ fn main() {
     for tool in tools {
         check_tool(tool);
     }
-    // Create project structure by name
+    // Create project structure by name or path
     let (root, name) = prj_name();
     // Virtual Environment
     let venv = prj_venv(&root, &shortcut);
@@ -1236,7 +1243,7 @@ fn main() {
     // License
     let license = prj_license(&root, &shortcut);
     // Build dependencies
-    prj_pypi(&root, venv);
+    prj_pypi(&root, venv, &shortcut);
     // Write pyproject.toml
     prj_toml(&root, &name, &deps, license);
     // Dockerfile
