@@ -1169,8 +1169,19 @@ fn prj_pypi(root: &str, venv: bool, shortcut: &String) {
 }
 
 // Project Docker/Podman
-fn prj_docker(root: &str, name: &str) -> bool {
-    let confirm = prompt_confirm("Do you want to create a Dockerfile?", true, "None");
+fn prj_docker(root: &str, name: &str, shortcut: &String) -> bool {
+    let confirm: bool;
+    if shortcut == "quick" || shortcut == "full" {
+        confirm = true;
+    } else if shortcut == "simple" {
+        confirm = false;
+    } else {
+        confirm = prompt_confirm(
+            "Do you want to create a Dockerfile/Containerfile?",
+            true,
+            "None",
+        );
+    }
     if confirm {
         // Create README
         let dockerfile_content = format!(
@@ -1247,7 +1258,7 @@ fn main() {
     // Write pyproject.toml
     prj_toml(&root, &name, &deps, license);
     // Dockerfile
-    prj_docker(&root, &name);
+    prj_docker(&root, &name, &shortcut);
     // Finish scaffolding process
     println!("Python project `{name}` created at {root}/")
 }
