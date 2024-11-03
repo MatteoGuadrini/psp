@@ -388,6 +388,12 @@ fn prj_deps(name: &str, venv: bool, shortcut: &String) -> Vec<String> {
         if !output.status.success() {
             eprintln!("error: dependencies ({deps}) installation failed");
         }
+        // Build a requirements.txt file
+        let content = format!("{}", dependencies.join("\n"));
+        let requirements = make_file(format!("{name}/requirements.txt").as_str(), content);
+        if let Err(e) = requirements {
+            eprintln!("error: {}", e);
+        }
     }
     dependencies
 }
