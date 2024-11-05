@@ -877,7 +877,9 @@ isolated_build = True
 
 [testenv]
 labels = test, core
-deps = pytest
+deps=
+    pytest
+    -r requirements.txt
 commands = pytest tests"
             .to_string();
         let tox_ini = make_file(format!("{name}/tox.ini").as_str(), tox_ini_content);
