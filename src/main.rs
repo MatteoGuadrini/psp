@@ -141,6 +141,18 @@ fn prj_name() -> (String, String) {
     let root = name.clone();
     let project = format!("{root}/{package}");
     // Make directories structure
+    let package_path = Path::new(&project);
+    // Check if project path already exists
+    if package_path.exists() {
+        let project_exists = prompt_confirm(
+            format!("Path {root} exists. Do you want continue?").as_str(),
+            false,
+            "Some files will be overwritten",
+        );
+        if !project_exists {
+            exit(0)
+        }
+    }
     let dir_ret = make_dirs(format!("{project}").as_str());
     if let Err(e) = dir_ret {
         eprintln!("error: {}", e);
