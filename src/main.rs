@@ -16,13 +16,16 @@ const ARGS: [&str; 4] = ["help", "quick", "simple", "full"];
 
 // Function for check if tool is installed
 fn check_tool(tool: &str) {
-    let home = var("HOME").unwrap();
-    let root_bin = format!("/usr/bin/{tool}");
-    let user_bin = format!("{home}/.local/bin/{tool}");
-    if !Path::new(&root_bin).exists() && !Path::new(&user_bin).exists() {
-        eprintln!("error: {} is not installed", tool);
-        exit(1);
+    let env_paths = var("PATH").unwrap();
+    let paths: Vec<&str> = env_paths.split(':').collect();
+    for path in paths {
+        let tool_path = format!("{path}/{tool}");
+        if Path::new(&tool_path).exists() {
+            return;
+        }
     }
+    eprintln!("error: {} is not installed", tool);
+    exit(1);
 }
 
 // Function for creating folders and parents
