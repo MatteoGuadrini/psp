@@ -119,12 +119,11 @@ fn get_shortcut() -> String {
 
 // Project name
 fn prj_name() -> (String, String) {
-    let name = prompt_text(
-        "Name of Python project:",
-        "pyprj",
-        "Type name or absolute path",
-    );
-    // Check if absolute path
+    let name = prompt_text("Name of Python project:", "pyprj", "Type name or path")
+        .trim()
+        .trim_end_matches("/")
+        .to_string();
+    // Check if name is a path
     let package: String = if name.contains('/') {
         let parts: Vec<&str> = name.split('/').collect();
         let last = parts.last();
@@ -136,11 +135,6 @@ fn prj_name() -> (String, String) {
     } else {
         name.to_lowercase()
     };
-    // Check if package is empty
-    if package.is_empty() {
-        eprintln!("error: remove trailing slash to {name}");
-        exit(1)
-    }
     let root = name.clone();
     let project = format!("{root}/{package}");
     // Make directories structure
@@ -1331,5 +1325,5 @@ fn main() {
     // Makefile
     prj_makefile(&root, &name);
     // Finish scaffolding process
-    println!("Python project `{name}` created at {root}/")
+    println!("Python project `{name}` created at {root}")
 }
