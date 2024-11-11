@@ -5,21 +5,27 @@
 - ⚡️ 10-100x faster
 - 🛠️ `pyproject.toml` support
 - 🤝 Python 3.13 compatibility
+- 🗃 Scaffolding file and folder structures for your Python project
 - 📦 Unit-test and [pytest](https://docs.pytest.org/) supports
+- 🧪 Create virtual environment
 - 🔧 Automatically dependencies installation
-- 📏 [tox](https://tox.wiki/en/stable/) configuration supports and other remotes CI
+- 🪛 Add build and deploy dependencies to distribute package
+- 📏 [tox](https://tox.wiki/en/stable/) configuration supports and remotes CI like [CircleCI](https://circleci.com/) and [TravisCI](https://www.travis-ci.com/)
 - ⌨️ [MkDocs](https://www.mkdocs.org/) and [Sphinx](https://www.sphinx-doc.org/) documentation supports
+- 🧰 Initialize git repository and gitignore file
 - 🌎 Github and Gitlab remote repository supports
+- 📑 Create README, LICENSE, CONTRIBUTING, CODE_OF_CONDUCT and CHANGES files
+- 🐳 Create Dockerfile and Containerfile for your project
+- 💡 Can use _quick_, _simple_ and _full_ argument for rapid configuration
 
-<img src="https://i.ibb.co/SvptyfB/psp-009.png" alt="psp" width="600"/>
+<a href="https://asciinema.org/a/688780" target="_blank"><img src="https://asciinema.org/a/688780.svg" /></a>
 
-> [!NOTE]
-> This project is WIP: beta
+<img src="https://i.ibb.co/p4Zgg1b/psp010.png" alt="psp" width="790"/>
 
 The result is:
 
 ```console
-$> tree test/ --filelimit=10 -a
+$> tree test/ --filelimit=19 -a
 test                    # Project folder
 ├── LICENSE.md          # License file
 ├── pyproject.toml      # Python package configuration file
@@ -29,6 +35,10 @@ test                    # Project folder
 │   └── config.yml      # CI configuration file
 ├── CODE_OF_CONDUCT.md  # Code of Conduct
 ├── CONTRIBUTING.md     # Contributing guide lines
+├── Containerfile       # Standard container file for build image
+├── Dockerfile          # Docker container file for build image
+├── Makefile            # Makefile for command make; make help
+├── requirements.txt    # Dependencies list used by third programs
 ├── docs                # Documentation folder: Sphinx/MKDocs
 │   ├── build
 │   ├── make.bat
@@ -69,14 +79,14 @@ test                    # Project folder
 └── venv                # Virtual environment
     ├── bin  [33 entries exceeds filelimit, not opening dir]
     ├── include
-    │   └── python3.12
+    │   └── python3.13
     ├── lib
-    │   └── python3.12
+    │   └── python3.13
     │       └── site-packages  [68 entries exceeds filelimit, not opening dir]
     ├── lib64 -> lib
     └── pyvenv.cfg
 
-30 directories, 39 files
+29 directories, 44 files
 ```
 
 And `git` status is:
@@ -126,13 +136,13 @@ To install compiled file into your machine, download it:
 For all users:
 ```console
 sudo -i
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.0.9/psp_linux > /usr/bin/psp
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.1.0/psp_linux > /usr/bin/psp
 chmod +x /usr/bin/psp
 ```
 
 For current user:
 ```console
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.0.9/psp_linux > $HOME/.local/bin/psp
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.1.0/psp_linux > $HOME/.local/bin/psp
 chmod +x $HOME/.local/bin/psp
 ```
 
@@ -140,23 +150,25 @@ chmod +x $HOME/.local/bin/psp
 
 ```console
 sudo su -
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.0.9/psp_macos > /usr/bin/psp
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.1.0/psp_macos > /usr/bin/psp
 chmod +x /usr/bin/psp
 ```
 
 ### Packages
 
+If you want install OS package, follow instructions for your Operating System:
+
 For **Debian/Ubuntu**:
 
 ```console
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.0.9/psp.deb
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.1.0/psp.deb
 sudo dpkg -i psp.deb
 ```
 
 For **Fedora/Mageia/OpenSuse**:
 
 ```console
-sudo rpm -i https://github.com/MatteoGuadrini/psp/releases/download/v0.0.9/psp.rpm
+sudo rpm -i https://github.com/MatteoGuadrini/psp/releases/download/v0.1.0/psp.rpm
 ```
 
 ### Compile as your own
@@ -167,23 +179,6 @@ Instead, if you compile this project as own, follow this steps:
 git clone https://github.com/MatteoGuadrini/psp.git
 cd psp && cargo build --release && sudo cp -var target/release/psp /usr/bin/psp
 ```
-
-## Features
-
-- [x] Scaffolding file and folder structures for your Python project
-- [x] Prepare git and gitignore
-- [x] Prepare unit test files (also with pytest)
-- [x] Prepare virtual environment
-- [x] Install dependencies
-- [x] Prepare pyproject.toml
-- [x] Prepare CI configuration files
-- [x] Prepare Github/Gitlab files
-- [x] Prepare tox environment
-- [x] Prepare docs folder for sphinx/mkdocs documentation
-- [x] Prepare README, LICENSE, CONTRIBUTING, CODE_OF_CONDUCT and CHANGES files
-- [ ] Add build and deploy dependencies to distribute package
-- [ ] Add Dockerfile for your project
-- [ ] Add _quick_, _simple_ and _full_ argument for rapid configuration
 
 ## Open source
 _psp_ is an open source project. Any contribute, It's welcome.

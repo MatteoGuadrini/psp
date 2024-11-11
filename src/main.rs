@@ -9,7 +9,7 @@ use std::{
 };
 
 // Constants
-const VERSION: &str = "0.0.9";
+const VERSION: &str = "0.1.0";
 const ARGS: [&str; 4] = ["help", "quick", "simple", "full"];
 
 // Utility functions
@@ -912,7 +912,7 @@ fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) {
     if shortcut == "simple" {
         docs = "None".to_string();
     } else {
-        docs = prompt_select("Select documention generator:", options, "None");
+        docs = prompt_select("Select documentation generator:", options, "None");
     }
     if docs != "None" {
         let docs_home = format!("{root}/docs");
