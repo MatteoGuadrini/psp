@@ -119,7 +119,7 @@ fn get_shortcut() -> String {
 
 // Project name
 fn prj_name() -> (String, String) {
-    let name = prompt_text("Name of Python project:", "pyprj", "Type name or path")
+    let name = prompt_text("Name of Python project:", "None", "Type name or path")
         .trim()
         .trim_end_matches("/")
         .to_string();
@@ -135,6 +135,11 @@ fn prj_name() -> (String, String) {
     } else {
         name.to_lowercase()
     };
+    // Check if package is empty
+    if package.is_empty() {
+        eprintln!("error: empty word is not allowed");
+        exit(1)
+    }
     let root = name.clone();
     let project = format!("{root}/{package}");
     // Make directories structure
