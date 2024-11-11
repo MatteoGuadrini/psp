@@ -1,5 +1,6 @@
 use inquire::{Confirm, Select, Text};
 use std::{
+    env::args,
     env::var,
     fs::{create_dir_all, File},
     io::Write,
@@ -8,19 +9,23 @@ use std::{
 };
 
 // Constants
-const VERSION: &str = "0.0.9";
+const VERSION: &str = "0.1.0";
+const ARGS: [&str; 4] = ["help", "quick", "simple", "full"];
 
 // Utility functions
 
 // Function for check if tool is installed
 fn check_tool(tool: &str) {
-    let home = var("HOME").unwrap();
-    let root_bin = format!("/usr/bin/{tool}");
-    let user_bin = format!("{home}/.local/bin/{tool}");
-    if !Path::new(&root_bin).exists() && !Path::new(&user_bin).exists() {
-        eprintln!("error: {} is not installed", tool);
-        exit(1);
+    let env_paths = var("PATH").unwrap();
+    let paths: Vec<&str> = env_paths.split(':').collect();
+    for path in paths {
+        let tool_path = format!("{path}/{tool}");
+        if Path::new(&tool_path).exists() {
+            return;
+        }
     }
+    eprintln!("error: {} is not installed", tool);
+    exit(1);
 }
 
 // Function for creating folders and parents
@@ -88,16 +93,37 @@ fn prompt_select(question: &str, options: Vec<&str>, help: &str) -> String {
     answer.unwrap().to_string()
 }
 
+// Function to print help
+fn print_help(exit_code: i32) {
+    println!("usage: psp [shortcut]");
+    println!("ie: psp [help|quick|simple|full]");
+    exit(exit_code)
+}
+
+// Function that capture keyword argument
+fn get_shortcut() -> String {
+    let args: Vec<String> = args().collect();
+    if args.len() > 1 {
+        let shorcut = &args[1];
+        if !ARGS.contains(&shorcut.as_str()) {
+            eprintln!("error: unknown shortcut command `{}`", shorcut);
+            print_help(1);
+        }
+        shorcut.clone()
+    } else {
+        "None".to_string()
+    }
+}
+
 // Core functions
 
 // Project name
 fn prj_name() -> (String, String) {
-    let name = prompt_text(
-        "Name of Python project:",
-        "pyprj",
-        "Type name or absolute path",
-    );
-    // Check if absolute path
+    let name = prompt_text("Name of Python project:", "None", "Type name or path")
+        .trim()
+        .trim_end_matches("/")
+        .to_string();
+    // Check if name is a path
     let package: String = if name.contains('/') {
         let parts: Vec<&str> = name.split('/').collect();
         let last = parts.last();
@@ -111,12 +137,26 @@ fn prj_name() -> (String, String) {
     };
     // Check if package is empty
     if package.is_empty() {
-        eprintln!("error: remove trailing slash to {name}");
+        eprintln!("error: empty word is not allowed");
         exit(1)
     }
+    // Check if package contains spaces, and replace it with underscores
+    let package = package.replace(" ", "_");
     let root = name.clone();
     let project = format!("{root}/{package}");
     // Make directories structure
+    let package_path = Path::new(&project);
+    // Check if project path already exists
+    if package_path.exists() {
+        let project_exists = prompt_confirm(
+            format!("Path {root} exists. Do you want continue?").as_str(),
+            false,
+            "Some files will be overwritten",
+        );
+        if !project_exists {
+            exit(0)
+        }
+    }
     let dir_ret = make_dirs(format!("{project}").as_str());
     if let Err(e) = dir_ret {
         eprintln!("error: {}", e);
@@ -159,8 +199,15 @@ print(f'{} {{__version__}}')
 }
 
 // Project git
-fn prj_git(name: &str) -> bool {
-    let confirm = prompt_confirm("Do you want to start git repository?", true, "None");
+fn prj_git(name: &str, shortcut: &String) -> bool {
+    let confirm: bool;
+    if shortcut == "quick" || shortcut == "full" {
+        confirm = true;
+    } else if shortcut == "simple" {
+        confirm = false;
+    } else {
+        confirm = prompt_confirm("Do you want to start git repository?", true, "None");
+    }
     if confirm {
         let output = std::process::Command::new("git")
             .arg("init")
@@ -224,8 +271,13 @@ docs/_build/
 }
 
 // Project unit tests
-fn prj_test(root: &str, name: &str) -> bool {
-    let confirm = prompt_confirm("Do you want unit test files?", true, "None");
+fn prj_test(root: &str, name: &str, shortcut: &String) -> bool {
+    let confirm: bool;
+    if shortcut != "None" {
+        confirm = true;
+    } else {
+        confirm = prompt_confirm("Do you want unit test files?", true, "None");
+    }
     if confirm {
         let project_name = name.to_lowercase();
         // Make directories structure
@@ -260,17 +312,19 @@ fn prj_test(root: &str, name: &str) -> bool {
 
 
 import unittest
+from {project_name} import __version__
 
 
 class TestAll(unittest.TestCase):
 
     def test_all(self):
+        self.assertEqual(__version__, '0.0.1')
         print('Test all {project_name} successfully!')
 
 
 # Test functions for pytest
 def test_all():
-    assert '{project_name}' == '{project_name}'
+    assert __version__ == '0.0.1'
 
 
 if __name__ == '__main__':
@@ -289,8 +343,15 @@ if __name__ == '__main__':
 }
 
 // Project venv
-fn prj_venv(name: &str) -> bool {
-    let confirm = prompt_confirm("Do you want to create a virtual environment?", true, "None");
+fn prj_venv(name: &str, shortcut: &String) -> bool {
+    let confirm: bool;
+    if shortcut == "quick" || shortcut == "full" {
+        confirm = true;
+    } else if shortcut == "simple" {
+        confirm = false;
+    } else {
+        confirm = prompt_confirm("Do you want to create a virtual environment?", true, "None");
+    }
     if confirm {
         let output = std::process::Command::new("python3")
             .args(["-m", "venv", "venv"])
@@ -308,12 +369,17 @@ fn prj_venv(name: &str) -> bool {
 }
 
 // Project dependencies
-fn prj_deps(name: &str, venv: bool) -> Vec<String> {
-    let deps = prompt_text(
-        "Install dependencies:",
-        "No",
-        "Write package(s) separates with spaces or empty",
-    );
+fn prj_deps(name: &str, venv: bool, shortcut: &String) -> Vec<String> {
+    let deps: String;
+    if shortcut == "simple" || shortcut == "quick" {
+        deps = "No".to_string();
+    } else {
+        deps = prompt_text(
+            "Install dependencies:",
+            "No",
+            "Write package(s) separates with spaces or empty",
+        );
+    }
     // Split String into Vector
     let dependencies: Vec<String> = deps
         .as_str()
@@ -337,6 +403,15 @@ fn prj_deps(name: &str, venv: bool) -> Vec<String> {
         // Check if command exit successfully
         if !output.status.success() {
             eprintln!("error: dependencies ({deps}) installation failed");
+        }
+        // Build a requirements.txt file
+        let content = format!(
+            "# Generated by psp (https://github.com/MatteoGuadrini/psp)\n\n{}",
+            dependencies.join("\n")
+        );
+        let requirements = make_file(format!("{name}/requirements.txt").as_str(), content);
+        if let Err(e) = requirements {
+            eprintln!("error: {}", e);
         }
     }
     dependencies
@@ -409,9 +484,14 @@ changelog = 'https://docs.python.org/3/whatsnew/changelog.html'
 }
 
 // Project CI
-fn prj_ci(name: &str, deps: &Vec<String>) {
+fn prj_ci(name: &str, deps: &Vec<String>, shortcut: &String) {
     let options = vec!["None", "TravisCI", "CircleCI"];
-    let ci = prompt_select("Select CI provider:", options, "None");
+    let ci: String;
+    if shortcut == "simple" || shortcut == "quick" {
+        ci = "None".to_string();
+    } else {
+        ci = prompt_select("Select remote CI provider:", options, "None");
+    }
     let requirements = if deps.contains(&"No".to_string()) {
         "".to_string()
     } else {
@@ -488,9 +568,14 @@ jobs:
 }
 
 // Project Gitlab/Github
-fn prj_remote(root: &str, name: &str) {
+fn prj_remote(root: &str, name: &str, shortcut: &String) {
     let options = vec!["None", "Gitlab", "Github"];
-    let remote = prompt_select("Select git remote provider:", options, "None");
+    let remote: String;
+    if shortcut == "quick" {
+        remote = "None".to_string();
+    } else {
+        remote = prompt_select("Select git remote provider:", options, "None");
+    }
     if remote.as_str() != "None" {
         // Username of remote git service
         let username = prompt_text(format!("Username of {remote}:").as_str(), "None", "None");
@@ -770,9 +855,16 @@ assignees: {}
 }
 
 // Project tox
-fn prj_tox(name: &str, venv: bool) {
+fn prj_tox(name: &str, venv: bool, shortcut: &String) {
     // Create tox ini
-    let confirm = prompt_confirm("Do you want to configure tox?", false, "None");
+    let confirm: bool;
+    if shortcut == "quick" || shortcut == "simple" {
+        confirm = false;
+    } else if shortcut == "full" {
+        confirm = true;
+    } else {
+        confirm = prompt_confirm("Do you want to configure tox?", false, "None");
+    }
     if confirm {
         let mut pip = std::process::Command::new("pip3");
         // Activate venv
@@ -801,7 +893,9 @@ isolated_build = True
 
 [testenv]
 labels = test, core
-deps = pytest
+deps=
+    pytest
+    -r requirements.txt
 commands = pytest tests"
             .to_string();
         let tox_ini = make_file(format!("{name}/tox.ini").as_str(), tox_ini_content);
@@ -811,9 +905,15 @@ commands = pytest tests"
     }
 }
 
-fn prj_docs(root: &str, name: &str, venv: bool) {
+// Project documentation site generator
+fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) {
     let options = vec!["None", "Sphinx", "MKDocs"];
-    let docs = prompt_select("Select documention generator:", options, "None");
+    let docs: String;
+    if shortcut == "simple" {
+        docs = "None".to_string();
+    } else {
+        docs = prompt_select("Select documentation generator:", options, "None");
+    }
     if docs != "None" {
         let docs_home = format!("{root}/docs");
         // Create docs folder
@@ -908,12 +1008,20 @@ fn prj_docs(root: &str, name: &str, venv: bool) {
     }
 }
 
-fn prj_files(root: &str, name: &str) {
-    let confirm = prompt_confirm(
-        "Do you want create common files?",
-        true,
-        "Create README, CONTRIBUTING, CODE_OF_CONDUCT and CHANGES",
-    );
+// Project common files
+fn prj_files(root: &str, name: &str, shortcut: &String) {
+    let confirm: bool;
+    if shortcut == "quick" || shortcut == "full" {
+        confirm = true;
+    } else if shortcut == "simple" {
+        confirm = false;
+    } else {
+        confirm = prompt_confirm(
+            "Do you want create common files?",
+            true,
+            "Create README, CONTRIBUTING, CODE_OF_CONDUCT and CHANGES",
+        );
+    }
     if confirm {
         // Create README
         let readme_content = format!(
@@ -988,6 +1096,8 @@ Feel free to ask questions via issues, discussions, or mail.
         let output = std::process::Command::new("curl")
             .arg("-oCODE_OF_CONDUCT.md")
             .arg("-k")
+            .arg("--connect-timeout")
+            .arg("10")
             .arg("https://www.contributor-covenant.org/version/2/1/code_of_conduct/code_of_conduct.md")
             .current_dir(&root)
             .output()
@@ -999,17 +1109,23 @@ Feel free to ask questions via issues, discussions, or mail.
     }
 }
 
-fn prj_license(name: &str) -> String {
+// Project license
+fn prj_license(name: &str, shortcut: &String) -> String {
     // Select license
     let options = vec![
         "None",
         "MIT",
         "Apache",
-        "Creative Commons",
         "Mozilla",
+        "Creative Commons",
         "Gnu Public License",
     ];
-    let license = prompt_select("Select license:", options, "None");
+    let license: String;
+    if shortcut == "simple" {
+        license = "None".to_string();
+    } else {
+        license = prompt_select("Select license:", options, "None");
+    }
     let mut license_url = String::new();
     if license == "MIT" {
         license_url.push_str("https://www.mit.edu/~amini/LICENSE.md")
@@ -1027,6 +1143,8 @@ fn prj_license(name: &str) -> String {
         let output = std::process::Command::new("curl")
             .arg("-oLICENSE.md")
             .arg("-k")
+            .arg("--connect-timeout")
+            .arg("10")
             .arg(license_url)
             .current_dir(&name)
             .output()
@@ -1039,8 +1157,141 @@ fn prj_license(name: &str) -> String {
     license
 }
 
+// Project pypi dependencies
+fn prj_pypi(root: &str, venv: bool, shortcut: &String) {
+    let confirm: bool;
+    if shortcut == "quick" || shortcut == "full" {
+        confirm = true;
+    } else if shortcut == "simple" {
+        confirm = false;
+    } else {
+        confirm = prompt_confirm(
+            "Do you want to install dependencies to publish on pypi?",
+            true,
+            "None",
+        );
+    }
+    if confirm {
+        // Install twine and build
+        let mut pip = std::process::Command::new("pip3");
+        // Activate venv
+        if venv {
+            pip.env("PATH", "venv/bin");
+        }
+        let output = pip
+            .arg("install")
+            .arg("--timeout=10")
+            .arg("--retries=1")
+            .arg("twine")
+            .arg("build")
+            .current_dir(&root)
+            .output()
+            .expect("pip should be installed");
+        // Check if command exit successfully
+        if !output.status.success() {
+            eprintln!("error: build and twine installation failed");
+            return;
+        }
+    }
+}
+
+// Project Docker/Podman
+fn prj_docker(root: &str, name: &str, shortcut: &String) -> bool {
+    let confirm: bool;
+    if shortcut == "quick" || shortcut == "full" {
+        confirm = true;
+    } else if shortcut == "simple" {
+        confirm = false;
+    } else {
+        confirm = prompt_confirm(
+            "Do you want to create a Dockerfile and Containerfile?",
+            true,
+            "None",
+        );
+    }
+    if confirm {
+        // Create README
+        let dockerfile_content = format!(
+            "# Generated by psp (https://github.com/MatteoGuadrini/psp)
+
+FROM python:3
+COPY {name} /{name}/{name}
+COPY pyproject.toml /{name}
+WORKDIR /{name}
+RUN pip install .
+CMD [ 'python', '-m', '{name}' ]
+"
+        );
+        let dockerfile = make_file(
+            format!("{root}/Dockerfile").as_str(),
+            dockerfile_content.clone(),
+        );
+        if let Err(e) = dockerfile {
+            eprintln!("error: {}", e);
+        }
+        let containerfile = make_file(format!("{root}/Containerfile").as_str(), dockerfile_content);
+        if let Err(e) = containerfile {
+            eprintln!("error: {}", e);
+        }
+        true
+    } else {
+        false
+    }
+}
+
+// Project Makefile
+fn prj_makefile(root: &str, name: &str) {
+    let makefile_content = format!(
+        "# Generated by psp (https://github.com/MatteoGuadrini/psp)
+
+.PHONY: run test clean
+
+PYTHON = python3
+VENV = venv
+
+help:
+\t@echo 'help: make (help|test|run|clean)'
+
+test:
+ifneq ('$(wildcard ${{VENV}}/bin/${{PYTHON}})','')
+\t${{VENV}}/bin/${{PYTHON}} -m unittest
+else
+\t${{PYTHON}} -m unittest
+endif
+
+run:
+ifneq ('$(wildcard ${{VENV}}/bin/${{PYTHON}})','')
+\t${{VENV}}/bin/${{PYTHON}} -m {name}
+else
+\t${{PYTHON}} -m {name}
+endif
+
+clean:
+\trm -fr build/
+\trm -fr dist/
+\trm -fr .eggs/
+\tfind . -name '*.egg-info' -exec rm -fr {{}} +
+\tfind . -name '*.egg' -exec rm -f {{}} +
+\tfind . -name '*.pyc' -exec rm -f {{}} +
+\tfind . -name '*.pyo' -exec rm -f {{}} +
+\tfind . -name '*~' -exec rm -f {{}} +
+\tfind . -name '__pycache__' -exec rm -fr {{}} +
+"
+    );
+    let makefile = make_file(format!("{root}/Makefile").as_str(), makefile_content);
+    if let Err(e) = makefile {
+        eprintln!("error: {}", e);
+    }
+}
+
 // Main program
 fn main() {
+    // Check if argument is specified
+    let shortcut = get_shortcut();
+    // Print help message
+    if shortcut == "help" {
+        print_help(0)
+    }
     // Print welcome screen and version
     println!("Welcome to PSP (Python Scaffolding Projects): {VERSION}");
     // Check dependencies tools
@@ -1048,34 +1299,40 @@ fn main() {
     for tool in tools {
         check_tool(tool);
     }
-    // Create project structure by name
+    // Create project structure by name or path
     let (root, name) = prj_name();
     // Virtual Environment
-    let venv = prj_venv(&root);
+    let venv = prj_venv(&root, &shortcut);
     // Start git
-    let git = prj_git(&root);
+    let git = prj_git(&root, &shortcut);
     // Git remote
     if git {
-        prj_remote(&root, &name);
+        prj_remote(&root, &name, &shortcut);
     }
     // Unit tests
-    let tests = prj_test(&root, &name);
+    let tests = prj_test(&root, &name, &shortcut);
     // Install dependencies
-    let deps = prj_deps(&root, venv);
+    let deps = prj_deps(&root, venv, &shortcut);
     // Documentation
-    prj_docs(&root, &name, venv);
+    prj_docs(&root, &name, venv, &shortcut);
     if tests {
         // Tox
-        prj_tox(&root, venv);
+        prj_tox(&root, venv, &shortcut);
         // CI configuration
-        prj_ci(&root, &deps);
+        prj_ci(&root, &deps, &shortcut);
     }
     // Common files
-    prj_files(&root, &name);
+    prj_files(&root, &name, &shortcut);
     // License
-    let license = prj_license(&root);
+    let license = prj_license(&root, &shortcut);
+    // Build dependencies
+    prj_pypi(&root, venv, &shortcut);
     // Write pyproject.toml
     prj_toml(&root, &name, &deps, license);
+    // Dockerfile
+    prj_docker(&root, &name, &shortcut);
+    // Makefile
+    prj_makefile(&root, &name);
     // Finish scaffolding process
-    println!("Python project `{name}` created at {root}/")
+    println!("Python project `{name}` created at {root}")
 }

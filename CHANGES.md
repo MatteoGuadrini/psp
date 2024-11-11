@@ -1,5 +1,17 @@
 # Release notes
 
+## 0.1.0
+Nov 11, 2024
+- Add **prj_pypi** function
+- Add **prj_docker** function
+- Add **prj_makefile** function
+- Add **print_help** core function
+- Add _quick_, _simple_ and _full_ argument for rapid configuration
+- Add _requirements.txt_file
+- Rewrite **check_tool** function with PATH enviroment variable
+- Fix if _name_ of project is empty
+- Fix if _name_ of project contains spaces
+
 ## 0.0.9
 Oct 15, 2024
 - Add **prj_files** function
