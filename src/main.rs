@@ -140,6 +140,8 @@ fn prj_name() -> (String, String) {
         eprintln!("error: empty word is not allowed");
         exit(1)
     }
+    // Check if package contains spaces, and replace it with underscores
+    let package = package.replace(" ", "_");
     let root = name.clone();
     let project = format!("{root}/{package}");
     // Make directories structure
