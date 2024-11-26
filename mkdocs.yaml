@@ -8,3 +8,5 @@ theme:
   palette:
     primary: yellow
     accent: blue
+markdown_extensions:
+  - admonition
