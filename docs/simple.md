@@ -41,6 +41,8 @@ Welcome to PSP (Python Scaffolding Projects): 0.1.0
 
 ## Virtual Enviromenment
 
+This option create a new Python virtual environment.
+
 A [virtual environment](https://docs.python.org/3/library/venv.html) is created on top of an existing Python installation, known as the virtual environment’s _base_ Python,
 and may optionally be isolated from the packages in the base environment, so only those explicitly installed in the virtual environment are available.
 
@@ -58,7 +60,7 @@ The project structure after this choosen:
 mypyprj
 ├── pyproject.toml
 ├── mypyprj
-│   ...
+│   └──...
 └── venv                       ┐
     ├── bin                    |
     ├── include                |
@@ -68,4 +70,58 @@ mypyprj
     │       └── site-packages  |
     ├── lib64 -> lib           |
     └── pyvenv.cfg             ┘
+```
+
+## Git
+
+This option create a new git repository.
+
+[Git](https://git-scm.com/) is a free and open source distributed version control system designed to handle everything from small to very large projects with speed and efficiency.
+
+The default value is _Yes_.
+
+```console
+...
+> Name of Python project: mypyprj
+> Do you want to create a virtual environment? Yes
+? Do you want to start git repository? (Y/n)
+```
+
+The project structure after this choosen:
+
+```
+mypyprj
+├── pyproject.toml
+├── mypyprj
+│   └──...
+├── venv
+|   └──...
+├── .git                 ┐
+|   ├── branches         |
+|   ├── config           |
+|   ├── description      |
+|   ├── HEAD             |
+|   ├── hooks            |
+|   ├── info             |
+|   │   └── exclude      | Git repository
+|   ├── objects          |
+|   │   ├── info         |
+|   │   └── pack         |
+|   └── refs             |
+|       ├── heads        |
+|       └── tags         |
+└── .gitignore           ┘
+```
+
+The git repository is initialized:
+
+```console
+[gu]# cd mypyprj && git status
+On branch main
+
+No commits yet
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+...
 ```
