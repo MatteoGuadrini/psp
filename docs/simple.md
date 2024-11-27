@@ -24,11 +24,10 @@ Now, if you type only a name, **psp** create in the _current folder_ this struct
 
 ```
 mypyprj
-├── pyproject.toml         ┐
-├── mypyprj                │ Package source code, metadata,
-│   ├── __init__.py        │ and build instructions
-│   └── __main__.py        ┘
-...
+├── pyproject.toml          ┐
+└─── mypyprj                │ Package source code, metadata,
+     ├── __init__.py        │ and build instructions
+     └── __main__.py        ┘
 ```
 
 You can also specify a relative/absolute path; in this case the last name of path is your _project name_:
@@ -38,4 +37,35 @@ You can also specify a relative/absolute path; in this case the last name of pat
 Welcome to PSP (Python Scaffolding Projects): 0.1.0
 ? Name of Python project: /tmp/mypyprj
 [Type name or path]
+```
+
+## Virtual Enviromenment
+
+A [virtual environment](https://docs.python.org/3/library/venv.html) is created on top of an existing Python installation, known as the virtual environment’s _base_ Python,
+and may optionally be isolated from the packages in the base environment, so only those explicitly installed in the virtual environment are available.
+
+The default value is _Yes_.
+
+```console
+Welcome to PSP (Python Scaffolding Projects): 0.1.0
+> Name of Python project: mypyprj
+? Do you want to create a virtual environment? (Y/n)
+```
+
+The project structure after this choosen:
+
+```
+mypyprj
+├── pyproject.toml
+├── mypyprj
+│   ...
+└── venv                       ┐
+    ├── bin                    |
+    ├── include                |
+    │   └── python3.13         |
+    ├── lib                    | Virtual Environment
+    │   └── python3.13         |
+    │       └── site-packages  |
+    ├── lib64 -> lib           |
+    └── pyvenv.cfg             ┘
 ```
