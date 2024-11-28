@@ -125,3 +125,64 @@ Untracked files:
   (use "git add <file>..." to include in what will be committed)
 ...
 ```
+
+
+## Git remote provider
+
+This option create a git remote repository configuration files.
+
+!!! note
+    This option is available only if **git repository** is initialize.
+
+```console
+...
+> Do you want to start git repository? Yes
+? Select git remote provider:
+  None
+  Gitlab
+> Github
+[↑↓ to move, enter to select, type to filter]
+```
+
+The project structure after this choosen:
+
+```
+mypyprj
+├── pyproject.toml
+├── mypyprj
+│   └──...
+├── venv
+|   └──...
+├── .git
+|   └──...
+├── .gitignore
+└── .github                            ┐
+    ├── ISSUE_TEMPLATE                 |
+    │   ├── bug.yml                    |
+    │   ├── config.yml                 | Github specific files
+    │   └── feature.yml                |
+    └── PULL_REQUEST_TEMPLATE          |
+        └── pull_request_template.md   ┘
+```
+
+### Git remote username
+
+This option create a git remote repository configuration files.
+
+!!! note
+    This option is available only if **git remote option** is set.
+
+```console
+...
+> Do you want to create a virtual environment? Yes
+> Do you want to start git repository? Yes
+> Select git remote provider: Github
+? Username of Github: MatteoGuadrini
+```
+
+Now the git repository has remote endpoint:
+
+```console
+[gu]# cd mypyprj && git remote get-url origin
+git@github.com:MatteoGuadrini/mypyprj.git
+```
