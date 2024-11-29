@@ -158,9 +158,9 @@ mypyprj
 ├── .gitignore
 └── .github                            ┐
     ├── ISSUE_TEMPLATE                 |
-    │   ├── bug.yml                    |
-    │   ├── config.yml                 | Github specific files
-    │   └── feature.yml                |
+    |   ├── bug.yml                    |
+    |   ├── config.yml                 | Github specific files
+    |   └── feature.yml                |
     └── PULL_REQUEST_TEMPLATE          |
         └── pull_request_template.md   ┘
 ```
@@ -185,4 +185,34 @@ Now the git repository has remote endpoint:
 ```console
 [gu]# cd mypyprj && git remote get-url origin
 git@github.com:MatteoGuadrini/mypyprj.git
+```
+
+## Test files
+
+This option create the Python Unit test files.
+
+```console
+...
+> Select git remote provider: Github
+> Username of Github: MatteoGuadrini
+? Do you want unit test files? (Y/n)
+```
+
+The project structure after this choosen:
+
+```
+mypyprj
+├── pyproject.toml
+├── mypyprj
+│   └──...
+├── venv
+|   └──...
+├── .git
+|   └──...
+├── .gitignore
+├── .github
+|   └──...
+└── tests                ┐
+    ├── __init__.py      | Python test files
+    └── test_mypyprj.py  ┘
 ```
