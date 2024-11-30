@@ -191,6 +191,8 @@ git@github.com:MatteoGuadrini/mypyprj.git
 
 This option create the Python Unit test files.
 
+The default value is _Yes_.
+
 ```console
 ...
 > Select git remote provider: Github
@@ -215,4 +217,47 @@ mypyprj
 └── tests                ┐
     ├── __init__.py      | Python test files
     └── test_mypyprj.py  ┘
+```
+
+## Dependencies
+
+With this option specify dependencies of your project.
+This option use `pip` to install all dependencies.
+
+!!! note
+    This option follow the format of [_requirements specifiers_](https://pip.pypa.io/en/stable/reference/requirement-specifiers) without any space betwenn name and version.
+
+The default value is _No_.
+
+```console
+...
+> Username of Github: MatteoGuadrini
+> Do you want unit test files? Yes
+? Install dependencies: (No) tablib==3.4.0 pyreports<1.7.0 scipy numpy
+[Write package(s) separates with spaces or empty]
+```
+
+!!! warning
+    If has been specified the option [Virtual Enviromenment](#virtual-enviromenment), the packages will be installed in the _Virtual Enviromenment_; otherwise, for the current user.
+
+The project structure after this choosen will be the same; will change the _venv_ folder and _pyproject.toml_ file:
+
+```console
+[gu]# ls -l mypyprj/venv/lib64/python3.12/site-packages
+total 25700
+...
+drwxrwxr-x 24 gu gu      960 Dec  2 10:32 numpy
+drwxrwxr-x  2 gu gu      180 Dec  2 10:32 numpy-2.1.3.dist-info
+drwxrwxr-x  2 gu gu      100 Dec  2 10:32 numpy.libs
+...
+drwxrwxr-x  3 gu gu      180 Dec  2 10:32 pyreports
+drwxrwxr-x  2 gu gu      200 Dec  2 10:32 pyreports-1.6.0.dist-info
+...
+drwxrwxr-x 22 gu gu      600 Dec  2 10:32 scipy
+drwxrwxr-x  2 gu gu      160 Dec  2 10:32 scipy-1.14.1.dist-info
+drwxrwxr-x  2 gu gu      140 Dec  2 10:32 scipy.libs
+...
+drwxrwxr-x  5 gu gu      200 Dec  2 10:32 tablib
+drwxrwxr-x  2 gu gu      200 Dec  2 10:32 tablib-3.4.0.dist-info
+...
 ```

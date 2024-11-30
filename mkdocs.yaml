@@ -2,7 +2,6 @@ site_name: PSP
 nav:
   - Home: index.md
   - Simple: simple.md
-  - Advanced: advanced.md
 theme:
   name: material
   palette:
