@@ -39,7 +39,7 @@ Welcome to PSP (Python Scaffolding Projects): 0.1.0
 [Type name or path]
 ```
 
-## Virtual Enviromenment
+## Virtual Environment
 
 This option create a new Python virtual environment.
 
@@ -238,9 +238,9 @@ The default value is _No_.
 ```
 
 !!! warning
-    If has been specified the option [Virtual Enviromenment](#virtual-enviromenment), the packages will be installed in the _Virtual Enviromenment_; otherwise, for the current user.
+    If has been specified the option [Virtual Environment](#virtual-environment), the packages will be installed in the _Virtual Environment_; otherwise, for the current user.
 
-The project structure after this choosen will be the same; will change the _venv_ folder and _pyproject.toml_ file:
+The project structure after this choosen will be the same; will change the _venv_ folder:
 
 ```console
 [gu]# ls -l mypyprj/venv/lib64/python3.12/site-packages
@@ -260,4 +260,51 @@ drwxrwxr-x  2 gu gu      140 Dec  2 10:32 scipy.libs
 drwxrwxr-x  5 gu gu      200 Dec  2 10:32 tablib
 drwxrwxr-x  2 gu gu      200 Dec  2 10:32 tablib-3.4.0.dist-info
 ...
+```
+
+## Documentation
+
+With this option specify documentation generator.
+If you select one option, will be installed the package relative at the chosen.
+
+The default value is _None_.
+
+```console
+...
+> Install dependencies: tablib==3.4.0 pyreports<1.7.0 scipy numpy
+? Select documentation generator:
+  None
+> Sphinx
+  MKDocs
+[↑↓ to move, enter to select, type to filter]
+```
+
+!!! warning
+    If has been specified the option [Virtual Environment](#virtual-environment), the packages will be installed in the _Virtual Environment_; otherwise, for the current user.
+
+The project structure after this choosen:
+
+```
+mypyprj
+├── pyproject.toml
+├── mypyprj
+│   └──...
+├── venv
+|   └──...
+├── .git
+|   └──...
+├── .gitignore
+├── .github
+|   └──...
+├── tests
+|   └──...
+└── docs                  ┐
+    ├── Makefile          |
+    ├── build             |
+    ├── make.bat          | Documentation metadata,
+    └── source            | files and folders,
+        ├── _static       | and build instructions
+        ├── _templates    |
+        ├── conf.py       |
+        └── index.rst     ┘
 ```
