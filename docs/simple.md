@@ -132,7 +132,7 @@ Untracked files:
 This option create a git remote repository configuration files.
 
 !!! note
-    This option is available only if **git repository** is initialize.
+    This option is available only if [git repository](#git) is initialize.
 
 ```console
 ...
@@ -280,7 +280,7 @@ The default value is _None_.
 ```
 
 !!! warning
-    If has been specified the option [Virtual Environment](#virtual-environment), the packages will be installed in the _Virtual Environment_; otherwise, for the current user.
+    If has been specified the option [Virtual Environment](#virtual-environment), the package will be installed in the _Virtual Environment_; otherwise, for the current user.
 
 The project structure after this choosen:
 
@@ -307,4 +307,44 @@ mypyprj
         ├── _templates    |
         ├── conf.py       |
         └── index.rst     ┘
+```
+
+## Tox tool
+
+This option install [tox](https://tox.wiki/) and create configuration files.
+
+!!! note
+    This option is available only if [test files](#test-files) has been selected.
+
+!!! warning
+    If has been specified the option [Virtual Environment](#virtual-environment), `tox` will be installed in the _Virtual Environment_; otherwise, for the current user.
+
+The default value is _No_.
+
+```console
+...
+> Install dependencies: tablib==3.4.0 pyreports<1.7.0 scipy numpy
+> Select documention generator: Sphinx
+? Do you want to configure tox? (y/N) y
+```
+
+The project structure after this choosen:
+
+```
+mypyprj
+├── pyproject.toml
+├── mypyprj
+│   └──...
+├── venv
+|   └──...
+├── .git
+|   └──...
+├── .gitignore
+├── .github
+|   └──...
+├── tests
+|   └──...
+├── docs
+|   └──...
+└── tox.ini   | tox configuration file
 ```
