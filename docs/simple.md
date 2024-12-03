@@ -348,3 +348,42 @@ mypyprj
 |   └──...
 └── tox.ini   | tox configuration file
 ```
+
+## Remote CI (Continuous Integration)
+
+This option configure a remote _Continuous Integration_ provider.
+
+The default value is _None_.
+
+```console
+...
+> Do you want to configure tox? Yes
+? Select remote CI provider:
+  None
+  TravisCI
+> CircleCI
+[↑↓ to move, enter to select, type to filter]
+```
+
+The project structure after this choosen:
+
+```
+mypyprj
+├── pyproject.toml
+├── mypyprj
+│   └──...
+├── venv
+|   └──...
+├── .git
+|   └──...
+├── .gitignore
+├── .github
+|   └──...
+├── tests
+|   └──...
+├── docs
+|   └──...
+├── tox.ini
+└── .circleci        ┐ Remote CI
+    └── config.yml   ┘ provider
+```
