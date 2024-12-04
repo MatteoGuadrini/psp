@@ -1,4 +1,5 @@
-# **psp** (Python Scaffolding Projects)
+<img src="img/psp_logo.svg" alt="Logo" align="right" width="150"/> **psp** (Python Scaffolding Projects)
+======
 
 `psp` is a blazing fast command line utility to scaffold your _Python_ project, written in Rust.
 
