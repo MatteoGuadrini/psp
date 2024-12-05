@@ -62,13 +62,13 @@ mypyprj
 ├── mypyprj
 │   └──...
 └── venv                       ┐
-    ├── bin                    |
-    ├── include                |
-    │   └── python3.13         |
-    ├── lib                    | Virtual Environment
-    │   └── python3.13         |
-    │       └── site-packages  |
-    ├── lib64 -> lib           |
+    ├── bin                    │
+    ├── include                │
+    │   └── python3.13         │
+    ├── lib                    │ Virtual Environment
+    │   └── python3.13         │
+    │       └── site-packages  │
+    ├── lib64 -> lib           │
     └── pyvenv.cfg             ┘
 ```
 
@@ -95,21 +95,21 @@ mypyprj
 ├── mypyprj
 │   └──...
 ├── venv
-|   └──...
+│   └──...
 ├── .git                 ┐
-|   ├── branches         |
-|   ├── config           |
-|   ├── description      |
-|   ├── HEAD             |
-|   ├── hooks            |
-|   ├── info             |
-|   │   └── exclude      | Git repository
-|   ├── objects          |
-|   │   ├── info         |
-|   │   └── pack         |
-|   └── refs             |
-|       ├── heads        |
-|       └── tags         |
+│   ├── branches         │
+│   ├── config           │
+│   ├── description      │
+│   ├── HEAD             │
+│   ├── hooks            │
+│   ├── info             │
+│   │   └── exclude      │ Git repository
+│   ├── objects          │
+│   │   ├── info         │
+│   │   └── pack         │
+│   └── refs             │
+│       ├── heads        │
+│       └── tags         │
 └── .gitignore           ┘
 ```
 
@@ -152,16 +152,16 @@ mypyprj
 ├── mypyprj
 │   └──...
 ├── venv
-|   └──...
+│   └──...
 ├── .git
-|   └──...
+│   └──...
 ├── .gitignore
 └── .github                            ┐
-    ├── ISSUE_TEMPLATE                 |
-    |   ├── bug.yml                    |
-    |   ├── config.yml                 | Github specific files
-    |   └── feature.yml                |
-    └── PULL_REQUEST_TEMPLATE          |
+    ├── ISSUE_TEMPLATE                 │
+    │   ├── bug.yml                    │
+    │   ├── config.yml                 │ Github specific files
+    │   └── feature.yml                │
+    └── PULL_REQUEST_TEMPLATE          │
         └── pull_request_template.md   ┘
 ```
 
@@ -208,14 +208,14 @@ mypyprj
 ├── mypyprj
 │   └──...
 ├── venv
-|   └──...
+│   └──...
 ├── .git
-|   └──...
+│   └──...
 ├── .gitignore
 ├── .github
-|   └──...
+│   └──...
 └── tests                ┐
-    ├── __init__.py      | Python test files
+    ├── __init__.py      │ Python test files
     └── test_mypyprj.py  ┘
 ```
 
@@ -290,22 +290,22 @@ mypyprj
 ├── mypyprj
 │   └──...
 ├── venv
-|   └──...
+│   └──...
 ├── .git
-|   └──...
+│   └──...
 ├── .gitignore
 ├── .github
-|   └──...
+│   └──...
 ├── tests
-|   └──...
+│   └──...
 └── docs                  ┐
-    ├── Makefile          |
-    ├── build             |
-    ├── make.bat          | Documentation metadata,
-    └── source            | files and folders,
-        ├── _static       | and build instructions
-        ├── _templates    |
-        ├── conf.py       |
+    ├── Makefile          │
+    ├── build             │
+    ├── make.bat          │ Documentation metadata,
+    └── source            │ files and folders,
+        ├── _static       │ and build instructions
+        ├── _templates    │
+        ├── conf.py       │
         └── index.rst     ┘
 ```
 
@@ -336,17 +336,17 @@ mypyprj
 ├── mypyprj
 │   └──...
 ├── venv
-|   └──...
+│   └──...
 ├── .git
-|   └──...
+│   └──...
 ├── .gitignore
 ├── .github
-|   └──...
+│   └──...
 ├── tests
-|   └──...
+│   └──...
 ├── docs
-|   └──...
-└── tox.ini   | tox configuration file
+│   └──...
+└── tox.ini   │ tox configuration file
 ```
 
 ## Remote CI (Continuous Integration)
@@ -373,17 +373,56 @@ mypyprj
 ├── mypyprj
 │   └──...
 ├── venv
-|   └──...
+│   └──...
 ├── .git
-|   └──...
+│   └──...
 ├── .gitignore
 ├── .github
-|   └──...
+│   └──...
 ├── tests
-|   └──...
+│   └──...
 ├── docs
-|   └──...
+│   └──...
 ├── tox.ini
 └── .circleci        ┐ Remote CI
     └── config.yml   ┘ provider
 ```
+
+## Common files
+
+This option configure a common files for Python projects, as a _README, CONTRIBUTING, CODE_OF_CONDUCT and CHANGES_.
+
+The default value is _Yes_.
+
+```console
+...
+> Select remote CI provider: CircleCI
+? Do you want create common files? (Y/n)
+[Create README, CONTRIBUTING, CODE_OF_CONDUCT and CHANGES]
+```
+
+The project structure after this choosen:
+
+```
+mypyprj
+├── pyproject.toml
+├── mypyprj
+│   └──...
+├── venv
+│   └──...
+├── .git
+│   └──...
+├── .gitignore
+├── .github
+│   └──...
+├── tests
+│   └──...
+├── docs
+│   └──...
+├── tox.ini
+├── .circleci
+│   └── ...
+├── README.md           ┐
+├── CONTRIBUTING.md     │ Common
+├── CODE_OF_CONDUCT.md  │ files
+└── CHANGES.md          ┘
