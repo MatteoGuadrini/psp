@@ -426,3 +426,51 @@ mypyprj
 ├── CONTRIBUTING.md     │ Common
 ├── CODE_OF_CONDUCT.md  │ files
 └── CHANGES.md          ┘
+```
+
+## License
+
+This option download the license file and configure license into _pyproject.toml_.
+
+The default value is _None_.
+
+```console
+...
+> Do you want create common files? Yes
+? Select license:
+  None
+  MIT
+> Apache
+  Mozilla
+  Creative Commons
+  Gnu Public License
+[↑↓ to move, enter to select, type to filter]
+```
+
+The project structure after this choosen:
+
+```
+mypyprj
+├── pyproject.toml
+├── mypyprj
+│   └──...
+├── venv
+│   └──...
+├── .git
+│   └──...
+├── .gitignore
+├── .github
+│   └──...
+├── tests
+│   └──...
+├── docs
+│   └──...
+├── tox.ini
+├── .circleci
+│   └── ...
+├── README.md
+├── CONTRIBUTING.md
+├── CODE_OF_CONDUCT.md
+├── CHANGES.md
+└── LICENSE.md          │ License file
+```
