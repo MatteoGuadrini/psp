@@ -39,6 +39,16 @@ Welcome to PSP (Python Scaffolding Projects): 0.1.0
 [Type name or path]
 ```
 
+!!! warning
+    If the folder exists, **psp** prompt a choice of overwritten.
+
+```console
+Welcome to PSP (Python Scaffolding Projects): 0.1.0
+> Name of Python project: /tmp/mypyprj
+? Path /tmp/mypyprj exists. Do you want continue? (y/N)
+[Some files will be overwritten]
+```
+
 ## Virtual Environment
 
 This option create a new Python virtual environment.
