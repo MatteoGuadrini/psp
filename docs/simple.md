@@ -484,3 +484,26 @@ mypyprj
 ├── CHANGES.md
 └── LICENSE.md          │ License file
 ```
+
+## PyPi dependencies
+
+This option install [PyPi](https://packaging.python.org/en/latest/tutorials/packaging-projects/) tools for publish your package.
+
+The default value is _Yes_.
+
+```console
+...
+> Do you want create common files? Yes
+> Select license: Apache
+? Do you want to install dependencies to publish on pypi? (Y/n)
+```
+
+The two packages are installed:
+
+```console
+[gu]# cd mypyprj && . venv/bin/activate && twine --version && python -m build --version
+twine version 6.0.1 (keyring: 25.5.0,
+pkginfo: 1.12.0, requests: 2.32.3,
+requests-toolbelt: 1.0.0, urllib3: 2.2.3)
+build 1.2.2.post1 (/tmp/mypyprj/venv/lib/python3.13/site-packages/build)
+```
