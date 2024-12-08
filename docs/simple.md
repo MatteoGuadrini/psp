@@ -20,7 +20,7 @@ Welcome to PSP (Python Scaffolding Projects): 0.1.0
 !!! note
     If the _name_ contains spaces, **psp** substitutes with underscore chars (`_`); if the name contains uppercase letters, will convert into lowercase the only python package.
 
-Now, if you type only a name, **psp** create in the _current folder_ this structure:
+Now, if you type only a name, **psp** creates in the _current folder_ this structure:
 
 ```
 mypyprj
@@ -51,7 +51,7 @@ Welcome to PSP (Python Scaffolding Projects): 0.1.0
 
 ## Virtual Environment
 
-This option create a new Python virtual environment.
+This option creates a new Python virtual environment.
 
 A [virtual environment](https://docs.python.org/3/library/venv.html) is created on top of an existing Python installation, known as the virtual environment’s _base_ Python,
 and may optionally be isolated from the packages in the base environment, so only those explicitly installed in the virtual environment are available.
@@ -84,7 +84,7 @@ mypyprj
 
 ## Git
 
-This option create a new git repository.
+This option creates a new git repository.
 
 [Git](https://git-scm.com/) is a free and open source distributed version control system designed to handle everything from small to very large projects with speed and efficiency.
 
@@ -139,7 +139,7 @@ Untracked files:
 
 ## Git remote provider
 
-This option create a git remote repository configuration files.
+This option creates a git remote repository configuration files.
 
 !!! note
     This option is available only if [git repository](#git) is initialize.
@@ -177,7 +177,7 @@ mypyprj
 
 ### Git remote username
 
-This option create a git remote repository configuration files.
+This option creates a git remote repository configuration files.
 
 !!! note
     This option is available only if **git remote option** is set.
@@ -199,7 +199,7 @@ git@github.com:MatteoGuadrini/mypyprj.git
 
 ## Test files
 
-This option create the Python Unit test files.
+This option creates the Python Unit test files.
 
 The default value is _Yes_.
 
@@ -321,7 +321,7 @@ mypyprj
 
 ## Tox tool
 
-This option install [tox](https://tox.wiki/) and create configuration files.
+This option install [tox](https://tox.wiki/) and creates configuration files.
 
 !!! note
     This option is available only if [test files](#test-files) has been selected.
@@ -506,4 +506,116 @@ twine version 6.0.1 (keyring: 25.5.0,
 pkginfo: 1.12.0, requests: 2.32.3,
 requests-toolbelt: 1.0.0, urllib3: 2.2.3)
 build 1.2.2.post1 (/tmp/mypyprj/venv/lib/python3.13/site-packages/build)
+```
+
+## Docker/Podman
+
+This option [creates a containerization](https://docs.docker.com/build/) files to build an imagae of your package.
+
+The default value is _Yes_.
+
+```console
+...
+> Do you want to install dependencies to publish on pypi? Yes
+? Do you want to create a Dockerfile and Containerfile? (Y/n)
+```
+
+After this option, the `psp` has finish its process:
+
+```console
+> Do you want to create a Dockerfile and Containerfile? Yes
+Python project `mypyprj` created at mypyprj
+```
+
+The project structure after this choosen:
+
+```
+mypyprj
+├── pyproject.toml
+├── mypyprj
+│   └──...
+├── venv
+│   └──...
+├── .git
+│   └──...
+├── .gitignore
+├── .github
+│   └──...
+├── tests
+│   └──...
+├── docs
+│   └──...
+├── tox.ini
+├── .circleci
+│   └── ...
+├── README.md
+├── CONTRIBUTING.md
+├── CODE_OF_CONDUCT.md
+├── CHANGES.md
+├── LICENSE.md
+├── Makefile
+├── Dockerfile      ┐ File for
+└── Containerfile   ┘ containerization
+```
+
+!!! note
+    As you notice, **psp** creates a Makefile to automate all process in your package.
+    If you want a help, try `make help`.
+
+Try to build an image:
+
+```console
+[gu]# docker build . -t mypyprj:0.0.1                                             1 ⨯
+STEP 1/6: FROM python:3
+STEP 2/6: COPY mypyprj /mypyprj/mypyprj
+--> d6d1cb90f013
+STEP 3/6: COPY pyproject.toml /mypyprj
+--> a0b3ead767b0
+STEP 4/6: WORKDIR /mypyprj
+--> e557642b415f
+STEP 5/6: RUN pip install .
+Processing /mypyprj
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'done'
+  Getting requirements to build wheel: started
+  Getting requirements to build wheel: finished with status 'done'
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): finished with status 'done'
+Collecting tablib==3.4.0 (from mypyprj==0.0.1)
+  Downloading tablib-3.4.0-py3-none-any.whl.metadata (3.8 kB)
+Collecting pyreports<1.7.0 (from mypyprj==0.0.1)
+  Downloading pyreports-1.6.0-py3-none-any.whl.metadata (9.8 kB)
+Collecting scipy (from mypyprj==0.0.1)
+  Downloading scipy-1.14.1-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.me
+Collecting numpy (from mypyprj==0.0.1)
+  Downloading numpy-2.2.0-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.met
+  ...
+Successfully built mypyprj markuppy odfpy
+Installing collected packages: xlwt, pytz, pymssql, markuppy, xlrd, tzdata, tabulate, tablib, six, pyyaml, pyasn1, psycopg2-binary, numpy, nosqlapi, mysql-connector-python, et-xmlfile, defusedxml, scipy, python-dateutil, openpyxl, odfpy, ldap3, pandas, pyreports, mypyprj
+Successfully installed defusedxml-0.7.1 et-xmlfile-2.0.0 ldap3-2.9.1 markuppy-1.14 mypyprj-0.0.1 mysql-connector-python-9.1.0 nosqlapi-1.0.2 numpy-2.2.0 odfpy-1.4.1 openpyxl-3.1.5 pandas-2.2.3 psycopg2-binary-2.9.10 pyasn1-0.6.1 pymssql-2.3.2 pyreports-1.6.0 python-dateutil-2.9.0.post0 pytz-2024.2 pyyaml-6.0.2 scipy-1.14.1 six-1.17.0 tablib-3.4.0 tabulate-0.9.0 tzdata-2024.2 xlrd-2.0.1 xlwt-1.3.0
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable.It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+
+[notice] A new release of pip is available: 24.2 -> 24.3.1
+[notice] To update, run: pip install --upgrade pip
+--> 5854ebada71a
+STEP 6/6: CMD [ 'python', '-m', 'mypyprj' ]
+COMMIT mypyprj:0.0.1
+--> a9028cd8e7e8
+Successfully tagged localhost/mypyprj:0.0.1
+a9028cd8e7e89b9f9aafde3db0d5e1cee419573a647c72c752bb6f202b8131e1
+
+[gu]# docker images
+podman images
+REPOSITORY                         TAG         IMAGE ID      CREATED        SIZE
+localhost/mypyprj                  0.0.1       a9028cd8e7e8  2 minutes ago  1.61 GB
+
+[gu]# docker run -it --rm localhost/mypyprj:0.0.1 python
+Python 3.13.0 (main, Oct 17 2024, 03:03:33) [GCC 12.2.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import mypyprj
+>>> print(mypyprj)
+<module 'mypyprj' from '/mypyprj/mypyprj/__init__.py'>
+>>> print(mypyprj.__version__)
+0.0.1
+>>>
 ```
