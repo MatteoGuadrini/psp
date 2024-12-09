@@ -554,7 +554,7 @@ mypyprj
 ├── CHANGES.md
 ├── LICENSE.md
 ├── Makefile
-├── Dockerfile      ┐ File for
+├── Dockerfile      ┐ Files for
 └── Containerfile   ┘ containerization
 ```
 
@@ -565,7 +565,7 @@ mypyprj
 Try to build an image:
 
 ```console
-[gu]# docker build . -t mypyprj:0.0.1                                             1 ⨯
+[gu]# docker build . -t mypyprj:0.0.1
 STEP 1/6: FROM python:3
 STEP 2/6: COPY mypyprj /mypyprj/mypyprj
 --> d6d1cb90f013
