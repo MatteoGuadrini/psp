@@ -1,4 +1,5 @@
-# **psp** (Python Scaffolding Projects)
+<img src="img/psp_logo.svg" alt="Logo" align="right" width="150"/> **psp** (Python Scaffolding Projects)
+======
 
 `psp` is a blazing fast command line utility to scaffold your _Python_ project, written in Rust.
 
@@ -136,13 +137,13 @@ To install compiled file into your machine, download it:
 For all users:
 ```console
 sudo -i
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.1.0/psp_linux > /usr/bin/psp
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.1.0/psp_linux -o /usr/bin/psp
 chmod +x /usr/bin/psp
 ```
 
 For current user:
 ```console
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.1.0/psp_linux > $HOME/.local/bin/psp
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.1.0/psp_linux -o $HOME/.local/bin/psp
 chmod +x $HOME/.local/bin/psp
 ```
 
@@ -150,7 +151,7 @@ chmod +x $HOME/.local/bin/psp
 
 ```console
 sudo su -
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.1.0/psp_macos > /usr/bin/psp
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.1.0/psp_macos -o /usr/bin/psp
 chmod +x /usr/bin/psp
 ```
 
@@ -161,7 +162,7 @@ If you want install OS package, follow instructions for your Operating System:
 For **Debian/Ubuntu**:
 
 ```console
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.1.0/psp.deb
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.1.0/psp.deb -o psp.deb
 sudo dpkg -i psp.deb
 ```
 
@@ -177,7 +178,7 @@ Instead, if you compile this project as own, follow this steps:
 
 ```console
 git clone https://github.com/MatteoGuadrini/psp.git
-cd psp && cargo build --release && sudo cp -var target/release/psp /usr/bin/psp
+cd psp && cargo build --release && sudo cp -v target/release/psp /usr/bin/psp && chmod +x /usr/bin/psp
 ```
 
 ## Open source

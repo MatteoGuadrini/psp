@@ -1,0 +1,13 @@
+site_name: PSP
+nav:
+  - Home: index.md
+  - Simple: simple.md
+theme:
+  name: material
+  logo: img/psp_logo.svg
+  favicon: img/psp_logo.ico
+  palette:
+    primary: yellow
+    accent: blue
+markdown_extensions:
+  - admonition
