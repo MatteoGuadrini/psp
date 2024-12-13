@@ -25,7 +25,7 @@ ie: psp [help|quick|simple|full]
 
 ## Quick
 
-The _quick_ shortcut enables a rapid configuration of your project:
+The _quick_ shortcut enables a rapid configuration of your Python project:
 
 ```console
 [gu]# psp quick
@@ -45,3 +45,18 @@ The options included are:
 * [License](simple.md#license)
 * [PyPi dependencies](simple.md#pypi-dependencies)
 * [Docker/Podman](simple.md#dockerpodman)
+
+## Simple
+
+The _simple_ shortcut enables a basic configuration of your Python project:
+
+```console
+[gu]# psp simple
+Welcome to PSP (Python Scaffolding Projects): 0.1.0
+> Name of Python project: mypyprj
+Python project `mypyprj` created at mypyprj
+```
+
+The options included are:
+
+* [Test files](simple.md#test-files)
