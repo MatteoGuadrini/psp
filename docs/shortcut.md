@@ -38,6 +38,7 @@ Python project `mypyprj` created at mypyprj
 
 The options included are:
 
+* [Virtual Environment](simple.md#virtual-environment)
 * [Git](simple.md#git)
 * [Test files](simple.md#test-files)
 * [Documentation](simple.md#documentation)
@@ -60,3 +61,35 @@ Python project `mypyprj` created at mypyprj
 The options included are:
 
 * [Test files](simple.md#test-files)
+
+## Full
+
+The _full_ shortcut enables a full configuration of your Python project:
+
+```console
+[gu]# psp full
+Welcome to PSP (Python Scaffolding Projects): 0.1.0
+> Name of Python project: mypyprj
+> Select git remote provider: Github
+> Username of Github: MatteoGuadrini
+> Install dependencies: nosqlapi
+> Select documention generator: MKDocs
+> Select remote CI provider: TravisCI
+> Select license: MIT
+Python project `mypyprj` created at mypyprj
+```
+
+The options included are:
+
+* [Virtual Environment](simple.md#virtual-environment)
+* [Git](simple.md#git)
+* [Git remote provider](simple.md#git-remote-provider)
+* [Test files](simple.md#test-files)
+* [Dependencies](simple.md#dependencies)
+* [Documentation](simple.md#documentation)
+* [Tox tool](simple.md#tox-tool)
+* [Remote CI (Continuous Integration)](simple.md#remote-ci-continuous-integration)
+* [Common files](simple.md#common-files)
+* [License](simple.md#license)
+* [PyPi dependencies](simple.md#pypi-dependencies)
+* [Docker/Podman](simple.md#dockerpodman)
