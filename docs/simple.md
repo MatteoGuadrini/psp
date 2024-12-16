@@ -404,6 +404,9 @@ This option configure a common files for Python projects, as a _README, CONTRIBU
 
 The default value is _Yes_.
 
+!!! warning
+    In this option some files will downloaded from internet. Check your internet settings, proxy or firewall if an error occured.
+
 ```console
 ...
 > Select remote CI provider: CircleCI
@@ -443,6 +446,9 @@ mypyprj
 This option download the license file and configure license into _pyproject.toml_.
 
 The default value is _None_.
+
+!!! warning
+    License file will downloaded from internet. Check your internet settings, proxy or firewall if an error occured.
 
 ```console
 ...
