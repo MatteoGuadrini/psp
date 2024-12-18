@@ -4,6 +4,7 @@ use std::{
     env::var,
     fs::{create_dir_all, File},
     io::Write,
+    path::absolute,
     path::Path,
     process::exit,
 };
@@ -1297,7 +1298,7 @@ fn main() {
         print_help(0)
     }
     // Print welcome screen and version
-    println!("Welcome to PSP (Python Scaffolding Projects): {VERSION}");
+    println!("info: welcome to psp, version {VERSION}");
     // Check dependencies tools
     let tools = ["python3", "git", "pip3", "curl"];
     for tool in tools {
@@ -1338,5 +1339,8 @@ fn main() {
     // Makefile
     prj_makefile(&root, &name);
     // Finish scaffolding process
-    println!("Python project `{name}` created at {root}")
+    println!(
+        "info: python project `{name}` created at {}",
+        absolute(root).unwrap().display()
+    )
 }
