@@ -340,9 +340,9 @@ if __name__ == '__main__':
             eprintln!("error: {}", e);
             return false;
         }
-        return true;
+        true
     } else {
-        return false;
+        false
     }
 }
 
