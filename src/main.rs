@@ -261,7 +261,7 @@ venv.bak/
 # Sphinx documentation
 docs/_build/
 # mkdocs documentation
-/site"
+site"
             ),
         );
         let ret = if let Err(e) = file_ret {
@@ -573,7 +573,7 @@ jobs:
     }
 }
 
-// Project Gitlab/Github
+// Project Gitlab/GitHub
 fn prj_remote(root: &str, name: &str, shortcut: &String) {
     let options = vec!["None", "Gitlab", "Github"];
     let remote: String;
@@ -596,15 +596,28 @@ fn prj_remote(root: &str, name: &str, shortcut: &String) {
             username,
             name.to_lowercase()
         );
+        // Test if remote has already been setted
+        let origin = std::process::Command::new("git")
+            .args(["remote", "-v"])
+            .current_dir(root)
+            .output()
+            .expect("git should be installed");
+        let git_verb;
+        if origin.stdout.len() > 0 {
+            git_verb = "set-url"
+        } else {
+            git_verb = "add"
+        }
+        // Set origin remote repository
         let output = std::process::Command::new("git")
-            .args(["remote", "add", "origin", &remote_path])
+            .args(["remote", git_verb, "origin", &remote_path])
             .current_dir(root)
             .output()
             .expect("git should be installed");
         // Check if command exit successfully
         if !output.status.success() {
             eprintln!(
-                "error: remote repository {} setting failed",
+                "error: username of remote repository {} setting failed",
                 remote.to_lowercase()
             );
         }
