@@ -150,11 +150,12 @@ fn prj_name() -> (String, String) {
     // Check if project path already exists
     if package_path.exists() {
         let project_exists = prompt_confirm(
-            format!("Path {root} exists. Do you want continue?").as_str(),
+            format!("Path `{root}` exists. Do you want continue?").as_str(),
             false,
             "Some files will be overwritten",
         );
         if !project_exists {
+            println!("info: the path `{root}` unchanged");
             exit(0)
         }
     }
