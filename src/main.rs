@@ -875,7 +875,7 @@ assignees: {}
 }
 
 // Project tox
-fn prj_tox(name: &str, venv: bool, shortcut: &String) {
+fn prj_tox(name: &str, venv: bool, deps: &Vec<String>, shortcut: &String) {
     // Create tox ini
     let confirm: bool;
     if shortcut == "quick" || shortcut == "simple" {
@@ -916,8 +916,12 @@ isolated_build = True
 labels = test, core
 deps=
     pytest
-    -r requirements.txt
-commands = pytest tests"
+{}
+commands = pytest tests",
+            deps.iter()
+                .map(|s| format!("\t{s}"))
+                .collect::<Vec<String>>()
+                .join("\n")
         );
         let tox_ini = make_file(format!("{name}/tox.ini").as_str(), tox_ini_content);
         if let Err(e) = tox_ini {
@@ -1393,7 +1397,7 @@ fn main() {
     prj_docs(&root, &name, venv, &shortcut);
     if tests {
         // Tox
-        prj_tox(&root, venv, &shortcut);
+        prj_tox(&root, venv, &deps, &shortcut);
         // CI configuration
         prj_ci(&root, &deps, &shortcut);
     }
