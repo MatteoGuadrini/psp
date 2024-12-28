@@ -919,7 +919,11 @@ deps=
 {}
 commands = pytest tests",
             deps.iter()
-                .map(|s| format!("\t{s}"))
+                .map(|s| if s != "No" {
+                    format!("\t{s}")
+                } else {
+                    String::new()
+                })
                 .collect::<Vec<String>>()
                 .join("\n")
         );
