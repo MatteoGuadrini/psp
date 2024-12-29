@@ -2,7 +2,7 @@ use inquire::{Confirm, Select, Text};
 use std::{
     env::args,
     env::var,
-    fs::{create_dir_all, File},
+    fs::{create_dir_all, remove_dir_all, File},
     io::Write,
     path::absolute,
     path::Path,
@@ -945,11 +945,18 @@ fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) {
     }
     if docs != "None" {
         let docs_home = format!("{root}/docs");
+        let docs_folder = Path::new(&docs_home);
+        // Check if folder docs exists
+        if docs_folder.exists() {
+            let folder_result = remove_dir_all(docs_folder);
+            if let Err(e) = folder_result {
+                eprintln!("error: {}", e);
+            }
+        }
         // Create docs folder
         let docs_folder = make_dirs(format!("{docs_home}").as_str());
         if let Err(e) = docs_folder {
             eprintln!("error: {}", e);
-            exit(4);
         }
         if docs.as_str() == "Sphinx" {
             // Install sphinx
@@ -971,7 +978,7 @@ fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) {
                 eprintln!("error: sphinx installation failed");
                 return;
             }
-            // Start documentation;
+            // Start documentation
             let sphinx_bin = "../venv/bin/sphinx-quickstart".to_string();
             let mut sphinx_quickstart = std::process::Command::new(sphinx_bin);
             // Activate venv
