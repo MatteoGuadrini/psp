@@ -467,7 +467,7 @@ license = {{text = '{}'}}
 authors = [{{name = 'psp', email = 'psp@example.com'}}]
 maintainers = [{{name = 'psp', email = 'psp@example.com'}}]
 description = 'A simple but structured Python project'
-requires-python = '>=3.12'
+requires-python = '>=3.13'
 classifiers = {:?}
 dependencies = {}
 
