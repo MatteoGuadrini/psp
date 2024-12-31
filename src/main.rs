@@ -10,7 +10,7 @@ use std::{
 };
 
 // Constants
-const VERSION: &str = "0.1.0";
+const VERSION: &str = "0.1.1";
 const ARGS: [&str; 4] = ["help", "quick", "simple", "full"];
 
 // Utility functions

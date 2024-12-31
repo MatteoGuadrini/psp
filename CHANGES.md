@@ -1,5 +1,15 @@
 # Release notes
 
+## 0.1.1
+Dec 31, 2024
+- Add info message when path unchanged
+- Add dependencies to _tox.ini_ into **prj_tox** function
+- Add build and deploy into makefile into **prj_makefile** function
+- Change welcome screen and result string into **main** function
+- Change default output of \_\_main\_\_.py Python module
+- Optimize container image and add safe user
+- Fix check if docs folder exists into **prj_docs** function
+
 ## 0.1.0
 Nov 11, 2024
 - Add **prj_pypi** function
