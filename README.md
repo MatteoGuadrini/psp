@@ -3,7 +3,7 @@
 
 `psp` is a blazing fast command line utility to scaffold your _Python_ project, written in Rust.
 
-- ⚡️ 10-100x faster
+- ⚡️ 1-100x faster
 - 🛠️ `pyproject.toml` support
 - 🤝 Python 3.13 compatibility
 - 🗃 Scaffolding file and folder structures for your Python project
@@ -19,9 +19,9 @@
 - 🐳 Create Dockerfile and Containerfile for your project
 - 💡 Can use _quick_, _simple_ and _full_ argument for rapid configuration
 
-<a href="https://asciinema.org/a/688780" target="_blank"><img src="https://asciinema.org/a/688780.svg" /></a>
+[![asciicast](https://asciinema.org/a/696602.svg)](https://asciinema.org/a/696602)
 
-<img src="https://i.ibb.co/p4Zgg1b/psp010.png" alt="psp" width="790"/>
+<img src="https://i.ibb.co/bXmf362/psp011.png" alt="psp" width="790"/>
 
 The result is:
 
@@ -137,13 +137,13 @@ To install compiled file into your machine, download it:
 For all users:
 ```console
 sudo -i
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.1.0/psp_linux -o /usr/bin/psp
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.1.1/psp_linux -o /usr/bin/psp
 chmod +x /usr/bin/psp
 ```
 
 For current user:
 ```console
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.1.0/psp_linux -o $HOME/.local/bin/psp
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.1.1/psp_linux -o $HOME/.local/bin/psp
 chmod +x $HOME/.local/bin/psp
 ```
 
@@ -151,7 +151,7 @@ chmod +x $HOME/.local/bin/psp
 
 ```console
 sudo su -
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.1.0/psp_macos -o /usr/bin/psp
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.1.1/psp_macos -o /usr/bin/psp
 chmod +x /usr/bin/psp
 ```
 
@@ -162,14 +162,14 @@ If you want install OS package, follow instructions for your Operating System:
 For **Debian/Ubuntu**:
 
 ```console
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.1.0/psp.deb -o psp.deb
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.1.1/psp.deb -o psp.deb
 sudo dpkg -i psp.deb
 ```
 
 For **Fedora/Mageia/OpenSuse**:
 
 ```console
-sudo rpm -i https://github.com/MatteoGuadrini/psp/releases/download/v0.1.0/psp.rpm
+sudo rpm -i https://github.com/MatteoGuadrini/psp/releases/download/v0.1.1/psp.rpm
 ```
 
 ### Compile as your own
