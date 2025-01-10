@@ -10,3 +10,4 @@ repository = "https://github.com/MatteoGuadrini/psp"
 
 [dependencies]
 inquire = "0.7"
+dotenv = "0.14"
