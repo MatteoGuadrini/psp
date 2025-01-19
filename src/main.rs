@@ -1,11 +1,10 @@
+use dotenv::dotenv;
 use inquire::{Confirm, Select, Text};
 use std::{
-    env::args,
-    env::var,
+    env::{args, var},
     fs::{create_dir_all, remove_dir_all, File},
     io::Write,
-    path::absolute,
-    path::Path,
+    path::{absolute, Path},
     process::exit,
 };
 
@@ -114,6 +113,11 @@ fn get_shortcut() -> String {
     } else {
         "None".to_string()
     }
+}
+
+// Function that load env files
+fn load_env() {
+    dotenv().ok();
 }
 
 // Core functions
@@ -1385,6 +1389,8 @@ fn main() {
     }
     // Print welcome screen and version
     println!("info: welcome to psp, version {VERSION}");
+    // Load env files
+    load_env();
     // Check dependencies tools
     let tools = ["python3", "git", "pip3", "curl"];
     for tool in tools {
