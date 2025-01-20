@@ -117,7 +117,12 @@ fn get_shortcut() -> String {
 
 // Function that load env files
 fn load_env() {
+    // Load first, .env file from current working directory
     dotenv().ok();
+    // Load second, .psp.envmfile from home
+    let home_var = var("HOME").unwrap();
+    let home_env = format!("{home_var}/.psp.env");
+    dotenv::from_filename(home_env).ok();
 }
 
 // Core functions
