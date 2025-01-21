@@ -129,10 +129,16 @@ fn load_env() {
 
 // Project name
 fn prj_name() -> (String, String) {
-    let name = prompt_text("Name of Python project:", "None", "Type name or path")
-        .trim()
-        .trim_end_matches("/")
-        .to_string();
+    // Check enviroment variable
+    let env_name = var("PSP_NAME").ok();
+    let name = if let Some(env_name) = env_name {
+        env_name
+    } else {
+        prompt_text("Name of Python project:", "None", "Type name or path")
+            .trim()
+            .trim_end_matches("/")
+            .to_string()
+    };
     // Check if name is a path
     let package: String = if name.contains('/') {
         let parts: Vec<&str> = name.split('/').collect();
