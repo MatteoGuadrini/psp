@@ -220,14 +220,17 @@ print(f'version: {{__version__}}')
 
 // Project git
 fn prj_git(name: &str, shortcut: &String) -> bool {
-    let confirm: bool;
-    if shortcut == "quick" || shortcut == "full" {
-        confirm = true;
+    // Check enviroment variable
+    let env_git = var("PSP_GIT").unwrap().parse().ok();
+    let confirm = if let Some(true) = env_git {
+        true
+    } else if shortcut == "quick" || shortcut == "full" {
+        true
     } else if shortcut == "simple" {
-        confirm = false;
+        false
     } else {
-        confirm = prompt_confirm("Do you want to start git repository?", true, "None");
-    }
+        prompt_confirm("Do you want to start git repository?", true, "None")
+    };
     if confirm {
         let output = std::process::Command::new("git")
             .arg("init")
