@@ -221,7 +221,7 @@ print(f'version: {{__version__}}')
 // Project git
 fn prj_git(name: &str, shortcut: &String) -> bool {
     // Check enviroment variable
-    let env_git = var("PSP_GIT").unwrap().parse().ok();
+    let env_git = var("PSP_GIT").unwrap_or("false".to_string()).parse().ok();
     let confirm = if let Some(true) = env_git {
         true
     } else if shortcut == "quick" || shortcut == "full" {
@@ -296,12 +296,15 @@ site"
 
 // Project unit tests
 fn prj_test(root: &str, name: &str, shortcut: &String) -> bool {
-    let confirm: bool;
-    if shortcut != "None" {
-        confirm = true;
+    // Check enviroment variable
+    let env_test = var("PSP_TEST").unwrap_or("false".to_string()).parse().ok();
+    let confirm = if let Some(true) = env_test {
+        true
+    } else if shortcut != "None" {
+        true
     } else {
-        confirm = prompt_confirm("Do you want unit test files?", true, "None");
-    }
+        prompt_confirm("Do you want unit test files?", true, "None")
+    };
     if confirm {
         let project_name = name.to_lowercase();
         // Make directories structure
