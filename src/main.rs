@@ -372,14 +372,17 @@ if __name__ == '__main__':
 
 // Project venv
 fn prj_venv(name: &str, shortcut: &String) -> bool {
-    let confirm: bool;
-    if shortcut == "quick" || shortcut == "full" {
-        confirm = true;
+    // Check enviroment variable
+    let env_venv = var("PSP_VENV").unwrap_or("false".to_string()).parse().ok();
+    let confirm = if let Some(true) = env_venv {
+        true
+    } else if shortcut == "quick" || shortcut == "full" {
+        true
     } else if shortcut == "simple" {
-        confirm = false;
+        false
     } else {
-        confirm = prompt_confirm("Do you want to create a virtual environment?", true, "None");
-    }
+        prompt_confirm("Do you want to create a virtual environment?", true, "None")
+    };
     if confirm {
         let output = std::process::Command::new("python3")
             .args(["-m", "venv", "venv"])
