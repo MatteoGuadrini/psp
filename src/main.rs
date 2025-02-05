@@ -401,16 +401,19 @@ fn prj_venv(name: &str, shortcut: &String) -> bool {
 
 // Project dependencies
 fn prj_deps(name: &str, venv: bool, shortcut: &String) -> Vec<String> {
-    let deps: String;
-    if shortcut == "simple" || shortcut == "quick" {
-        deps = "No".to_string();
+    // Check enviroment variable
+    let env_deps = var("PSP_DEPS").ok();
+    let deps = if let Some(env_deps) = env_deps {
+        env_deps
+    } else if shortcut == "simple" || shortcut == "quick" {
+        "No".to_string()
     } else {
-        deps = prompt_text(
+        prompt_text(
             "Install dependencies:",
             "No",
             "Write package(s) separates with spaces or empty",
-        );
-    }
+        )
+    };
     // Split String into Vector
     let dependencies: Vec<String> = deps
         .as_str()
