@@ -402,6 +402,7 @@ fn prj_venv(name: &str, shortcut: &String) -> bool {
 // Project dependencies
 fn prj_deps(name: &str, venv: bool, shortcut: &String) -> Vec<String> {
     // Check enviroment variable
+    let env_common_deps = var("PSP_COMMON_DEPS").ok();
     let env_deps = var("PSP_DEPS").ok();
     let deps = if let Some(env_deps) = env_deps {
         env_deps
@@ -414,13 +415,30 @@ fn prj_deps(name: &str, venv: bool, shortcut: &String) -> Vec<String> {
             "Write package(s) separates with spaces or empty",
         )
     };
+    // Check if there are common dependencies
+    let common_dependencies = if let Some(env_common_deps) = env_common_deps {
+        env_common_deps
+            .as_str()
+            .split_whitespace()
+            .map(|s| s.to_string())
+            .collect::<Vec<String>>()
+    } else {
+        vec![]
+    };
     // Split String into Vector
-    let dependencies: Vec<String> = deps
-        .as_str()
-        .split_whitespace()
-        .map(|s| s.to_string())
-        .collect();
-    if deps != "No" {
+    let mut dependencies: Vec<String> = if deps != "No" {
+        deps.as_str()
+            .split_whitespace()
+            .map(|s| s.to_string())
+            .collect()
+    } else {
+        vec![]
+    };
+    // Extend dependencies
+    if !common_dependencies.is_empty() {
+        dependencies.extend(common_dependencies);
+    }
+    if !dependencies.is_empty() {
         let mut pip = std::process::Command::new("pip3");
         // Activate venv
         if venv {
