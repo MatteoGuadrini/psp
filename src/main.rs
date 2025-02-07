@@ -538,19 +538,21 @@ changelog = 'https://docs.python.org/3/whatsnew/changelog.html'
 // Project CI
 fn prj_ci(name: &str, deps: &Vec<String>, shortcut: &String) {
     let options = vec!["None", "TravisCI", "CircleCI"];
-    let ci: String;
-    if shortcut == "simple" || shortcut == "quick" {
-        ci = "None".to_string();
+    let env_ci = var("PSP_CI").ok();
+    let ci = if let Some(env_ci) = env_ci {
+        env_ci
+    } else if shortcut == "simple" || shortcut == "quick" {
+        "None".to_string()
     } else {
-        ci = prompt_select("Select remote CI provider:", options, "None");
-    }
+        prompt_select("Select remote CI provider:", options, "None")
+    };
     let requirements = if deps.contains(&"No".to_string()) {
         "".to_string()
     } else {
         deps.join(" ")
     };
     // Travis or CircleCI
-    if ci.as_str() == "TravisCI" {
+    if ci.as_str().to_lowercase() == "travisci" {
         let travis = make_file(
             format!("{name}/.travis.yml").as_str(),
             format!(
@@ -577,7 +579,7 @@ script:
         if let Err(e) = travis {
             eprintln!("error: {}", e);
         }
-    } else if ci.as_str() == "CircleCI" {
+    } else if ci.as_str().to_lowercase() == "circleci" {
         let dir_ret = make_dirs(format!("{name}/.circleci").as_str());
         if let Err(e) = dir_ret {
             eprintln!("error: {}", e);
@@ -616,6 +618,8 @@ jobs:
         if let Err(e) = circle {
             eprintln!("error: {}", e);
         }
+    } else {
+        println!("warning: {} is not recognized as remote CI", ci)
     }
 }
 
