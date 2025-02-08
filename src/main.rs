@@ -619,20 +619,23 @@ jobs:
             eprintln!("error: {}", e);
         }
     } else {
-        println!("warning: {} is not recognized as remote CI", ci)
+        println!("warning: `{}` is not recognized as remote CI", ci)
     }
 }
 
 // Project Gitlab/GitHub
 fn prj_remote(root: &str, name: &str, shortcut: &String) {
     let options = vec!["None", "Gitlab", "Github"];
-    let remote: String;
-    if shortcut == "quick" {
-        remote = "None".to_string();
+    // Check enviroment variable
+    let env_remote = var("PSP_GIT_REMOTE").ok();
+    let remote = if let Some(env_remote) = env_remote {
+        env_remote
+    } else if shortcut == "quick" {
+        "None".to_string()
     } else {
-        remote = prompt_select("Select git remote provider:", options, "None");
-    }
-    if remote.as_str() != "None" {
+        prompt_select("Select git remote provider:", options, "None")
+    };
+    if remote.as_str().to_lowercase() != "none" {
         // Username of remote git service
         let username = prompt_text(format!("Username of {remote}:").as_str(), "None", "None");
         if username.is_empty() {
@@ -673,7 +676,7 @@ fn prj_remote(root: &str, name: &str, shortcut: &String) {
         }
         // Make remote files and folders
         // Gitlab
-        if remote.as_str() == "Gitlab" {
+        if remote.as_str().to_lowercase() == "gitlab" {
             let issue_folder = format!("{}/.{}/issue_templates", root, remote.to_lowercase());
             let merge_folder = format!(
                 "{}/.{}/merge_request_templates",
@@ -765,7 +768,7 @@ Numbered steps to set up and validate the change are strongly suggested.
                 eprintln!("error: {}", e);
             }
         // Github
-        } else if remote.as_str() == "Github" {
+        } else if remote.as_str().to_lowercase() == "github" {
             let issue_folder = format!("{}/.{}/ISSUE_TEMPLATE", root, remote.to_lowercase());
             let merge_folder = format!("{}/.{}/PULL_REQUEST_TEMPLATE", root, remote.to_lowercase());
             let dir_ret = make_dirs(issue_folder.as_str());
@@ -919,6 +922,11 @@ assignees: {}
             if let Err(e) = merge_issue {
                 eprintln!("error: {}", e);
             }
+        } else {
+            println!(
+                "warning: `{}` is not recognized as remote git provider",
+                remote
+            )
         }
     }
 }
