@@ -939,15 +939,18 @@ assignees: {}
 
 // Project tox
 fn prj_tox(name: &str, venv: bool, deps: &Vec<String>, shortcut: &String) {
-    // Create tox ini
-    let confirm: bool;
-    if shortcut == "quick" || shortcut == "simple" {
-        confirm = false;
+    // Check enviroment variable
+    let env_tox = var("PSP_TOX").unwrap_or("false".to_string()).parse().ok();
+    let confirm = if let Some(true) = env_tox {
+        true
+    } else if shortcut == "quick" || shortcut == "simple" {
+        false
     } else if shortcut == "full" {
-        confirm = true;
+        true
     } else {
-        confirm = prompt_confirm("Do you want to configure tox?", false, "None");
-    }
+        prompt_confirm("Do you want to configure tox?", false, "None")
+    };
+    // Create tox ini
     if confirm {
         let mut pip = std::process::Command::new("pip3");
         // Activate venv
