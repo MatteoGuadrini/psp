@@ -618,7 +618,7 @@ jobs:
         if let Err(e) = circle {
             eprintln!("error: {}", e);
         }
-    } else {
+    } else if ci.as_str().to_lowercase() != "none" {
         println!("warning: `{}` is not recognized as remote CI", ci)
     }
 }
