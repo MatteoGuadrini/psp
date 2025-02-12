@@ -1003,12 +1003,15 @@ commands = pytest tests",
 // Project documentation site generator
 fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) {
     let options = vec!["None", "Sphinx", "MKDocs"];
-    let docs: String;
-    if shortcut == "simple" {
-        docs = "None".to_string();
+    // Check enviroment variable
+    let env_docs = var("PSP_DOCS").ok();
+    let docs = if let Some(env_docs) = env_docs {
+        env_docs
+    } else if shortcut == "simple" {
+        "None".to_string()
     } else {
-        docs = prompt_select("Select documentation generator:", options, "None");
-    }
+        prompt_select("Select documentation generator:", options, "None")
+    };
     if docs != "None" {
         let docs_home = format!("{root}/docs");
         let docs_folder = Path::new(&docs_home);
@@ -1024,7 +1027,7 @@ fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) {
         if let Err(e) = docs_folder {
             eprintln!("error: {}", e);
         }
-        if docs.as_str() == "Sphinx" {
+        if docs.as_str().to_lowercase() == "sphinx" {
             // Install sphinx
             let mut pip = std::process::Command::new("pip3");
             // Activate venv
@@ -1068,7 +1071,7 @@ fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) {
             if !output.status.success() {
                 eprintln!("error: sphinx documentation creation failed");
             }
-        } else if docs.as_str() == "MKDocs" {
+        } else if docs.as_str().to_lowercase() == "mkdocs" {
             // Install mkdocs
             let mut pip = std::process::Command::new("pip3");
             // Activate venv
@@ -1106,6 +1109,11 @@ fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) {
             if !output.status.success() {
                 eprintln!("error: mkdocs documentation creation failed");
             }
+        } else if docs.as_str().to_lowercase() != "none" {
+            println!(
+                "warning: `{}` is not recognized as documentation generator",
+                docs
+            )
         }
     }
 }
