@@ -1120,18 +1120,21 @@ fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) {
 
 // Project common files
 fn prj_files(root: &str, name: &str, shortcut: &String) {
-    let confirm: bool;
-    if shortcut == "quick" || shortcut == "full" {
-        confirm = true;
+    // Check enviroment variable
+    let env_files = var("PSP_FILES").unwrap_or("false".to_string()).parse().ok();
+    let confirm = if let Some(true) = env_files {
+        true
+    } else if shortcut == "quick" || shortcut == "full" {
+        true
     } else if shortcut == "simple" {
-        confirm = false;
+        false
     } else {
-        confirm = prompt_confirm(
+        prompt_confirm(
             "Do you want create common files?",
             true,
             "Create README, CONTRIBUTING, CODE_OF_CONDUCT and CHANGES",
-        );
-    }
+        )
+    };
     if confirm {
         // Create README
         let readme_content = format!(
