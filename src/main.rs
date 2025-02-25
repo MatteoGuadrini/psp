@@ -1233,23 +1233,31 @@ fn prj_license(name: &str, shortcut: &String) -> String {
         "Creative Commons",
         "Gnu Public License",
     ];
-    let license: String;
-    if shortcut == "simple" {
-        license = "None".to_string();
+    // Check enviroment variable
+    let env_license = var("PSP_LICENSE").ok();
+    let license = if let Some(env_license) = env_license {
+        env_license
+    } else if shortcut == "simple" {
+        "None".to_string()
     } else {
-        license = prompt_select("Select license:", options, "None");
-    }
+        prompt_select("Select license:", options, "None")
+    };
     let mut license_url = String::new();
-    if license == "MIT" {
+    if license.to_lowercase() == "mit" {
         license_url.push_str("https://www.mit.edu/~amini/LICENSE.md")
-    } else if license == "Apache" {
+    } else if license.to_lowercase() == "apache" {
         license_url.push_str("https://www.apache.org/licenses/LICENSE-2.0.txt")
-    } else if license == "Creative Commons" {
+    } else if license.to_lowercase() == "creative commons" || license.to_lowercase() == "cc" {
         license_url.push_str("https://creativecommons.org/licenses/by/4.0/legalcode.txt")
-    } else if license == "Mozilla" {
+    } else if license.to_lowercase() == "mozilla" {
         license_url.push_str("https://www.mozilla.org/media/MPL/2.0/index.f75d2927d3c1.txt")
-    } else if license == "Gnu Public License" {
+    } else if license.to_lowercase() == "gnu public license" || license.to_lowercase() == "gpl" {
         license_url.push_str("https://www.gnu.org/licenses/gpl-3.0.md")
+    } else if license.as_str().to_lowercase() != "none" {
+        println!(
+            "warning: `{}` is not recognized as a valid license",
+            license
+        )
     }
     if !license_url.is_empty() {
         // Create LICENSE
