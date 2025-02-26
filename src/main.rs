@@ -1280,18 +1280,21 @@ fn prj_license(name: &str, shortcut: &String) -> String {
 
 // Project pypi dependencies
 fn prj_pypi(root: &str, venv: bool, shortcut: &String) -> bool {
-    let confirm: bool;
-    if shortcut == "quick" || shortcut == "full" {
-        confirm = true;
+    // Check enviroment variable
+    let env_pypi = var("PSP_PYPI").unwrap_or("false".to_string()).parse().ok();
+    let confirm = if let Some(true) = env_pypi {
+        true
+    } else if shortcut == "quick" || shortcut == "full" {
+        true
     } else if shortcut == "simple" {
-        confirm = false;
+        false
     } else {
-        confirm = prompt_confirm(
+        prompt_confirm(
             "Do you want to install dependencies to publish on pypi?",
             true,
             "None",
-        );
-    }
+        )
+    };
     if confirm {
         // Install twine and build
         let mut pip = std::process::Command::new("pip3");
