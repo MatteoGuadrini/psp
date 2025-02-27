@@ -1322,19 +1322,25 @@ fn prj_pypi(root: &str, venv: bool, shortcut: &String) -> bool {
 }
 
 // Project Docker/Podman
-fn prj_docker(root: &str, name: &str, shortcut: &String) -> bool {
-    let confirm: bool;
-    if shortcut == "quick" || shortcut == "full" {
-        confirm = true;
+fn prj_container(root: &str, name: &str, shortcut: &String) -> bool {
+    // Check enviroment variable
+    let env_container = var("PSP_CONTAINER")
+        .unwrap_or("false".to_string())
+        .parse()
+        .ok();
+    let confirm = if let Some(true) = env_container {
+        true
+    } else if shortcut == "quick" || shortcut == "full" {
+        true
     } else if shortcut == "simple" {
-        confirm = false;
+        false
     } else {
-        confirm = prompt_confirm(
+        prompt_confirm(
             "Do you want to create a Dockerfile and Containerfile?",
             true,
             "None",
-        );
-    }
+        )
+    };
     if confirm {
         // Create README
         let dockerfile_content = format!(
@@ -1511,7 +1517,7 @@ fn main() {
     // Write pyproject.toml
     prj_toml(&root, &name, &deps, license);
     // Dockerfile
-    prj_docker(&root, &name, &shortcut);
+    prj_container(&root, &name, &shortcut);
     // Makefile
     prj_makefile(&root, &name, tests, build);
     // Finish scaffolding process
