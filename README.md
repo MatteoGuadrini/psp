@@ -7,14 +7,14 @@
 - 🛠️ `pyproject.toml` support
 - 🤝 Python 3.13 compatibility
 - 🗃 Scaffolding file and folder structures for your Python project
-- 📦 Unit-test and [pytest](https://docs.pytest.org/) supports
-- 🧪 Create virtual environment
+- 📦 Unit-test and [pytest](https://docs.pytest.org/) support
+- 🧪 Create a virtual environment
 - 🔧 Automatically dependencies installation
 - 🪛 Add build and deploy dependencies to distribute package
 - 📏 [tox](https://tox.wiki/en/stable/) configuration supports and remotes CI like [CircleCI](https://circleci.com/) and [TravisCI](https://www.travis-ci.com/)
-- ⌨️ [MkDocs](https://www.mkdocs.org/) and [Sphinx](https://www.sphinx-doc.org/) documentation supports
+- ⌨️ [MkDocs](https://www.mkdocs.org/) and [Sphinx](https://www.sphinx-doc.org/) documentation support
 - 🧰 Initialize git repository and gitignore file
-- 🌎 Github and Gitlab remote repository supports
+- 🌎 GitHub and Gitlab remote repository support
 - 📑 Create README, LICENSE, CONTRIBUTING, CODE_OF_CONDUCT and CHANGES files
 - 🐳 Create Dockerfile and Containerfile for your project
 - 💡 Can use _quick_, _simple_ and _full_ argument for rapid configuration
