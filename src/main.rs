@@ -624,7 +624,9 @@ jobs:
 }
 
 // Project Gitlab/GitHub
-fn prj_remote(root: &str, name: &str, shortcut: &String) {
+fn prj_remote(root: &str, name: &str, shortcut: &String) -> (String, String) {
+    let git_user = "None".to_string();
+    let git_remote = "None".to_string();
     let options = vec!["None", "Gitlab", "Github"];
     // Check enviroment variable
     let env_remote = var("PSP_GIT_REMOTE").ok();
@@ -646,7 +648,7 @@ fn prj_remote(root: &str, name: &str, shortcut: &String) {
         };
         if username.is_empty() {
             eprintln!("error: the username must be not empty");
-            return;
+            return (git_remote, git_user);
         }
         // Add git remote path
         let remote_path = format!(
@@ -935,6 +937,7 @@ assignees: {}
             )
         }
     }
+    (git_remote, git_user)
 }
 
 // Project tox
@@ -1494,7 +1497,7 @@ fn main() {
     let git = prj_git(&root, &shortcut);
     // Git remote
     if git {
-        prj_remote(&root, &name, &shortcut);
+        let (git_remote, git_user) = prj_remote(&root, &name, &shortcut);
     }
     // Unit tests
     let tests = prj_test(&root, &name, &shortcut);
