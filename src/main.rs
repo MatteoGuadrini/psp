@@ -470,7 +470,31 @@ fn prj_deps(name: &str, venv: bool, shortcut: &String) -> Vec<String> {
 }
 
 // Project pyproject.toml
-fn prj_toml(root: &str, name: &str, deps: &Vec<String>, mut license: String) {
+fn prj_toml(
+    root: &str,
+    name: &str,
+    deps: &Vec<String>,
+    git_info: (String, String),
+    mut license: String,
+) {
+    // Check git informations
+    let mut repository = "https://github.com/python".to_string();
+    let mut changelog = "https://docs.python.org/3/whatsnew/changelog.html".to_string();
+    let mut username = "python".to_string();
+    let mut email = "psp@python.com".to_string();
+    if git_info.0 != "None" && git_info.1 != "None" {
+        let git_repo = &git_info.0.to_lowercase();
+        let git_user = &git_info.1;
+        repository = format!(
+            "https://{}.com/{}/{}",
+            git_repo,
+            git_user,
+            name.to_lowercase()
+        );
+        changelog = format!("{}/CHANGES.md", &repository);
+        username = format!("{}", git_user);
+        email = format!("{}@{}.com", git_user, git_repo);
+    }
     let mut classifiers = vec!["Programming Language :: Python :: 3"];
     // Check dependencies
     let requirements = if deps.contains(&"No".to_string()) {
@@ -509,18 +533,18 @@ name = '{}'
 version = '0.0.1'
 readme = 'README.md'
 license = {{text = '{}'}}
-authors = [{{name = 'psp', email = 'psp@example.com'}}]
-maintainers = [{{name = 'psp', email = 'psp@example.com'}}]
+authors = [{{name = '{username}', email = '{email}'}}]
+maintainers = [{{name = '{username}', email = '{email}'}}]
 description = 'A simple but structured Python project'
 requires-python = '>=3.13'
 classifiers = {:?}
 dependencies = {}
 
 [project.urls]
-homepage = 'https://www.python.org/'
+homepage = 'https://python.org/'
 documentation = 'https://docs.python.org/3/'
-repository = 'https://github.com/python'
-changelog = 'https://docs.python.org/3/whatsnew/changelog.html'
+repository = '{repository}'
+changelog = '{changelog}'
 ",
         name.to_lowercase(),
         license,
@@ -625,8 +649,8 @@ jobs:
 
 // Project Gitlab/GitHub
 fn prj_remote(root: &str, name: &str, shortcut: &String) -> (String, String) {
-    let git_user = "None".to_string();
-    let git_remote = "None".to_string();
+    let mut git_user = "None".to_string();
+    let mut git_remote = "None".to_string();
     let options = vec!["None", "Gitlab", "Github"];
     // Check enviroment variable
     let env_remote = var("PSP_GIT_REMOTE").ok();
@@ -650,6 +674,8 @@ fn prj_remote(root: &str, name: &str, shortcut: &String) -> (String, String) {
             eprintln!("error: the username must be not empty");
             return (git_remote, git_user);
         }
+        git_remote = remote.to_owned();
+        git_user = username.to_owned();
         // Add git remote path
         let remote_path = format!(
             "git@{}.com:{}/{}.git",
@@ -1496,9 +1522,11 @@ fn main() {
     // Start git
     let git = prj_git(&root, &shortcut);
     // Git remote
-    if git {
-        let (git_remote, git_user) = prj_remote(&root, &name, &shortcut);
-    }
+    let git_info = if git {
+        prj_remote(&root, &name, &shortcut)
+    } else {
+        ("None".to_string(), "None".to_string())
+    };
     // Unit tests
     let tests = prj_test(&root, &name, &shortcut);
     // Install dependencies
@@ -1518,7 +1546,7 @@ fn main() {
     // Build dependencies
     let build = prj_pypi(&root, venv, &shortcut);
     // Write pyproject.toml
-    prj_toml(&root, &name, &deps, license);
+    prj_toml(&root, &name, &deps, git_info, license);
     // Dockerfile
     prj_container(&root, &name, &shortcut);
     // Makefile
