@@ -478,9 +478,11 @@ fn prj_toml(
     mut license: String,
 ) {
     // Check git informations
+    let mut homepage = "https://python.org/".to_string();
+    let mut documentation = "https://docs.python.org/3/".to_string();
     let mut repository = "https://github.com/python".to_string();
     let mut changelog = "https://docs.python.org/3/whatsnew/changelog.html".to_string();
-    let mut username = "python".to_string();
+    let mut username = "psp".to_string();
     let mut email = "psp@python.com".to_string();
     if git_info.0 != "None" && git_info.1 != "None" {
         let git_repo = &git_info.0.to_lowercase();
@@ -494,6 +496,8 @@ fn prj_toml(
         changelog = format!("{}/CHANGES.md", &repository);
         username = format!("{}", git_user);
         email = format!("{}@{}.com", git_user, git_repo);
+        homepage = format!("https://{}.org/", name.to_lowercase());
+        documentation = format!("https://docs.{}.org/", name.to_lowercase());
     }
     let mut classifiers = vec!["Programming Language :: Python :: 3"];
     // Check dependencies
@@ -541,8 +545,8 @@ classifiers = {:?}
 dependencies = {}
 
 [project.urls]
-homepage = 'https://python.org/'
-documentation = 'https://docs.python.org/3/'
+homepage = '{homepage}'
+documentation = '{documentation}'
 repository = '{repository}'
 changelog = '{changelog}'
 ",
