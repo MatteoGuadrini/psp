@@ -3,6 +3,7 @@ nav:
   - Home: index.md
   - Simple: simple.md
   - Shortcut: shortcut.md
+  - Env: env.md
 theme:
   name: material
   logo: img/psp_logo.svg
