@@ -31,3 +31,80 @@ You can configure two files for configure these environment variables:
 | `PSP_LICENSE`     | [License](simple.md#license)                               | `mit|apache|cc|mozilla|gpl`    |
 | `PSP_PYPI`        | [PyPi dependencies](simple.md#pypi-dependencies)           | `true|false`                   |
 | `PSP_CONTAINER`   | [Containers](simple.md#dockerpodman)                       | `true|false`                   |
+
+
+## Examples
+
+This is an example of file `.psp.env` in the `$HOME` path.
+
+```bash
+#PSP_NAME=mypy_package          # This is treated as a default name
+PSP_VENV=true
+PSP_GIT=true
+PSP_GIT_REMOTE=github
+PSP_GIT_USER=matteoguadrini
+PSP_TEST=true
+PSP_COMMON_DEPS="pytest"        # These are additional dependencies
+#PSP_DEPS="tablib pandas"       # These are project dependencies
+PSP_DOCS=mkdocs
+PSP_TOX=true
+PSP_CI=circleci
+PSP_FILES=true
+PSP_LICENSE=gpl
+PSP_PYPI=true
+PSP_CONTAINER=true
+```
+
+If you create a `.env` file into _CWD_ (Current Working Directory), every `PSP_` variables will overwritten.
+
+```console
+[gu]# cat $HOME/.psp.env
+PSP_VENV=true
+PSP_GIT=true
+PSP_GIT_REMOTE=github
+PSP_GIT_USER=matteoguadrini
+PSP_TEST=true
+PSP_COMMON_DEPS="pytest"
+PSP_DOCS=mkdocs
+PSP_TOX=true
+PSP_CI=circleci
+PSP_FILES=true
+PSP_LICENSE=gpl
+PSP_PYPI=true
+PSP_CONTAINER=true
+[gu]# pwd
+/tmp/mypyenv/
+[gu]# cat .env
+PSP_DEPS="numpy scipy pydata-sphinx-theme"
+PSP_DOCS=sphinx     # Overwritten
+PSP_LICENSE=mit     # Overwritten
+[gu]# psp
+info: welcome to psp, version 0.1.1
+> Name of Python project: biopy
+info: python project `biopy` created at /tmp/mypyenv/biopy
+[gu]# ll biopy
+total 36
+-rw-rw-r-- 1 gu gu  142 Mar  7 12:47 CHANGES.md
+-rw-rw-r-- 1 gu gu 1070 Mar  7 12:47 CONTRIBUTING.md
+-rw-rw-r-- 1 gu gu  336 Mar  7 12:48 Containerfile
+-rw-rw-r-- 1 gu gu  336 Mar  7 12:48 Dockerfile
+-rw-rw-r-- 1 gu gu 1008 Mar  7 12:48 Makefile
+-rw-rw-r-- 1 gu gu 1451 Mar  7 12:48 LICENSE.md
+-rw-rw-r-- 1 gu gu 1265 Mar  7 12:48 CODE_OF_CONDUCT.md
+-rw-rw-r-- 1 gu gu  192 Mar  7 12:47 README.md
+drwxrwxr-x 2 gu gu   80 Mar  7 12:46 biopy
+drwxrwxr-x 4 gu gu  120 Mar  7 12:47 docs
+-rw-rw-r-- 1 gu gu  813 Mar  7 12:48 pyproject.toml
+-rw-rw-r-- 1 gu gu  106 Mar  7 12:47 requirements.txt
+drwxrwxr-x 2 gu gu   80 Mar  7 12:46 tests
+-rw-rw-r-- 1 gu gu  239 Mar  7 12:47 tox.ini
+drwxrwxr-x 5 gu gu  140 Mar  7 12:46 venv
+[gu]# cd biopy && make test
+venv/bin/python3 -m unittest
+Test all biopy successfully!
+.
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+OK
+```
