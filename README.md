@@ -3,25 +3,29 @@
 
 `psp` is a blazing fast command line utility to scaffold your _Python_ project, written in Rust.
 
-- ⚡️ 1-100x faster
+- ⚡️ 1-100x faster compared to other scaffolding tools
 - 🛠️ `pyproject.toml` support
 - 🤝 Python 3.13 compatibility
 - 🗃 Scaffolding file and folder structures for your Python project
 - 📦 Unit-test and [pytest](https://docs.pytest.org/) support
 - 🧪 Create a virtual environment
-- 🔧 Automatically dependencies installation
-- 🪛 Add build and deploy dependencies to distribute package
+- 🔧 Automagically dependencies installation
+- 🪛 Add build and deploy dependencies to distribute the package
 - 📏 [tox](https://tox.wiki/en/stable/) configuration supports and remotes CI like [CircleCI](https://circleci.com/) and [TravisCI](https://www.travis-ci.com/)
 - ⌨️ [MkDocs](https://www.mkdocs.org/) and [Sphinx](https://www.sphinx-doc.org/) documentation support
-- 🧰 Initialize git repository and gitignore file
+- 🧰 Initialize git repository and `gitignore` file
 - 🌎 GitHub and Gitlab remote repository support
-- 📑 Create README, LICENSE, CONTRIBUTING, CODE_OF_CONDUCT and CHANGES files
-- 🐳 Create Dockerfile and Containerfile for your project
+- 📑 Create `README`, `LICENSE`, `CONTRIBUTING`, `CODE_OF_CONDUCT` and `CHANGES` files
+- 🐳 Create `Dockerfile` and `Containerfile` for your project
 - 💡 Can use _quick_, _simple_ and _full_ argument for rapid configuration
+- 💾 Create `$HOME/.psp.env` and `$PWD/.env` files with your customizations
+- 🎛️ Can use some `PSP_` variables to control your defaults
 
-[![asciicast](https://asciinema.org/a/696602.svg)](https://asciinema.org/a/696602)
+## 🚀 Get Started in 30 Seconds
 
-<img src="https://i.ibb.co/bXmf362/psp011.png" alt="psp" width="790"/>
+[![asciicast](https://asciinema.org/a/707474.svg)](https://asciinema.org/a/707474)
+
+<img src="https://i.ibb.co/bMGTM4GM/psp020.png" alt="psp" width="790"/>
 
 The result is:
 
@@ -102,7 +106,7 @@ $> git remote get-url origin
 git@github.com:MatteoGuadrini/test.git
 ```
 
-## Prerequisites
+## 🔌 Prerequisites
 
 `psp` has four prerequisetes installed on own machine:
 - `git`
@@ -110,25 +114,25 @@ git@github.com:MatteoGuadrini/test.git
 - `pip`
 - `curl`
 
-### Ubuntu prerequisites installation
+### Ubuntu based prerequisites installation
 
 ```console
 sudo apt install -y python3 python3-pip git curl
 ```
 
-### Red Hat prerequisites installation
+### Red Hat based prerequisites installation
 
 ```console
 sudo dnf install -y python3 python3-pip git curl
 ```
 
-### Arch prerequisites installation
+### Arch based prerequisites installation
 
 ```console
 sudo pacman -Qi python3 python3-pip git curl
 ```
 
-## Installation
+## 💿 Installation
 
 To install compiled file into your machine, download it:
 
@@ -137,13 +141,13 @@ To install compiled file into your machine, download it:
 For all users:
 ```console
 sudo -i
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.1.1/psp_linux -o /usr/bin/psp
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.2.0/psp_linux -o /usr/bin/psp
 chmod +x /usr/bin/psp
 ```
 
 For current user:
 ```console
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.1.1/psp_linux -o $HOME/.local/bin/psp
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.2.0/psp_linux -o $HOME/.local/bin/psp
 chmod +x $HOME/.local/bin/psp
 ```
 
@@ -151,7 +155,7 @@ chmod +x $HOME/.local/bin/psp
 
 ```console
 sudo su -
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.1.1/psp_macos -o /usr/bin/psp
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.2.0/psp_macos -o /usr/bin/psp
 chmod +x /usr/bin/psp
 ```
 
@@ -162,14 +166,14 @@ If you want install OS package, follow instructions for your Operating System:
 For **Debian/Ubuntu**:
 
 ```console
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.1.1/psp.deb -o psp.deb
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.2.0/psp.deb -o psp.deb
 sudo dpkg -i psp.deb
 ```
 
 For **Fedora/Mageia/OpenSuse**:
 
 ```console
-sudo rpm -i https://github.com/MatteoGuadrini/psp/releases/download/v0.1.1/psp.rpm
+sudo rpm -i https://github.com/MatteoGuadrini/psp/releases/download/v0.2.0/psp.rpm
 ```
 
 ### Compile as your own
