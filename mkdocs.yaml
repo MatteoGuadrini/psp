@@ -3,12 +3,28 @@ nav:
   - Home: index.md
   - Simple: simple.md
   - Shortcut: shortcut.md
+  - Env: env.md
 theme:
   name: material
   logo: img/psp_logo.svg
   favicon: img/psp_logo.ico
   palette:
-    primary: yellow
-    accent: blue
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: slate
+      primary: blue
+      accent: yellow
+      toggle:
+        icon: material/lightbulb-outline
+        name: Switch to light mode
+
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: default
+      primary: yellow
+      accent: blue
+      toggle:
+        icon: material/lightbulb
+        name: Switch to dark mode
 markdown_extensions:
   - admonition
