@@ -161,7 +161,7 @@ chmod +x /usr/bin/psp
 
 ### Packages
 
-If you want install OS package, follow instructions for your Operating System:
+If you want to install OS package, follow instructions for your Operating System:
 
 For **Debian/Ubuntu**:
 
@@ -185,8 +185,17 @@ git clone https://github.com/MatteoGuadrini/psp.git
 cd psp && cargo build --release && sudo cp -v target/release/psp /usr/bin/psp && chmod +x /usr/bin/psp
 ```
 
+## Next features
+[ ] `conda`, `uv` and `poetry` support
+[ ] `hatch` support
+[ ] `windows` operating system support
+[ ] `docker-compose` and `kubernetes` support
+[ ] command line flags support
+[ ] updating/merging project
+[ ] templating folder support
+
 ## Open source
-_psp_ is an open source project. Any contribute, It's welcome.
+_psp_ is an open source project. Any contribution, It's welcome.
 
 **A great thanks**.
 
@@ -205,13 +214,12 @@ Come today, we are organized to dare to listen to them and answers, every day of
 [Adopt the future](https://www.ioadottoilfuturo.it/)
 
 
-## Treeware
-
-This package is [Treeware](https://treeware.earth). If you use it in production,
-then we ask that you [**buy the world a tree**](https://plant.treeware.earth/matteoguadrini/mkpl) to thank us for our work.
+## Licence            
+This package is [Treeware](https://treeware.earth). 
+If you use it in production, then we ask that you [**buy the world a tree**](https://plant.treeware.earth/MatteoGuadrini/psp) to thank us for our work. 
 By contributing to the Treeware forest you’ll be creating employment for local families and restoring wildlife habitats.
 
-[![Treeware](https://img.shields.io/badge/dynamic/json?color=brightgreen&label=Treeware&query=%24.total&url=https%3A%2F%2Fpublic.offset.earth%2Fusers%2Ftreeware%2Ftrees)](https://treeware.earth)
+[![Buy us a tree](https://img.shields.io/badge/Treeware-%F0%9F%8C%B3-lightgreen?style=for-the-badge)](https://plant.treeware.earth/MatteoGuadrini/psp)
 
 
 ## Acknowledgments
