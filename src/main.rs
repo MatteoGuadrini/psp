@@ -40,7 +40,7 @@ fn make_dirs(dir: &str) -> std::io::Result<()> {
     }
 }
 
-// Function for creating file with contents
+// Function for creating a file with contents
 fn make_file(file: &str, content: String) -> std::io::Result<()> {
     let mut file = File::create(file)?;
     let result = file.write_all(&content.as_bytes());
@@ -69,7 +69,7 @@ fn prompt_text(question: &str, default: &str, help: &str) -> String {
     answer.unwrap().to_string()
 }
 
-// Function for prompt confirm (yes/no)
+// Function for prompt confirmation (yes/no)
 fn prompt_confirm(question: &str, default: bool, help: &str) -> bool {
     let answer = if help != "None" {
         Confirm::new(question)
@@ -101,7 +101,7 @@ fn print_help(exit_code: i32) {
     exit(exit_code)
 }
 
-// Function that capture keyword argument
+// Function that captures keyword argument
 fn get_shortcut() -> String {
     let args: Vec<String> = args().collect();
     if args.len() > 1 {
@@ -118,9 +118,9 @@ fn get_shortcut() -> String {
 
 // Function that load env files
 fn load_env() {
-    // Load first, .env file from current working directory
+    // Load first, .env file from the current working directory
     dotenv().ok();
-    // Load second, .psp.envmfile from home
+    // Load second, .psp.env file from home
     let home_var = var("HOME").unwrap();
     let home_env = format!("{home_var}/.psp.env");
     dotenv::from_filename(home_env).ok();
@@ -130,7 +130,7 @@ fn load_env() {
 
 // Project name
 fn prj_name() -> (String, String) {
-    // Check enviroment variable
+    // Check environment variable
     let env_name = var("PSP_NAME").ok();
     let name = if let Some(env_name) = env_name {
         env_name
@@ -140,48 +140,35 @@ fn prj_name() -> (String, String) {
             .trim_end_matches("/")
             .to_string()
     };
-    // Check if name is a path
-    let package: String = if name.contains('/') {
-        let parts: Vec<&str> = name.split('/').collect();
-        let last = parts.last();
-        if !last.is_none() {
-            last.unwrap().to_lowercase().to_string()
-        } else {
-            String::new()
-        }
-    } else {
-        name.to_lowercase()
-    };
-    // Check if package is empty
-    if package.is_empty() {
-        eprintln!("error: empty word is not allowed");
+    // Check is path is empty
+    if name.is_empty() {
+        eprintln!("error: empty path is not allowed");
         exit(1)
     }
-    // Check if package contains spaces, and replace it with underscores
-    let package = package.replace(" ", "_");
-    let root = name.clone();
-    let project = format!("{root}/{package}");
-    // Make directories structure
-    let package_path = Path::new(&project);
-    // Check if project path already exists
-    if package_path.exists() {
+    // Make package path parts
+    let project_name = name.to_lowercase().replace(" ", "_");
+    let project = Path::new(&name);
+    let package = project.join(project.file_name().unwrap());
+    let root = Path::new(package.parent().unwrap());
+    // Check if a project path already exists
+    if package.exists() {
         let project_exists = prompt_confirm(
-            format!("Path `{root}` exists. Do you want continue?").as_str(),
+            format!("Path `{}` exists. Do you want continue?", root.display()).as_str(),
             false,
             "Some files will be overwritten",
         );
         if !project_exists {
-            println!("info: the path `{root}` unchanged");
+            println!("info: the path `{}` unchanged", root.display());
             exit(0)
         }
     }
-    let dir_ret = make_dirs(format!("{project}").as_str());
+    let dir_ret = make_dirs(format!("{}", package.display()).as_str());
     if let Err(e) = dir_ret {
         eprintln!("error: {}", e);
     }
     // Make file structures
     let file_ret = make_file(
-        format!("{project}/__init__.py").as_str(),
+        format!("{}/__init__.py", package.display()).as_str(),
         format!(
             "#! /usr/bin/env python3
 # -*- encoding: utf-8 -*-
@@ -197,7 +184,7 @@ __version__ = '0.0.1'
         exit(4);
     }
     let main_file = make_file(
-        format!("{project}/__main__.py").as_str(),
+        format!("{}/__main__.py", package.display()).as_str(),
         format!(
             "#! /usr/bin/env python3
 # -*- encoding: utf-8 -*-
@@ -209,19 +196,22 @@ from .__init__ import __version__
 print('name: {} ')
 print(f'version: {{__version__}}')
 ",
-            package.to_lowercase()
+            project_name
         ),
     );
     if let Err(e) = main_file {
         eprintln!("error: {}", e);
         exit(4);
     }
-    (root, package)
+    (
+        root.to_string_lossy().to_string(),
+        package.file_name().unwrap().to_string_lossy().to_string(),
+    )
 }
 
 // Project git
 fn prj_git(name: &str, shortcut: &String) -> bool {
-    // Check enviroment variable
+    // Check environment variable
     let env_git = var("PSP_GIT").unwrap_or("false".to_string()).parse().ok();
     let confirm = if let Some(true) = env_git {
         true
@@ -243,7 +233,7 @@ fn prj_git(name: &str, shortcut: &String) -> bool {
             eprintln!("error: something wrong with `git init`");
             return false;
         }
-        // Create .gitignore file
+        // Create .gitignore a file
         let file_ret = make_file(
             format!("{name}/.gitignore").as_str(),
             format!(
@@ -297,7 +287,7 @@ site"
 
 // Project unit tests
 fn prj_test(root: &str, name: &str, shortcut: &String) -> bool {
-    // Check enviroment variable
+    // Check environment variable
     let env_test = var("PSP_TEST").unwrap_or("false".to_string()).parse().ok();
     let confirm = if let Some(true) = env_test {
         true
@@ -373,7 +363,7 @@ if __name__ == '__main__':
 
 // Project venv
 fn prj_venv(name: &str, shortcut: &String) -> bool {
-    // Check enviroment variable
+    // Check environment variable
     let env_venv = var("PSP_VENV").unwrap_or("false".to_string()).parse().ok();
     let confirm = if let Some(true) = env_venv {
         true
@@ -402,7 +392,7 @@ fn prj_venv(name: &str, shortcut: &String) -> bool {
 
 // Project dependencies
 fn prj_deps(name: &str, venv: bool, shortcut: &String) -> Vec<String> {
-    // Check enviroment variable
+    // Check environment variable
     let env_common_deps = var("PSP_COMMON_DEPS").ok();
     let env_deps = var("PSP_DEPS").ok();
     let deps = if let Some(env_deps) = env_deps {
@@ -478,7 +468,7 @@ fn prj_toml(
     git_info: (String, String),
     mut license: String,
 ) {
-    // Check git informations
+    // Check git information
     let mut homepage = "https://python.org/".to_string();
     let mut documentation = "https://docs.python.org/3/".to_string();
     let mut repository = "https://github.com/python".to_string();
@@ -657,7 +647,7 @@ fn prj_remote(root: &str, name: &str, shortcut: &String) -> (String, String) {
     let mut git_user = "None".to_string();
     let mut git_remote = "None".to_string();
     let options = vec!["None", "Gitlab", "Github"];
-    // Check enviroment variable
+    // Check environment variable
     let env_remote = var("PSP_GIT_REMOTE").ok();
     let remote = if let Some(env_remote) = env_remote {
         env_remote
@@ -668,7 +658,7 @@ fn prj_remote(root: &str, name: &str, shortcut: &String) -> (String, String) {
     };
     if remote.as_str().to_lowercase() != "none" {
         // Username of remote git service
-        // Check enviroment variable
+        // Check environment variable
         let env_git_user = var("PSP_GIT_USER").ok();
         let username = if let Some(env_git_user) = env_git_user {
             env_git_user
@@ -681,7 +671,7 @@ fn prj_remote(root: &str, name: &str, shortcut: &String) -> (String, String) {
         }
         git_remote = remote.to_owned();
         git_user = username.to_owned();
-        // Add git remote path
+        // Add a git remote path
         let remote_path = format!(
             "git@{}.com:{}/{}.git",
             remote.to_lowercase(),
@@ -858,7 +848,7 @@ body:
   - type: textarea
     attributes:
       label: Additional context
-      description: Other considerizations
+      description: Other considerations
     validations:
       required: false
 ",
@@ -917,7 +907,7 @@ body:
   - type: textarea
     attributes:
       label: Additional context
-      description: Other considerizations
+      description: Other considerations
     validations:
       required: false
 ",
@@ -973,7 +963,7 @@ assignees: {}
 
 // Project tox
 fn prj_tox(name: &str, venv: bool, deps: &Vec<String>, shortcut: &String) {
-    // Check enviroment variable
+    // Check environment variable
     let env_tox = var("PSP_TOX").unwrap_or("false".to_string()).parse().ok();
     let confirm = if let Some(true) = env_tox {
         true
@@ -1037,7 +1027,7 @@ commands = pytest tests",
 // Project documentation site generator
 fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) {
     let options = vec!["None", "Sphinx", "MKDocs"];
-    // Check enviroment variable
+    // Check environment variable
     let env_docs = var("PSP_DOCS").ok();
     let docs = if let Some(env_docs) = env_docs {
         env_docs
@@ -1049,7 +1039,7 @@ fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) {
     if docs != "None" {
         let docs_home = format!("{root}/docs");
         let docs_folder = Path::new(&docs_home);
-        // Check if folder docs exists
+        // Check if folder docs exist
         if docs_folder.exists() {
             let folder_result = remove_dir_all(docs_folder);
             if let Err(e) = folder_result {
@@ -1154,7 +1144,7 @@ fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) {
 
 // Project common files
 fn prj_files(root: &str, name: &str, shortcut: &String) {
-    // Check enviroment variable
+    // Check environment variable
     let env_files = var("PSP_FILES").unwrap_or("false".to_string()).parse().ok();
     let confirm = if let Some(true) = env_files {
         true
@@ -1286,7 +1276,7 @@ fn prj_license(name: &str, shortcut: &String) -> String {
         "Creative Commons",
         "Gnu Public License",
     ];
-    // Check enviroment variable
+    // Check environment variable
     let env_license = var("PSP_LICENSE").ok();
     let license = if let Some(env_license) = env_license {
         env_license
@@ -1333,7 +1323,7 @@ fn prj_license(name: &str, shortcut: &String) -> String {
 
 // Project pypi dependencies
 fn prj_pypi(root: &str, venv: bool, shortcut: &String) -> bool {
-    // Check enviroment variable
+    // Check environment variable
     let env_pypi = var("PSP_PYPI").unwrap_or("false".to_string()).parse().ok();
     let confirm = if let Some(true) = env_pypi {
         true
@@ -1376,7 +1366,7 @@ fn prj_pypi(root: &str, venv: bool, shortcut: &String) -> bool {
 
 // Project Docker/Podman
 fn prj_container(root: &str, name: &str, shortcut: &String) -> bool {
-    // Check enviroment variable
+    // Check environment variable
     let env_container = var("PSP_CONTAINER")
         .unwrap_or("false".to_string())
         .parse()
@@ -1541,6 +1531,7 @@ fn main() {
     }
     // Create project structure by name or path
     let (root, name) = prj_name();
+    println!("root:{}, name:{}", root, name);
     // Virtual Environment
     let venv = prj_venv(&root, &shortcut);
     // Start git
@@ -1575,7 +1566,7 @@ fn main() {
     prj_container(&root, &name, &shortcut);
     // Makefile
     prj_makefile(&root, &name, tests, build);
-    // Finish scaffolding process
+    // Finish a scaffolding process
     println!(
         "info: python project `{name}` created at `{}`",
         absolute(root).unwrap().display()
