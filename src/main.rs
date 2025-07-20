@@ -29,6 +29,10 @@ fn split_env_path() -> Vec<String> {
 fn check_tool(tool: &str) {
     let paths: Vec<String> = split_env_path();
     for path in paths {
+        #[cfg(target_os = "windows")]
+        if tool == "curl" {
+            continue;
+        }
         let tool_path = format!("{path}/{tool}");
         if Path::new(&tool_path).exists() {
             return;
