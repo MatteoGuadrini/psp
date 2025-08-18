@@ -148,9 +148,12 @@ fn prj_name() -> (String, String) {
     let name = if let Some(env_name) = env_name {
         env_name
     } else {
+        let folder_separator = "/";
+        #[cfg(target_os = "windows")]
+        let folder_separator = "\\";
         prompt_text("Name of Python project:", "None", "Type name or path")
             .trim()
-            .trim_end_matches("/")
+            .trim_end_matches(folder_separator)
             .to_string()
     };
     // Check is path is empty
