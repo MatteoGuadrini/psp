@@ -183,8 +183,9 @@ fn prj_name() -> (String, String) {
         eprintln!("error: {}", e);
     }
     // Make file structures
+    let init_file = package.join("__init__.py");
     let file_ret = make_file(
-        format!("{}/__init__.py", package.display()).as_str(),
+        format!("{}", init_file.display()).as_str(),
         format!(
             "#! /usr/bin/env python3
 # -*- encoding: utf-8 -*-
@@ -199,8 +200,9 @@ __version__ = '0.0.1'
         eprintln!("error: {}", e);
         exit(4);
     }
-    let main_file = make_file(
-        format!("{}/__main__.py", package.display()).as_str(),
+    let main_file = package.join("__main__.py");
+    let main_file_ret = make_file(
+        format!("{}", main_file.display()).as_str(),
         format!(
             "#! /usr/bin/env python3
 # -*- encoding: utf-8 -*-
@@ -215,7 +217,7 @@ print(f'version: {{__version__}}')
             project_name
         ),
     );
-    if let Err(e) = main_file {
+    if let Err(e) = main_file_ret {
         eprintln!("error: {}", e);
         exit(4);
     }
