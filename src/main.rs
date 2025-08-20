@@ -29,10 +29,6 @@ fn split_env_path() -> Vec<String> {
 fn check_tool(tool: &str) {
     let paths: Vec<String> = split_env_path();
     for path in paths {
-        #[cfg(target_os = "windows")]
-        if tool == "curl" {
-            continue;
-        }
         let tool_path = format!("{path}/{tool}");
         if Path::new(&tool_path).exists() {
             return;
@@ -148,6 +144,7 @@ fn prj_name() -> (String, String) {
     let name = if let Some(env_name) = env_name {
         env_name
     } else {
+        #[cfg(any(target_os = "linux", target_os = "macos"))]
         let folder_separator = "/";
         #[cfg(target_os = "windows")]
         let folder_separator = "\\";
@@ -1543,7 +1540,10 @@ fn main() {
     // Load env files
     load_env();
     // Check dependencies tools
+    #[cfg(any(target_os = "linux", target_os = "macos"))]
     let tools = ["python3", "git", "pip3", "curl"];
+    #[cfg(target_os = "windows")]
+    let tools = ["python", "git", "pip", "powershell"];
     for tool in tools {
         check_tool(tool);
     }
