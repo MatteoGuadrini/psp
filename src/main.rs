@@ -465,14 +465,16 @@ fn prj_test(root: &str, name: &str, shortcut: &String) -> bool {
     if confirm {
         let project_name = name.to_lowercase();
         // Make directories structure
-        let dir_ret = make_dirs(format!("{root}/tests").as_str());
+        let tests_dir = Path::new(root).join("tests");
+        let dir_ret = make_dirs(tests_dir.display().to_string().as_str());
         if let Err(e) = dir_ret {
             eprintln!("error: {}", e);
             return false;
         }
         // Make file structures
-        let init_file = make_file(
-            format!("{root}/tests/__init__.py").as_str(),
+        let init_file = tests_dir.join("__init__.py");
+        let init_file_ret = make_file(
+            init_file.display().to_string().as_str(),
             format!(
                 "#! /usr/bin/env python3
 # -*- encoding: utf-8 -*-
@@ -483,12 +485,13 @@ fn prj_test(root: &str, name: &str, shortcut: &String) -> bool {
 "
             ),
         );
-        if let Err(e) = init_file {
+        if let Err(e) = init_file_ret {
             eprintln!("error: {}", e);
             return false;
         }
-        let all_module = make_file(
-            format!("{root}/tests/test_{project_name}.py").as_str(),
+        let all_module = tests_dir.join(format!("test_{project_name}.py").as_str());
+        let all_module_ret = make_file(
+            all_module.display().to_string().as_str(),
             format!(
                 "#! /usr/bin/env python3
 # -*- encoding: utf-8 -*-
@@ -517,7 +520,7 @@ if __name__ == '__main__':
             )
             .to_string(),
         );
-        if let Err(e) = all_module {
+        if let Err(e) = all_module_ret {
             eprintln!("error: {}", e);
             return false;
         }
