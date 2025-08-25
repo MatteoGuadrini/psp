@@ -543,12 +543,17 @@ fn prj_venv(name: &str, shortcut: &String) -> bool {
     } else {
         prompt_confirm("Do you want to create a virtual environment?", true, "None")
     };
+    // Select binary
+    #[cfg(any(target_os = "linux", target_os = "macos"))]
+    let bin = "python3";
+    #[cfg(target_os = "windows")]
+    let bin = "python";
     if confirm {
-        let output = std::process::Command::new("python3")
+        let output = std::process::Command::new(bin)
             .args(["-m", "venv", "venv"])
             .current_dir(name)
             .output()
-            .expect("python should be installed");
+            .expect(format!("{bin} should be installed").as_str());
         // Check if command exit successfully
         if !output.status.success() {
             eprintln!("error: `venv` creation failed");
