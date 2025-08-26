@@ -612,7 +612,7 @@ fn prj_deps(name: &str, venv: bool, shortcut: &String) -> Vec<String> {
         let mut pip = std::process::Command::new(bin);
         // Activate venv
         if venv {
-            pip.env("PATH", "venv/bin");
+            pip.env("PATH", Path::new("venv").join("bin"));
         }
         let output = pip
             .arg("install")
@@ -631,7 +631,15 @@ fn prj_deps(name: &str, venv: bool, shortcut: &String) -> Vec<String> {
             "# {SIGNATURE}, version {VERSION}\n\n{}",
             dependencies.join("\n")
         );
-        let requirements = make_file(format!("{name}/requirements.txt").as_str(), content);
+        let requirements_file = Path::new(name);
+        let requirements = make_file(
+            requirements_file
+                .join("requirements.txt")
+                .display()
+                .to_string()
+                .as_str(),
+            content,
+        );
         if let Err(e) = requirements {
             eprintln!("error: {}", e);
         }
