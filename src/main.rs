@@ -604,7 +604,12 @@ fn prj_deps(name: &str, venv: bool, shortcut: &String) -> Vec<String> {
         dependencies.extend(common_dependencies);
     }
     if !dependencies.is_empty() {
-        let mut pip = std::process::Command::new("pip3");
+        // Select binary
+        #[cfg(any(target_os = "linux", target_os = "macos"))]
+        let bin = "pip3";
+        #[cfg(target_os = "windows")]
+        let bin = "pip";
+        let mut pip = std::process::Command::new(bin);
         // Activate venv
         if venv {
             pip.env("PATH", "venv/bin");
@@ -616,7 +621,7 @@ fn prj_deps(name: &str, venv: bool, shortcut: &String) -> Vec<String> {
             .args(&dependencies)
             .current_dir(&name)
             .output()
-            .expect("pip should be installed");
+            .expect(format!("{bin} should be installed").as_str());
         // Check if command exit successfully
         if !output.status.success() {
             eprintln!("error: dependencies ({deps}) installation failed");
