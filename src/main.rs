@@ -105,8 +105,25 @@ fn prompt_select(question: &str, options: Vec<&str>, help: &str) -> String {
 
 // Function to print help
 fn print_help(exit_code: i32) {
+    println!("psp (Python Scaffolding Projects), version {VERSION}");
     println!("usage: psp [shortcut]");
     println!("ie: psp [help|quick|simple|full]");
+    // Print complete help
+    if exit_code == 0 {
+        println!(
+            "
+shortcut:
+    help:   print this help message
+    quick:  enables a rapid configuration
+    simple: enables a basic configuration
+    full:   enables a full configuration
+
+links:
+    repository: https://github.com/MatteoGuadrini/psp
+    manual:     https://psp.readthedocs.io/
+            "
+        );
+    }
     exit(exit_code)
 }
 
@@ -114,12 +131,12 @@ fn print_help(exit_code: i32) {
 fn get_shortcut() -> String {
     let args: Vec<String> = args().collect();
     if args.len() > 1 {
-        let shorcut = &args[1];
-        if !ARGS.contains(&shorcut.as_str()) {
-            eprintln!("error: unknown shortcut command `{}`", shorcut);
+        let shortcut = &args[1];
+        if !ARGS.contains(&shortcut.as_str()) {
+            eprintln!("error: unknown shortcut command `{}`", shortcut);
             print_help(1);
         }
-        shorcut.clone()
+        shortcut.clone()
     } else {
         "None".to_string()
     }
@@ -865,7 +882,7 @@ fn prj_remote(root: &str, name: &str, shortcut: &String) -> (String, String) {
             username,
             name.to_lowercase()
         );
-        // Test if remote has already been setted
+        // Test if remote has already been set
         let origin = std::process::Command::new("git")
             .args(["remote", "-v"])
             .current_dir(root)
