@@ -776,8 +776,9 @@ fn prj_ci(name: &str, deps: &Vec<String>, shortcut: &String) {
     };
     // Travis or CircleCI
     if ci.as_str().to_lowercase() == "travisci" {
+        let travis_file = Path::new(name).join(".travis.yml");
         let travis = make_file(
-            format!("{name}/.travis.yml").as_str(),
+            travis_file.display().to_string().as_str(),
             format!(
                 "# {SIGNATURE}, version {VERSION}
 
@@ -803,12 +804,14 @@ script:
             eprintln!("error: {}", e);
         }
     } else if ci.as_str().to_lowercase() == "circleci" {
-        let dir_ret = make_dirs(format!("{name}/.circleci").as_str());
+        let circleci_dir = Path::new(name).join(".circleci");
+        let dir_ret = make_dirs(circleci_dir.display().to_string().as_str());
         if let Err(e) = dir_ret {
             eprintln!("error: {}", e);
         }
+        let circleci_file = Path::new(circleci_dir.as_path()).join("config.yml");
         let circle = make_file(
-            format!("{name}/.circleci/config.yml").as_str(),
+            circleci_file.display().to_string().as_str(),
             format!(
                 "# {SIGNATURE}, version {VERSION}
 
