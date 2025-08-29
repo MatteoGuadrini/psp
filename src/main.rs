@@ -1190,7 +1190,7 @@ fn prj_tox(name: &str, venv: bool, deps: &Vec<String>, shortcut: &String) {
         let mut pip = std::process::Command::new(bin);
         // Activate venv
         if venv {
-            pip.env("PATH", "venv/bin");
+            pip.env("PATH", Path::new("venv").join("bin"));
         }
         let output = pip
             .arg("install")
