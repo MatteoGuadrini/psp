@@ -1228,7 +1228,8 @@ commands = pytest tests",
                 .collect::<Vec<String>>()
                 .join("\n")
         );
-        let tox_ini = make_file(format!("{name}/tox.ini").as_str(), tox_ini_content);
+        let tox_ini_file = Path::new(name).join("tox.ini");
+        let tox_ini = make_file(tox_ini_file.display().to_string().as_str(), tox_ini_content);
         if let Err(e) = tox_ini {
             eprintln!("error: {}", e);
         }
