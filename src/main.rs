@@ -1183,7 +1183,11 @@ fn prj_tox(name: &str, venv: bool, deps: &Vec<String>, shortcut: &String) {
     };
     // Create tox ini
     if confirm {
-        let mut pip = std::process::Command::new("pip3");
+        #[cfg(any(target_os = "linux", target_os = "macos"))]
+        let bin = "pip3";
+        #[cfg(target_os = "windows")]
+        let bin = "pip";
+        let mut pip = std::process::Command::new(bin);
         // Activate venv
         if venv {
             pip.env("PATH", "venv/bin");
