@@ -1199,7 +1199,7 @@ fn prj_tox(name: &str, venv: bool, deps: &Vec<String>, shortcut: &String) {
             .arg("tox")
             .current_dir(&name)
             .output()
-            .expect("pip should be installed");
+            .expect(format!("{bin} should be installed").as_str());
         // Check if command exit successfully
         if !output.status.success() {
             eprintln!("error: tox installation failed");
@@ -1249,8 +1249,8 @@ fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) {
         prompt_select("Select documentation generator:", options, "None")
     };
     if docs != "None" {
-        let docs_home = format!("{root}/docs");
-        let docs_folder = Path::new(&docs_home);
+        let docs_home = Path::new(root).join("docs");
+        let docs_folder = docs_home.as_path();
         // Check if folder docs exist
         if docs_folder.exists() {
             let folder_result = remove_dir_all(docs_folder);
@@ -1259,16 +1259,20 @@ fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) {
             }
         }
         // Create docs folder
-        let docs_folder = make_dirs(format!("{docs_home}").as_str());
+        let docs_folder = make_dirs(docs_folder.display().to_string().as_str());
         if let Err(e) = docs_folder {
             eprintln!("error: {}", e);
         }
+        #[cfg(any(target_os = "linux", target_os = "macos"))]
+        let bin = "pip3";
+        #[cfg(target_os = "windows")]
+        let bin = "pip";
         if docs.as_str().to_lowercase() == "sphinx" {
             // Install sphinx
-            let mut pip = std::process::Command::new("pip3");
+            let mut pip = std::process::Command::new(bin);
             // Activate venv
             if venv {
-                pip.env("PATH", "venv/bin");
+                pip.env("PATH", Path::new("venv").join("bin"));
             }
             let output = pip
                 .arg("install")
@@ -1277,18 +1281,25 @@ fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) {
                 .arg("sphinx")
                 .current_dir(&root)
                 .output()
-                .expect("pip should be installed");
+                .expect(format!("{bin} should be installed").as_str());
             // Check if command exit successfully
             if !output.status.success() {
                 eprintln!("error: sphinx installation failed");
                 return;
             }
             // Start documentation
-            let sphinx_bin = "../venv/bin/sphinx-quickstart".to_string();
+            let sphinx_bin = if venv {
+                Path::new(root)
+                    .join("venv")
+                    .join("bin")
+                    .join("sphinx-quickstart")
+            } else {
+                Path::new("sphinx-quickstart").to_path_buf()
+            };
             let mut sphinx_quickstart = std::process::Command::new(sphinx_bin);
             // Activate venv
             if venv {
-                sphinx_quickstart.env("PATH", "venv/bin");
+                sphinx_quickstart.env("PATH", Path::new("venv").join("bin"));
             }
             let output = sphinx_quickstart
                 .arg("--quiet")
@@ -1309,10 +1320,10 @@ fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) {
             }
         } else if docs.as_str().to_lowercase() == "mkdocs" {
             // Install mkdocs
-            let mut pip = std::process::Command::new("pip3");
+            let mut pip = std::process::Command::new(bin);
             // Activate venv
             if venv {
-                pip.env("PATH", "venv/bin");
+                pip.env("PATH", Path::new("root").join("venv").join("bin"));
             }
             let output = pip
                 .arg("install")
@@ -1321,18 +1332,22 @@ fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) {
                 .arg("mkdocs")
                 .current_dir(&root)
                 .output()
-                .expect("pip should be installed");
+                .expect(format!("{bin} should be installed").as_str());
             // Check if command exit successfully
             if !output.status.success() {
                 eprintln!("error: mkdocs installation failed");
                 return;
             }
             // Start documentation;
-            let mkdocs_bin = "venv/bin/mkdocs".to_string();
+            let mkdocs_bin = if venv {
+                Path::new(root).join("venv").join("bin").join("mkdocs")
+            } else {
+                Path::new("mkdocs").to_path_buf()
+            };
             let mut mkdocs_new = std::process::Command::new(mkdocs_bin);
             // Activate venv
             if venv {
-                mkdocs_new.env("PATH", "venv/bin");
+                mkdocs_new.env("PATH", Path::new("venv").join("bin"));
             }
             let output = mkdocs_new
                 .arg("new")
