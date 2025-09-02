@@ -1393,9 +1393,19 @@ fn prj_files(root: &str, name: &str, shortcut: &String) {
 
 # Welcome to {name}
 
+> [!CAUTION]
+> `{name}` is a Work In Progress (WIP)
+
 ## Install {name}
 ```console
 pip install .
+```
+
+## Use {name}
+```python
+import {name}
+
+...
 ```
 
 ## Acknowledgments
