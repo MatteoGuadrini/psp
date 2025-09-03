@@ -1411,7 +1411,8 @@ import {name}
 ## Acknowledgments
 Thanks Python Community!"
         );
-        let readme = make_file(format!("{root}/README.md").as_str(), readme_content);
+        let readme_file = Path::new(root).join("README.md");
+        let readme = make_file(readme_file.display().to_string().as_str(), readme_content);
         if let Err(e) = readme {
             eprintln!("error: {}", e);
         }
@@ -1443,7 +1444,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - None
 "
         );
-        let changes = make_file(format!("{root}/CHANGES.md").as_str(), changes_content);
+        let changes_file = Path::new(root).join("CHANGES.md");
+        let changes = make_file(changes_file.display().to_string().as_str(), changes_content);
         if let Err(e) = changes {
             eprintln!("error: {}", e);
         }
@@ -1478,8 +1480,9 @@ Feel free to ask questions via issues, discussions, or mail.
 - Do not add to the changelog for proposed changes, as that is updated after changes are merged.
 "
         );
+        let contributing_file = Path::new(root).join("CONTRIBUTING.md");
         let contributing = make_file(
-            format!("{root}/CONTRIBUTING.md").as_str(),
+            contributing_file.display().to_string().as_str(),
             contributing_content,
         );
         if let Err(e) = contributing {
