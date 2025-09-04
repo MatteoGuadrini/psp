@@ -1489,15 +1489,36 @@ Feel free to ask questions via issues, discussions, or mail.
             eprintln!("error: {}", e);
         }
         // Create CODE_OF_CONDUCT
-        let output = std::process::Command::new("curl")
-            .arg("-oCODE_OF_CONDUCT.md")
-            .arg("-k")
-            .arg("--connect-timeout")
-            .arg("10")
-            .arg("https://www.contributor-covenant.org/version/2/1/code_of_conduct/code_of_conduct.md")
+        let conduct_url =
+            "https://www.contributor-covenant.org/version/2/1/code_of_conduct/code_of_conduct.md";
+        #[cfg(any(target_os = "linux", target_os = "macos"))]
+        let command = "curl";
+        #[cfg(target_os = "windows")]
+        let command = "powershell";
+        #[cfg(any(target_os = "linux", target_os = "macos"))]
+        let command_args = vec![
+            "-oCODE_OF_CONDUCT.md",
+            "-k",
+            "--connect-timeout",
+            "10",
+            conduct_url,
+        ];
+        #[cfg(target_os = "windows")]
+        let command_args = vec![
+            "-Command",
+            "[System.Net.ServicePointManager]::ServerCertificateValidationCallback={$true};",
+            "iwr",
+            "-TimeoutSec",
+            "10",
+            "-OutFile",
+            "CODE_OF_CONDUCT.md",
+            conduct_url,
+        ];
+        let output = std::process::Command::new(command)
+            .args(command_args)
             .current_dir(&root)
             .output()
-            .expect("curl should be installed");
+            .expect(format!("{command} should be installed").as_str());
         // Check if command exit successfully
         if !output.status.success() {
             eprintln!("error: CODE_OF_CONDUCT download failed");
