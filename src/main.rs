@@ -1564,13 +1564,32 @@ fn prj_license(name: &str, shortcut: &String) -> String {
         )
     }
     if !license_url.is_empty() {
+        #[cfg(any(target_os = "linux", target_os = "macos"))]
+        let command = "curl";
+        #[cfg(target_os = "windows")]
+        let command = "powershell";
+        #[cfg(any(target_os = "linux", target_os = "macos"))]
+        let command_args = vec![
+            "-oLICENSE.md",
+            "-k",
+            "--connect-timeout",
+            "10",
+            license_url.as_str(),
+        ];
+        #[cfg(target_os = "windows")]
+        let command_args = vec![
+            "-Command",
+            "[System.Net.ServicePointManager]::ServerCertificateValidationCallback={$true};",
+            "iwr",
+            "-TimeoutSec",
+            "10",
+            "-OutFile",
+            "LICENSE.md",
+            license_url.as_str(),
+        ];
         // Create LICENSE
-        let output = std::process::Command::new("curl")
-            .arg("-oLICENSE.md")
-            .arg("-k")
-            .arg("--connect-timeout")
-            .arg("10")
-            .arg(license_url)
+        let output = std::process::Command::new(command)
+            .args(command_args)
             .current_dir(&name)
             .output()
             .expect("curl should be installed");
