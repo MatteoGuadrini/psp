@@ -1595,7 +1595,7 @@ fn prj_license(name: &str, shortcut: &String) -> String {
             .expect("curl should be installed");
         // Check if command exit successfully
         if !output.status.success() {
-            eprintln!("error: LICENSE download failed");
+            eprintln!("error: LICENSE download failed from {license_url}");
         }
     }
     license
@@ -1620,10 +1620,14 @@ fn prj_pypi(root: &str, venv: bool, shortcut: &String) -> bool {
     };
     if confirm {
         // Install twine and build
-        let mut pip = std::process::Command::new("pip3");
+        #[cfg(any(target_os = "linux", target_os = "macos"))]
+        let bin = "pip3";
+        #[cfg(target_os = "windows")]
+        let bin = "pip";
+        let mut pip = std::process::Command::new(bin);
         // Activate venv
         if venv {
-            pip.env("PATH", "venv/bin");
+            pip.env("PATH", Path::new("venv").join("bin"));
         }
         let output = pip
             .arg("install")
@@ -1633,10 +1637,10 @@ fn prj_pypi(root: &str, venv: bool, shortcut: &String) -> bool {
             .arg("build")
             .current_dir(&root)
             .output()
-            .expect("pip should be installed");
+            .expect(format!("{bin} should be installed").as_str());
         // Check if command exit successfully
         if !output.status.success() {
-            eprintln!("error: build and twine installation failed");
+            eprintln!("error: `build` and `twine` installation failed");
             return false;
         }
         return true;
