@@ -1688,17 +1688,23 @@ RUN adduser --disabled-password {name}_user
 USER {name}_user
 
 # Run package
-CMD python -m {name}
+ENTRYPOINT python
+CMD -m {name}
 "
         );
+        let dockerfile_file = Path::new(root).join("Dockerfile");
         let dockerfile = make_file(
-            format!("{root}/Dockerfile").as_str(),
+            dockerfile_file.display().to_string().as_str(),
             dockerfile_content.clone(),
         );
         if let Err(e) = dockerfile {
             eprintln!("error: {}", e);
         }
-        let containerfile = make_file(format!("{root}/Containerfile").as_str(), dockerfile_content);
+        let containerfile_file = Path::new(root).join("Containerfile");
+        let containerfile = make_file(
+            containerfile_file.display().to_string().as_str(),
+            dockerfile_content,
+        );
         if let Err(e) = containerfile {
             eprintln!("error: {}", e);
         }
