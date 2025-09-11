@@ -1796,7 +1796,11 @@ clean:
 "
     )
     .as_str();
-    let makefile = make_file(format!("{root}/Makefile").as_str(), makefile_content);
+    let makefile_file = Path::new(root).join("Makefile");
+    let makefile = make_file(
+        makefile_file.display().to_string().as_str(),
+        makefile_content,
+    );
     if let Err(e) = makefile {
         eprintln!("error: {}", e);
     }
