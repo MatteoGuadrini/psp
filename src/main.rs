@@ -147,8 +147,12 @@ fn load_env() {
     // Load first, .env file from the current working directory
     dotenv().ok();
     // Load second, .psp.env file from home
-    let home_var = var("HOME").unwrap();
-    let home_env = format!("{home_var}/.psp.env");
+    #[cfg(any(target_os = "linux", target_os = "macos"))]
+    let home_var_name = "HOME";
+    #[cfg(target_os = "windows")]
+    let home_var_name = "USERPROFILE";
+    let home_var = var(home_var_name).unwrap();
+    let home_env = Path::new(home_var.as_str()).join(".psp.env");
     dotenv::from_filename(home_env).ok();
 }
 
@@ -1323,7 +1327,7 @@ fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) {
             let mut pip = std::process::Command::new(bin);
             // Activate venv
             if venv {
-                pip.env("PATH", Path::new("root").join("venv").join("bin"));
+                pip.env("PATH", Path::new("venv").join("bin"));
             }
             let output = pip
                 .arg("install")
