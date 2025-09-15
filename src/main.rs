@@ -1374,7 +1374,7 @@ fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) {
 }
 
 // Project common files
-fn prj_files(root: &str, name: &str, shortcut: &String) {
+fn prj_files(root: &str, name: &str, container: bool, shortcut: &String) {
     // Check environment variable
     let env_files = var("PSP_FILES").unwrap_or("false".to_string()).parse().ok();
     let confirm = if let Some(true) = env_files {
@@ -1392,29 +1392,49 @@ fn prj_files(root: &str, name: &str, shortcut: &String) {
     };
     if confirm {
         // Create README
-        let readme_content = format!(
+        let mut readme_content = format!(
             "<!-- {SIGNATURE}, version {VERSION} -->
 
-# Welcome to {name}
+# Welcome to **`{name}`**
 
 > [!CAUTION]
 > `{name}` is a Work In Progress (WIP)
 
 ## Install {name}
+To install `{name}`, follow this:
+
 ```console
 pip install .
 ```
 
 ## Use {name}
+To use `{name}`, follow this:
+
 ```python
 import {name}
 
 ...
 ```
-
-## Acknowledgments
-Thanks Python Community!"
+"
         );
+        if container {
+            readme_content += format!(
+                "
+## Use {name} with container (Docker/Podman)
+To containerize `{name}`, follow this:
+
+```console
+docker build . -t {name}:0.0.1
+docker tag {name}:0.0.1 {name}:latest
+docker run {name}
+```
+
+"
+            )
+            .as_str();
+        }
+        readme_content += "## Acknowledgments\n\
+        Thanks Python Community!";
         let readme_file = Path::new(root).join("README.md");
         let readme = make_file(readme_file.display().to_string().as_str(), readme_content);
         if let Err(e) = readme {
@@ -1854,8 +1874,6 @@ fn main() {
         // CI configuration
         prj_ci(&root, &deps, &shortcut);
     }
-    // Common files
-    prj_files(&root, &name, &shortcut);
     // License
     let license = prj_license(&root, &shortcut);
     // Build dependencies
@@ -1863,7 +1881,9 @@ fn main() {
     // Write pyproject.toml
     prj_toml(&root, &name, &deps, git_info, license);
     // Dockerfile
-    prj_container(&root, &name, &shortcut);
+    let container = prj_container(&root, &name, &shortcut);
+    // Common files
+    prj_files(&root, &name, container, &shortcut);
     // Makefile
     prj_makefile(&root, &name, tests, build);
     // Finish a scaffolding process
