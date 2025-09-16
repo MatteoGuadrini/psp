@@ -568,7 +568,7 @@ fn prj_venv(name: &str, shortcut: &String) -> bool {
     #[cfg(any(target_os = "linux", target_os = "macos"))]
     let bin = "python3";
     #[cfg(target_os = "windows")]
-    let bin = "python";
+    let bin = "python.exe";
     if confirm {
         let output = std::process::Command::new(bin)
             .args(["-m", "venv", "venv"])
@@ -629,11 +629,14 @@ fn prj_deps(name: &str, venv: bool, shortcut: &String) -> Vec<String> {
         #[cfg(any(target_os = "linux", target_os = "macos"))]
         let bin = "pip3";
         #[cfg(target_os = "windows")]
-        let bin = "pip";
+        let bin = "pip.exe";
         let mut pip = std::process::Command::new(bin);
         // Activate venv
         if venv {
+            #[cfg(any(target_os = "linux", target_os = "macos"))]
             pip.env("PATH", Path::new("venv").join("bin"));
+            #[cfg(target_os = "windows")]
+            pip.env("PATH", Path::new("venv").join("Scripts"));
         }
         let output = pip
             .arg("install")
@@ -1190,11 +1193,14 @@ fn prj_tox(name: &str, venv: bool, deps: &Vec<String>, shortcut: &String) {
         #[cfg(any(target_os = "linux", target_os = "macos"))]
         let bin = "pip3";
         #[cfg(target_os = "windows")]
-        let bin = "pip";
+        let bin = "pip.exe";
         let mut pip = std::process::Command::new(bin);
         // Activate venv
         if venv {
+            #[cfg(any(target_os = "linux", target_os = "macos"))]
             pip.env("PATH", Path::new("venv").join("bin"));
+            #[cfg(target_os = "windows")]
+            pip.env("PATH", Path::new("venv").join("Scripts"));
         }
         let output = pip
             .arg("install")
@@ -1270,13 +1276,16 @@ fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) {
         #[cfg(any(target_os = "linux", target_os = "macos"))]
         let bin = "pip3";
         #[cfg(target_os = "windows")]
-        let bin = "pip";
+        let bin = "pip.exe";
         if docs.as_str().to_lowercase() == "sphinx" {
             // Install sphinx
             let mut pip = std::process::Command::new(bin);
             // Activate venv
             if venv {
+                #[cfg(any(target_os = "linux", target_os = "macos"))]
                 pip.env("PATH", Path::new("venv").join("bin"));
+                #[cfg(target_os = "windows")]
+                pip.env("PATH", Path::new("venv").join("Scripts"));
             }
             let output = pip
                 .arg("install")
@@ -1292,18 +1301,17 @@ fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) {
                 return;
             }
             // Start documentation
-            let sphinx_bin = if venv {
-                Path::new(root)
-                    .join("venv")
-                    .join("bin")
-                    .join("sphinx-quickstart")
-            } else {
-                Path::new("sphinx-quickstart").to_path_buf()
-            };
+            #[cfg(any(target_os = "linux", target_os = "macos"))]
+            let sphinx_bin = "sphinx-quickstart";
+            #[cfg(target_os = "windows")]
+            let sphinx_bin = "sphinx-quickstart.exe";
             let mut sphinx_quickstart = std::process::Command::new(sphinx_bin);
             // Activate venv
             if venv {
+                #[cfg(any(target_os = "linux", target_os = "macos"))]
                 sphinx_quickstart.env("PATH", Path::new("venv").join("bin"));
+                #[cfg(target_os = "windows")]
+                sphinx_quickstart.env("PATH", Path::new("venv").join("Scripts"));
             }
             let output = sphinx_quickstart
                 .arg("--quiet")
@@ -1327,7 +1335,10 @@ fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) {
             let mut pip = std::process::Command::new(bin);
             // Activate venv
             if venv {
+                #[cfg(any(target_os = "linux", target_os = "macos"))]
                 pip.env("PATH", Path::new("venv").join("bin"));
+                #[cfg(target_os = "windows")]
+                pip.env("PATH", Path::new("venv").join("Scripts"));
             }
             let output = pip
                 .arg("install")
@@ -1342,16 +1353,18 @@ fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) {
                 eprintln!("error: mkdocs installation failed");
                 return;
             }
-            // Start documentation;
-            let mkdocs_bin = if venv {
-                Path::new(root).join("venv").join("bin").join("mkdocs")
-            } else {
-                Path::new("mkdocs").to_path_buf()
-            };
+            // Start documentation
+            #[cfg(any(target_os = "linux", target_os = "macos"))]
+            let mkdocs_bin = "mkdocs";
+            #[cfg(target_os = "windows")]
+            let mkdocs_bin = "mkdocs.exe";
             let mut mkdocs_new = std::process::Command::new(mkdocs_bin);
             // Activate venv
             if venv {
+                #[cfg(any(target_os = "linux", target_os = "macos"))]
                 mkdocs_new.env("PATH", Path::new("venv").join("bin"));
+                #[cfg(target_os = "windows")]
+                mkdocs_new.env("PATH", Path::new("venv").join("Scripts"));
             }
             let output = mkdocs_new
                 .arg("new")
@@ -1518,7 +1531,7 @@ Feel free to ask questions via issues, discussions, or mail.
         #[cfg(any(target_os = "linux", target_os = "macos"))]
         let command = "curl";
         #[cfg(target_os = "windows")]
-        let command = "powershell";
+        let command = "powershell.exe";
         #[cfg(any(target_os = "linux", target_os = "macos"))]
         let command_args = vec![
             "-oCODE_OF_CONDUCT.md",
@@ -1529,8 +1542,10 @@ Feel free to ask questions via issues, discussions, or mail.
         ];
         #[cfg(target_os = "windows")]
         let command_args = vec![
+            "-NoProfile",
+            "-ExecutionPolicy",
+            "Bypass",
             "-Command",
-            "[System.Net.ServicePointManager]::ServerCertificateValidationCallback={$true};",
             "iwr",
             "-TimeoutSec",
             "10",
@@ -1545,7 +1560,7 @@ Feel free to ask questions via issues, discussions, or mail.
             .expect(format!("{command} should be installed").as_str());
         // Check if command exit successfully
         if !output.status.success() {
-            eprintln!("error: CODE_OF_CONDUCT download failed");
+            eprintln!("error: CODE_OF_CONDUCT download failed from {conduct_url}");
         }
     }
 }
@@ -1591,7 +1606,7 @@ fn prj_license(name: &str, shortcut: &String) -> String {
         #[cfg(any(target_os = "linux", target_os = "macos"))]
         let command = "curl";
         #[cfg(target_os = "windows")]
-        let command = "powershell";
+        let command = "powershell.exe";
         #[cfg(any(target_os = "linux", target_os = "macos"))]
         let command_args = vec![
             "-oLICENSE.md",
@@ -1602,8 +1617,10 @@ fn prj_license(name: &str, shortcut: &String) -> String {
         ];
         #[cfg(target_os = "windows")]
         let command_args = vec![
+            "-NoProfile",
+            "-ExecutionPolicy",
+            "Bypass",
             "-Command",
-            "[System.Net.ServicePointManager]::ServerCertificateValidationCallback={$true};",
             "iwr",
             "-TimeoutSec",
             "10",
@@ -1647,11 +1664,14 @@ fn prj_pypi(root: &str, venv: bool, shortcut: &String) -> bool {
         #[cfg(any(target_os = "linux", target_os = "macos"))]
         let bin = "pip3";
         #[cfg(target_os = "windows")]
-        let bin = "pip";
+        let bin = "pip.exe";
         let mut pip = std::process::Command::new(bin);
         // Activate venv
         if venv {
+            #[cfg(any(target_os = "linux", target_os = "macos"))]
             pip.env("PATH", Path::new("venv").join("bin"));
+            #[cfg(target_os = "windows")]
+            pip.env("PATH", Path::new("venv").join("Scripts"));
         }
         let output = pip
             .arg("install")
@@ -1846,7 +1866,7 @@ fn main() {
     #[cfg(any(target_os = "linux", target_os = "macos"))]
     let tools = ["python3", "git", "pip3", "curl"];
     #[cfg(target_os = "windows")]
-    let tools = ["python", "git", "pip", "powershell"];
+    let tools = ["python.exe", "git.exe", "pip.exe", "powershell.exe"];
     for tool in tools {
         check_tool(tool);
     }
