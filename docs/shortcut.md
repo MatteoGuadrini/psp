@@ -29,7 +29,7 @@ The _quick_ shortcut enables a rapid configuration of your Python project:
 
 ```console
 [gu]# psp quick
-Welcome to PSP (Python Scaffolding Projects): 0.1.0
+info: welcome to psp, version 0.2.0
 > Name of Python project: mypyprj
 > Select documentation generator: MKDocs
 > Select license: MIT
@@ -53,7 +53,7 @@ The _simple_ shortcut enables a basic configuration of your Python project:
 
 ```console
 [gu]# psp simple
-Welcome to PSP (Python Scaffolding Projects): 0.1.0
+info: welcome to psp, version 0.2.0
 > Name of Python project: mypyprj
 Python project `mypyprj` created at mypyprj
 ```
@@ -68,7 +68,7 @@ The _full_ shortcut enables a full configuration of your Python project:
 
 ```console
 [gu]# psp full
-Welcome to PSP (Python Scaffolding Projects): 0.1.0
+info: welcome to psp, version 0.2.0
 > Name of Python project: mypyprj
 > Select git remote provider: Github
 > Username of Github: MatteoGuadrini

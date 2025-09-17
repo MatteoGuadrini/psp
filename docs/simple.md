@@ -12,7 +12,7 @@ To start with **psp**, type `psp`:
 
 ```console
 [gu]# psp
-Welcome to PSP (Python Scaffolding Projects): 0.1.0
+info: welcome to psp, version 0.2.0
 ? Name of Python project: mypyprj
 [Type name or path]
 ```
@@ -34,7 +34,7 @@ You can also specify a relative/absolute path; in this case the last name of pat
 
 ```console
 [gu]# psp
-Welcome to PSP (Python Scaffolding Projects): 0.1.0
+info: welcome to psp, version 0.2.0
 ? Name of Python project: /tmp/mypyprj
 [Type name or path]
 ```
@@ -43,7 +43,7 @@ Welcome to PSP (Python Scaffolding Projects): 0.1.0
     If the folder exists, **psp** prompt a choice of overwritten.
 
 ```console
-Welcome to PSP (Python Scaffolding Projects): 0.1.0
+info: welcome to psp, version 0.2.0
 > Name of Python project: /tmp/mypyprj
 ? Path /tmp/mypyprj exists. Do you want continue? (y/N)
 [Some files will be overwritten]
@@ -59,7 +59,7 @@ and may optionally be isolated from the packages in the base environment, so onl
 The default value is _Yes_.
 
 ```console
-Welcome to PSP (Python Scaffolding Projects): 0.1.0
+info: welcome to psp, version 0.2.0
 > Name of Python project: mypyprj
 ? Do you want to create a virtual environment? (Y/n)
 ```
@@ -398,6 +398,112 @@ mypyprj
     └── config.yml   ┘ provider
 ```
 
+## Docker/Podman
+
+This option [creates a containerization](https://docs.docker.com/build/) files to build an imagae of your package.
+
+The default value is _Yes_.
+
+```console
+...
+> Do you want to install dependencies to publish on pypi? Yes
+? Do you want to create a Dockerfile and Containerfile? (Y/n)
+```
+
+After this option, the `psp` has finish its process:
+
+```console
+> Do you want to create a Dockerfile and Containerfile? Yes
+Python project `mypyprj` created at mypyprj
+```
+
+The project structure after this choosen:
+
+```
+mypyprj
+├── pyproject.toml
+├── mypyprj
+│   └──...
+├── venv
+│   └──...
+├── .git
+│   └──...
+├── .gitignore
+├── .github
+│   └──...
+├── tests
+│   └──...
+├── docs
+│   └──...
+├── tox.ini
+├── .circleci
+│   └── ...
+├── Dockerfile      ┐ Files for
+└── Containerfile   ┘ containerization
+```
+
+!!! note
+    As you notice, **psp** creates a Makefile to automate all process in your package.
+    If you want a help, try `make help`.
+
+Try to build an image:
+
+```console
+[gu]# docker build . -t mypyprj:0.0.1
+STEP 1/6: FROM python:3
+STEP 2/6: COPY mypyprj /mypyprj/mypyprj
+--> d6d1cb90f013
+STEP 3/6: COPY pyproject.toml /mypyprj
+--> a0b3ead767b0
+STEP 4/6: WORKDIR /mypyprj
+--> e557642b415f
+STEP 5/6: RUN pip install .
+Processing /mypyprj
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'done'
+  Getting requirements to build wheel: started
+  Getting requirements to build wheel: finished with status 'done'
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): finished with status 'done'
+Collecting tablib==3.4.0 (from mypyprj==0.0.1)
+  Downloading tablib-3.4.0-py3-none-any.whl.metadata (3.8 kB)
+Collecting pyreports<1.7.0 (from mypyprj==0.0.1)
+  Downloading pyreports-1.6.0-py3-none-any.whl.metadata (9.8 kB)
+Collecting scipy (from mypyprj==0.0.1)
+  Downloading scipy-1.14.1-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.me
+Collecting numpy (from mypyprj==0.0.1)
+  Downloading numpy-2.2.0-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.met
+  ...
+Successfully built mypyprj markuppy odfpy
+Installing collected packages: xlwt, pytz, pymssql, markuppy, xlrd, tzdata, tabulate, tablib, six, pyyaml, pyasn1, psycopg2-binary, numpy, nosqlapi, mysql-connector-python, et-xmlfile, defusedxml, scipy, python-dateutil, openpyxl, odfpy, ldap3, pandas, pyreports, mypyprj
+Successfully installed defusedxml-0.7.1 et-xmlfile-2.0.0 ldap3-2.9.1 markuppy-1.14 mypyprj-0.0.1 mysql-connector-python-9.1.0 nosqlapi-1.0.2 numpy-2.2.0 odfpy-1.4.1 openpyxl-3.1.5 pandas-2.2.3 psycopg2-binary-2.9.10 pyasn1-0.6.1 pymssql-2.3.2 pyreports-1.6.0 python-dateutil-2.9.0.post0 pytz-2024.2 pyyaml-6.0.2 scipy-1.14.1 six-1.17.0 tablib-3.4.0 tabulate-0.9.0 tzdata-2024.2 xlrd-2.0.1 xlwt-1.3.0
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable.It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+
+[notice] A new release of pip is available: 24.2 -> 24.3.1
+[notice] To update, run: pip install --upgrade pip
+--> 5854ebada71a
+STEP 6/6: CMD [ 'python', '-m', 'mypyprj' ]
+COMMIT mypyprj:0.0.1
+--> a9028cd8e7e8
+Successfully tagged localhost/mypyprj:0.0.1
+a9028cd8e7e89b9f9aafde3db0d5e1cee419573a647c72c752bb6f202b8131e1
+
+[gu]# docker images
+podman images
+REPOSITORY                         TAG         IMAGE ID      CREATED        SIZE
+localhost/mypyprj                  0.0.1       a9028cd8e7e8  2 minutes ago  1.61 GB
+
+[gu]# docker run -it --rm localhost/mypyprj:0.0.1 python
+Python 3.13.0 (main, Oct 17 2024, 03:03:33) [GCC 12.2.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import mypyprj
+>>> print(mypyprj)
+<module 'mypyprj' from '/mypyprj/mypyprj/__init__.py'>
+>>> print(mypyprj.__version__)
+0.0.1
+>>>
+```
+
 ## Common files
 
 This option configure a common files for Python projects, as a _README, CONTRIBUTING, CODE_OF_CONDUCT and CHANGES_.
@@ -512,116 +618,4 @@ twine version 6.0.1 (keyring: 25.5.0,
 pkginfo: 1.12.0, requests: 2.32.3,
 requests-toolbelt: 1.0.0, urllib3: 2.2.3)
 build 1.2.2.post1 (/tmp/mypyprj/venv/lib/python3.13/site-packages/build)
-```
-
-## Docker/Podman
-
-This option [creates a containerization](https://docs.docker.com/build/) files to build an imagae of your package.
-
-The default value is _Yes_.
-
-```console
-...
-> Do you want to install dependencies to publish on pypi? Yes
-? Do you want to create a Dockerfile and Containerfile? (Y/n)
-```
-
-After this option, the `psp` has finish its process:
-
-```console
-> Do you want to create a Dockerfile and Containerfile? Yes
-Python project `mypyprj` created at mypyprj
-```
-
-The project structure after this choosen:
-
-```
-mypyprj
-├── pyproject.toml
-├── mypyprj
-│   └──...
-├── venv
-│   └──...
-├── .git
-│   └──...
-├── .gitignore
-├── .github
-│   └──...
-├── tests
-│   └──...
-├── docs
-│   └──...
-├── tox.ini
-├── .circleci
-│   └── ...
-├── README.md
-├── CONTRIBUTING.md
-├── CODE_OF_CONDUCT.md
-├── CHANGES.md
-├── LICENSE.md
-├── Makefile
-├── Dockerfile      ┐ Files for
-└── Containerfile   ┘ containerization
-```
-
-!!! note
-    As you notice, **psp** creates a Makefile to automate all process in your package.
-    If you want a help, try `make help`.
-
-Try to build an image:
-
-```console
-[gu]# docker build . -t mypyprj:0.0.1
-STEP 1/6: FROM python:3
-STEP 2/6: COPY mypyprj /mypyprj/mypyprj
---> d6d1cb90f013
-STEP 3/6: COPY pyproject.toml /mypyprj
---> a0b3ead767b0
-STEP 4/6: WORKDIR /mypyprj
---> e557642b415f
-STEP 5/6: RUN pip install .
-Processing /mypyprj
-  Installing build dependencies: started
-  Installing build dependencies: finished with status 'done'
-  Getting requirements to build wheel: started
-  Getting requirements to build wheel: finished with status 'done'
-  Preparing metadata (pyproject.toml): started
-  Preparing metadata (pyproject.toml): finished with status 'done'
-Collecting tablib==3.4.0 (from mypyprj==0.0.1)
-  Downloading tablib-3.4.0-py3-none-any.whl.metadata (3.8 kB)
-Collecting pyreports<1.7.0 (from mypyprj==0.0.1)
-  Downloading pyreports-1.6.0-py3-none-any.whl.metadata (9.8 kB)
-Collecting scipy (from mypyprj==0.0.1)
-  Downloading scipy-1.14.1-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.me
-Collecting numpy (from mypyprj==0.0.1)
-  Downloading numpy-2.2.0-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.met
-  ...
-Successfully built mypyprj markuppy odfpy
-Installing collected packages: xlwt, pytz, pymssql, markuppy, xlrd, tzdata, tabulate, tablib, six, pyyaml, pyasn1, psycopg2-binary, numpy, nosqlapi, mysql-connector-python, et-xmlfile, defusedxml, scipy, python-dateutil, openpyxl, odfpy, ldap3, pandas, pyreports, mypyprj
-Successfully installed defusedxml-0.7.1 et-xmlfile-2.0.0 ldap3-2.9.1 markuppy-1.14 mypyprj-0.0.1 mysql-connector-python-9.1.0 nosqlapi-1.0.2 numpy-2.2.0 odfpy-1.4.1 openpyxl-3.1.5 pandas-2.2.3 psycopg2-binary-2.9.10 pyasn1-0.6.1 pymssql-2.3.2 pyreports-1.6.0 python-dateutil-2.9.0.post0 pytz-2024.2 pyyaml-6.0.2 scipy-1.14.1 six-1.17.0 tablib-3.4.0 tabulate-0.9.0 tzdata-2024.2 xlrd-2.0.1 xlwt-1.3.0
-WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable.It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
-
-[notice] A new release of pip is available: 24.2 -> 24.3.1
-[notice] To update, run: pip install --upgrade pip
---> 5854ebada71a
-STEP 6/6: CMD [ 'python', '-m', 'mypyprj' ]
-COMMIT mypyprj:0.0.1
---> a9028cd8e7e8
-Successfully tagged localhost/mypyprj:0.0.1
-a9028cd8e7e89b9f9aafde3db0d5e1cee419573a647c72c752bb6f202b8131e1
-
-[gu]# docker images
-podman images
-REPOSITORY                         TAG         IMAGE ID      CREATED        SIZE
-localhost/mypyprj                  0.0.1       a9028cd8e7e8  2 minutes ago  1.61 GB
-
-[gu]# docker run -it --rm localhost/mypyprj:0.0.1 python
-Python 3.13.0 (main, Oct 17 2024, 03:03:33) [GCC 12.2.0] on linux
-Type "help", "copyright", "credits" or "license" for more information.
->>> import mypyprj
->>> print(mypyprj)
-<module 'mypyprj' from '/mypyprj/mypyprj/__init__.py'>
->>> print(mypyprj.__version__)
-0.0.1
->>>
 ```
