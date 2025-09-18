@@ -119,8 +119,8 @@ shortcut:
     full:   enables a full configuration
 
 links:
-    repository: https://github.com/MatteoGuadrini/psp
-    manual:     https://psp.readthedocs.io/
+    repository:     https://github.com/MatteoGuadrini/psp
+    documentation:  https://psp.readthedocs.io/
             "
         );
     }
@@ -634,9 +634,20 @@ fn prj_deps(name: &str, venv: bool, shortcut: &String) -> Vec<String> {
         // Activate venv
         if venv {
             #[cfg(any(target_os = "linux", target_os = "macos"))]
-            pip.env("PATH", Path::new("venv").join("bin"));
+            pip.env(
+                "PATH",
+                Path::new("venv").join("bin").display().to_string().as_str(),
+            );
             #[cfg(target_os = "windows")]
-            pip.env("PATH", Path::new("venv").join("Scripts"));
+            pip.env(
+                "PATH",
+                Path::new(absolute(name).unwrap().display().to_string().as_str())
+                    .join("venv")
+                    .join("Scripts")
+                    .display()
+                    .to_string()
+                    .as_str(),
+            );
         }
         let output = pip
             .arg("install")
@@ -1198,9 +1209,20 @@ fn prj_tox(name: &str, venv: bool, deps: &Vec<String>, shortcut: &String) {
         // Activate venv
         if venv {
             #[cfg(any(target_os = "linux", target_os = "macos"))]
-            pip.env("PATH", Path::new("venv").join("bin"));
+            pip.env(
+                "PATH",
+                Path::new("venv").join("bin").display().to_string().as_str(),
+            );
             #[cfg(target_os = "windows")]
-            pip.env("PATH", Path::new("venv").join("Scripts"));
+            pip.env(
+                "PATH",
+                Path::new(absolute(name).unwrap().display().to_string().as_str())
+                    .join("venv")
+                    .join("Scripts")
+                    .display()
+                    .to_string()
+                    .as_str(),
+            );
         }
         let output = pip
             .arg("install")
@@ -1283,16 +1305,27 @@ fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) {
             // Activate venv
             if venv {
                 #[cfg(any(target_os = "linux", target_os = "macos"))]
-                pip.env("PATH", Path::new("venv").join("bin"));
+                pip.env(
+                    "PATH",
+                    Path::new("venv").join("bin").display().to_string().as_str(),
+                );
                 #[cfg(target_os = "windows")]
-                pip.env("PATH", Path::new("venv").join("Scripts"));
+                pip.env(
+                    "PATH",
+                    Path::new(absolute(root).unwrap().display().to_string().as_str())
+                        .join("venv")
+                        .join("Scripts")
+                        .display()
+                        .to_string()
+                        .as_str(),
+                );
             }
             let output = pip
                 .arg("install")
                 .arg("--timeout=10")
                 .arg("--retries=1")
                 .arg("sphinx")
-                .current_dir(&root)
+                .current_dir(root)
                 .output()
                 .expect(format!("{bin} should be installed").as_str());
             // Check if command exit successfully
@@ -1309,9 +1342,25 @@ fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) {
             // Activate venv
             if venv {
                 #[cfg(any(target_os = "linux", target_os = "macos"))]
-                sphinx_quickstart.env("PATH", Path::new("venv").join("bin"));
+                sphinx_quickstart.env(
+                    "PATH",
+                    Path::new(root)
+                        .join("venv")
+                        .join("bin")
+                        .display()
+                        .to_string()
+                        .as_str(),
+                );
                 #[cfg(target_os = "windows")]
-                sphinx_quickstart.env("PATH", Path::new("venv").join("Scripts"));
+                sphinx_quickstart.env(
+                    "PATH",
+                    Path::new(absolute(root).unwrap().display().to_string().as_str())
+                        .join("venv")
+                        .join("Scripts")
+                        .display()
+                        .to_string()
+                        .as_str(),
+                );
             }
             let output = sphinx_quickstart
                 .arg("--quiet")
@@ -1336,9 +1385,20 @@ fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) {
             // Activate venv
             if venv {
                 #[cfg(any(target_os = "linux", target_os = "macos"))]
-                pip.env("PATH", Path::new("venv").join("bin"));
+                pip.env(
+                    "PATH",
+                    Path::new("venv").join("bin").display().to_string().as_str(),
+                );
                 #[cfg(target_os = "windows")]
-                pip.env("PATH", Path::new("venv").join("Scripts"));
+                pip.env(
+                    "PATH",
+                    Path::new(absolute(root).unwrap().display().to_string().as_str())
+                        .join("venv")
+                        .join("Scripts")
+                        .display()
+                        .to_string()
+                        .as_str(),
+                );
             }
             let output = pip
                 .arg("install")
@@ -1362,9 +1422,25 @@ fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) {
             // Activate venv
             if venv {
                 #[cfg(any(target_os = "linux", target_os = "macos"))]
-                mkdocs_new.env("PATH", Path::new("venv").join("bin"));
+                mkdocs_new.env(
+                    "PATH",
+                    Path::new(root)
+                        .join("venv")
+                        .join("bin")
+                        .display()
+                        .to_string()
+                        .as_str(),
+                );
                 #[cfg(target_os = "windows")]
-                mkdocs_new.env("PATH", Path::new("venv").join("Scripts"));
+                mkdocs_new.env(
+                    "PATH",
+                    Path::new(absolute(root).unwrap().display().to_string().as_str())
+                        .join("venv")
+                        .join("Scripts")
+                        .display()
+                        .to_string()
+                        .as_str(),
+                );
             }
             let output = mkdocs_new
                 .arg("new")
@@ -1669,9 +1745,20 @@ fn prj_pypi(root: &str, venv: bool, shortcut: &String) -> bool {
         // Activate venv
         if venv {
             #[cfg(any(target_os = "linux", target_os = "macos"))]
-            pip.env("PATH", Path::new("venv").join("bin"));
+            pip.env(
+                "PATH",
+                Path::new("venv").join("bin").display().to_string().as_str(),
+            );
             #[cfg(target_os = "windows")]
-            pip.env("PATH", Path::new("venv").join("Scripts"));
+            pip.env(
+                "PATH",
+                Path::new(absolute(root).unwrap().display().to_string().as_str())
+                    .join("venv")
+                    .join("Scripts")
+                    .display()
+                    .to_string()
+                    .as_str(),
+            );
         }
         let output = pip
             .arg("install")
