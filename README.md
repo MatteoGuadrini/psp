@@ -186,10 +186,11 @@ cd psp && cargo build --release && sudo cp -v target/release/psp /usr/bin/psp &&
 ```
 
 ## Next features
+[ ] `windows` operating system support
 [ ] `conda`, `uv` and `poetry` support
 [ ] `hatch` support
-[ ] `windows` operating system support
 [ ] `docker-compose` and `kubernetes` support
+[ ] `AppVeyor` CI support
 [ ] command line flags support
 [ ] updating/merging project
 [ ] templating folder support
@@ -214,9 +215,9 @@ Come today, we are organized to dare to listen to them and answers, every day of
 [Adopt the future](https://www.ioadottoilfuturo.it/)
 
 
-## Licence            
-This package is [Treeware](https://treeware.earth). 
-If you use it in production, then we ask that you [**buy the world a tree**](https://plant.treeware.earth/MatteoGuadrini/psp) to thank us for our work. 
+## Licence
+This package is [Treeware](https://treeware.earth).
+If you use it in production, then we ask that you [**buy the world a tree**](https://plant.treeware.earth/MatteoGuadrini/psp) to thank us for our work.
 By contributing to the Treeware forest you’ll be creating employment for local families and restoring wildlife habitats.
 
 [![Buy us a tree](https://img.shields.io/badge/Treeware-%F0%9F%8C%B3-lightgreen?style=for-the-badge)](https://plant.treeware.earth/MatteoGuadrini/psp)
