@@ -112,7 +112,14 @@ git@github.com:MatteoGuadrini/test.git
 - `git`
 - `python3`
 - `pip`
-- `curl`
+- `curl` (Linux/MacOS only)
+
+### MacOS prerequisites installation
+
+```console
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+brew install python git
+```
 
 ### Ubuntu based prerequisites installation
 
@@ -159,6 +166,20 @@ curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.2.0/psp_macos
 chmod +x /usr/bin/psp
 ```
 
+### Windows
+
+For all users (required Administrator):
+```powershell
+iwr -OutFile "C:\Windows\system32\psp.exe" "https://github.com/MatteoGuadrini/psp/releases/download/v0.2.0/psp_windows"
+```
+
+For current user:
+```powershell
+mkdir "$($Env:USERPROFILE)\bin"
+[System.Environment]::SetEnvironmentVariable("PATH", $Env:PATH + ";$($Env:USERPROFILE)\bin","USER")
+iwr -OutFile "$($Env:USERPROFILE)\bin\psp.exe" "https://github.com/MatteoGuadrini/psp/releases/download/v0.2.0/psp_windows"
+```
+
 ### Packages
 
 If you want to install OS package, follow instructions for your Operating System:
@@ -186,11 +207,10 @@ cd psp && cargo build --release && sudo cp -v target/release/psp /usr/bin/psp &&
 ```
 
 ## Next features
-[ ] `windows` operating system support
+[x] `windows` operating system support
 [ ] `conda`, `uv` and `poetry` support
 [ ] `hatch` support
 [ ] `docker-compose` and `kubernetes` support
-[ ] `AppVeyor` CI support
 [ ] command line flags support
 [ ] updating/merging project
 [ ] templating folder support
