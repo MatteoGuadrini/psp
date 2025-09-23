@@ -121,6 +121,13 @@ git@github.com:MatteoGuadrini/test.git
 brew install python git
 ```
 
+### Windows prerequisites installation
+
+```console
+winget install -e --id Git.Git
+winget install -e --id Python.Python.3.13
+```
+
 ### Ubuntu based prerequisites installation
 
 ```console
