@@ -156,6 +156,34 @@ fn load_env() {
     dotenv::from_filename(home_env).ok();
 }
 
+// Function that make a command
+fn make_command(
+    bin: &str,
+    root: &str,
+    start_path: &str,
+    args: Vec<String>,
+    venv: bool,
+) -> std::process::Command {
+    let mut command = std::process::Command::new(bin);
+    // Activate venv
+    #[cfg(any(target_os = "linux", target_os = "macos"))]
+    let bin_folder = "bin";
+    #[cfg(target_os = "windows")]
+    let bin_folder = "Scripts";
+    if venv {}
+    command.env(
+        "PATH",
+        Path::new(absolute(root).unwrap().display().to_string().as_str())
+            .join("venv")
+            .join(bin_folder)
+            .display()
+            .to_string()
+            .as_str(),
+    );
+    command.args(&args).current_dir(start_path);
+    command
+}
+
 // Core functions
 
 // Project name
@@ -630,31 +658,14 @@ fn prj_deps(name: &str, venv: bool, shortcut: &String) -> Vec<String> {
         let bin = "pip3";
         #[cfg(target_os = "windows")]
         let bin = "pip.exe";
-        let mut pip = std::process::Command::new(bin);
-        // Activate venv
-        if venv {
-            #[cfg(any(target_os = "linux", target_os = "macos"))]
-            pip.env(
-                "PATH",
-                Path::new("venv").join("bin").display().to_string().as_str(),
-            );
-            #[cfg(target_os = "windows")]
-            pip.env(
-                "PATH",
-                Path::new(absolute(name).unwrap().display().to_string().as_str())
-                    .join("venv")
-                    .join("Scripts")
-                    .display()
-                    .to_string()
-                    .as_str(),
-            );
-        }
+        let mut args = vec![
+            "install".to_string(),
+            "--timeout=10".to_string(),
+            "--retries=1".to_string(),
+        ];
+        args.extend(dependencies.clone());
+        let mut pip = make_command(bin, name, name, args, venv);
         let output = pip
-            .arg("install")
-            .arg("--timeout=10")
-            .arg("--retries=1")
-            .args(&dependencies)
-            .current_dir(&name)
             .output()
             .expect(format!("{bin} should be installed").as_str());
         // Check if command exit successfully
