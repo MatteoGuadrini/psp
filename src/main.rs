@@ -170,16 +170,17 @@ fn make_command(
     let bin_folder = "bin";
     #[cfg(target_os = "windows")]
     let bin_folder = "Scripts";
-    if venv {}
-    command.env(
-        "PATH",
-        Path::new(absolute(root).unwrap().display().to_string().as_str())
-            .join("venv")
-            .join(bin_folder)
-            .display()
-            .to_string()
-            .as_str(),
-    );
+    if venv {
+        command.env(
+            "PATH",
+            Path::new(absolute(root).unwrap().display().to_string().as_str())
+                .join("venv")
+                .join(bin_folder)
+                .display()
+                .to_string()
+                .as_str(),
+        );
+    }
     command.args(&args).current_dir(start_path);
     command
 }
