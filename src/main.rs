@@ -1217,31 +1217,14 @@ fn prj_tox(name: &str, venv: bool, deps: &Vec<String>, shortcut: &String) {
         let bin = "pip3";
         #[cfg(target_os = "windows")]
         let bin = "pip.exe";
-        let mut pip = std::process::Command::new(bin);
-        // Activate venv
-        if venv {
-            #[cfg(any(target_os = "linux", target_os = "macos"))]
-            pip.env(
-                "PATH",
-                Path::new("venv").join("bin").display().to_string().as_str(),
-            );
-            #[cfg(target_os = "windows")]
-            pip.env(
-                "PATH",
-                Path::new(absolute(name).unwrap().display().to_string().as_str())
-                    .join("venv")
-                    .join("Scripts")
-                    .display()
-                    .to_string()
-                    .as_str(),
-            );
-        }
+        let args = vec![
+            "install".to_string(),
+            "--timeout=10".to_string(),
+            "--retries=1".to_string(),
+            "tox".to_string(),
+        ];
+        let mut pip = make_command(bin, name, name, args, venv);
         let output = pip
-            .arg("install")
-            .arg("--timeout=10")
-            .arg("--retries=1")
-            .arg("tox")
-            .current_dir(&name)
             .output()
             .expect(format!("{bin} should be installed").as_str());
         // Check if command exit successfully
