@@ -1296,31 +1296,14 @@ fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) {
         let bin = "pip.exe";
         if docs.as_str().to_lowercase() == "sphinx" {
             // Install sphinx
-            let mut pip = std::process::Command::new(bin);
-            // Activate venv
-            if venv {
-                #[cfg(any(target_os = "linux", target_os = "macos"))]
-                pip.env(
-                    "PATH",
-                    Path::new("venv").join("bin").display().to_string().as_str(),
-                );
-                #[cfg(target_os = "windows")]
-                pip.env(
-                    "PATH",
-                    Path::new(absolute(root).unwrap().display().to_string().as_str())
-                        .join("venv")
-                        .join("Scripts")
-                        .display()
-                        .to_string()
-                        .as_str(),
-                );
-            }
+            let args = vec![
+                "install".to_string(),
+                "--timeout=10".to_string(),
+                "--retries=1".to_string(),
+                "sphinx".to_string(),
+            ];
+            let mut pip = make_command(bin, root, root, args, venv);
             let output = pip
-                .arg("install")
-                .arg("--timeout=10")
-                .arg("--retries=1")
-                .arg("sphinx")
-                .current_dir(root)
                 .output()
                 .expect(format!("{bin} should be installed").as_str());
             // Check if command exit successfully
@@ -1333,74 +1316,42 @@ fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) {
             let sphinx_bin = "sphinx-quickstart";
             #[cfg(target_os = "windows")]
             let sphinx_bin = "sphinx-quickstart.exe";
-            let mut sphinx_quickstart = std::process::Command::new(sphinx_bin);
-            // Activate venv
-            if venv {
-                #[cfg(any(target_os = "linux", target_os = "macos"))]
-                sphinx_quickstart.env(
-                    "PATH",
-                    Path::new(root)
-                        .join("venv")
-                        .join("bin")
-                        .display()
-                        .to_string()
-                        .as_str(),
-                );
-                #[cfg(target_os = "windows")]
-                sphinx_quickstart.env(
-                    "PATH",
-                    Path::new(absolute(root).unwrap().display().to_string().as_str())
-                        .join("venv")
-                        .join("Scripts")
-                        .display()
-                        .to_string()
-                        .as_str(),
-                );
-            }
+            let args = vec![
+                "--quiet".to_string(),
+                "--sep".to_string(),
+                format!("--project={}", name.to_lowercase()),
+                "--author=''".to_string(),
+                "-v='0.0.1'".to_string(),
+                "--ext-autodoc".to_string(),
+                "--ext-doctest".to_string(),
+                "--ext-viewcode".to_string(),
+                "--makefile".to_string(),
+                "--quiet".to_string(),
+                "--sep".to_string(),
+            ];
+            let mut sphinx_quickstart = make_command(
+                sphinx_bin,
+                root,
+                docs_home.display().to_string().as_str(),
+                args,
+                venv,
+            );
             let output = sphinx_quickstart
-                .arg("--quiet")
-                .arg("--sep")
-                .arg(format!("--project={}", name.to_lowercase()))
-                .arg("--author=''")
-                .arg("-v='0.0.1'")
-                .arg("--ext-autodoc")
-                .arg("--ext-doctest")
-                .arg("--ext-viewcode")
-                .arg("--makefile")
-                .current_dir(docs_home)
                 .output()
-                .expect("sphinx-quickstart should be installed");
-            // Check if command exit successfully
+                .expect(format!("{sphinx_bin} should be installed").as_str());
             if !output.status.success() {
                 eprintln!("error: sphinx documentation creation failed");
             }
         } else if docs.as_str().to_lowercase() == "mkdocs" {
             // Install mkdocs
-            let mut pip = std::process::Command::new(bin);
-            // Activate venv
-            if venv {
-                #[cfg(any(target_os = "linux", target_os = "macos"))]
-                pip.env(
-                    "PATH",
-                    Path::new("venv").join("bin").display().to_string().as_str(),
-                );
-                #[cfg(target_os = "windows")]
-                pip.env(
-                    "PATH",
-                    Path::new(absolute(root).unwrap().display().to_string().as_str())
-                        .join("venv")
-                        .join("Scripts")
-                        .display()
-                        .to_string()
-                        .as_str(),
-                );
-            }
+            let args = vec![
+                "install".to_string(),
+                "--timeout=10".to_string(),
+                "--retries=1".to_string(),
+                "mkdocs".to_string(),
+            ];
+            let mut pip = make_command(bin, root, root, args, venv);
             let output = pip
-                .arg("install")
-                .arg("--timeout=10")
-                .arg("--retries=1")
-                .arg("mkdocs")
-                .current_dir(&root)
                 .output()
                 .expect(format!("{bin} should be installed").as_str());
             // Check if command exit successfully
@@ -1413,37 +1364,11 @@ fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) {
             let mkdocs_bin = "mkdocs";
             #[cfg(target_os = "windows")]
             let mkdocs_bin = "mkdocs.exe";
-            let mut mkdocs_new = std::process::Command::new(mkdocs_bin);
-            // Activate venv
-            if venv {
-                #[cfg(any(target_os = "linux", target_os = "macos"))]
-                mkdocs_new.env(
-                    "PATH",
-                    Path::new(root)
-                        .join("venv")
-                        .join("bin")
-                        .display()
-                        .to_string()
-                        .as_str(),
-                );
-                #[cfg(target_os = "windows")]
-                mkdocs_new.env(
-                    "PATH",
-                    Path::new(absolute(root).unwrap().display().to_string().as_str())
-                        .join("venv")
-                        .join("Scripts")
-                        .display()
-                        .to_string()
-                        .as_str(),
-                );
-            }
+            let args = vec!["new".to_string(), "--quiet".to_string(), ".".to_string()];
+            let mut mkdocs_new = make_command(mkdocs_bin, root, root, args, venv);
             let output = mkdocs_new
-                .arg("new")
-                .arg("--quiet")
-                .arg(".")
-                .current_dir(&root)
                 .output()
-                .expect("mkdocs should be installed");
+                .expect(format!("{mkdocs_bin} should be installed").as_str());
             // Check if command exit successfully
             if !output.status.success() {
                 eprintln!("error: mkdocs documentation creation failed");
