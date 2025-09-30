@@ -1530,28 +1530,27 @@ Feel free to ask questions via issues, discussions, or mail.
         let command = "powershell.exe";
         #[cfg(any(target_os = "linux", target_os = "macos"))]
         let command_args = vec![
-            "-oCODE_OF_CONDUCT.md",
-            "-k",
-            "--connect-timeout",
-            "10",
-            conduct_url,
+            "-oCODE_OF_CONDUCT.md".to_string(),
+            "-k".to_string(),
+            "--connect-timeout".to_string(),
+            "10".to_string(),
+            conduct_url.to_string(),
         ];
         #[cfg(target_os = "windows")]
         let command_args = vec![
-            "-NoProfile",
-            "-ExecutionPolicy",
-            "Bypass",
-            "-Command",
-            "iwr",
-            "-TimeoutSec",
-            "10",
-            "-OutFile",
-            "CODE_OF_CONDUCT.md",
-            conduct_url,
+            "-NoProfile".to_string(),
+            "-ExecutionPolicy".to_string(),
+            "Bypass".to_string(),
+            "-Command".to_string(),
+            "iwr".to_string(),
+            "-TimeoutSec".to_string(),
+            "10".to_string(),
+            "-OutFile".to_string(),
+            "CODE_OF_CONDUCT.md".to_string(),
+            conduct_url.to_string(),
         ];
-        let output = std::process::Command::new(command)
-            .args(command_args)
-            .current_dir(&root)
+        let mut downloader = make_command(command, root, root, command_args, false);
+        let output = downloader
             .output()
             .expect(format!("{command} should be installed").as_str());
         // Check if command exit successfully
