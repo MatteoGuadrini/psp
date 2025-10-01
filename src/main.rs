@@ -1604,31 +1604,29 @@ fn prj_license(name: &str, shortcut: &String) -> String {
         let command = "powershell.exe";
         #[cfg(any(target_os = "linux", target_os = "macos"))]
         let command_args = vec![
-            "-oLICENSE.md",
-            "-k",
-            "--connect-timeout",
-            "10",
-            license_url.as_str(),
+            "-oLICENSE.md".to_string(),
+            "-k".to_string(),
+            "--connect-timeout".to_string(),
+            "10".to_string(),
+            license_url.to_string(),
         ];
         #[cfg(target_os = "windows")]
         let command_args = vec![
-            "-NoProfile",
-            "-ExecutionPolicy",
-            "Bypass",
-            "-Command",
-            "iwr",
-            "-TimeoutSec",
-            "10",
-            "-OutFile",
-            "LICENSE.md",
-            license_url.as_str(),
+            "-NoProfile".to_string(),
+            "-ExecutionPolicy".to_string(),
+            "Bypass".to_string(),
+            "-Command".to_string(),
+            "iwr".to_string(),
+            "-TimeoutSec".to_string(),
+            "10".to_string(),
+            "-OutFile".to_string(),
+            "LICENSE.md".to_string(),
+            license_url.to_string(),
         ];
-        // Create LICENSE
-        let output = std::process::Command::new(command)
-            .args(command_args)
-            .current_dir(&name)
+        let mut downloader = make_command(command, name, name, command_args, false);
+        let output = downloader
             .output()
-            .expect("curl should be installed");
+            .expect(format!("{command} should be installed").as_str());
         // Check if command exit successfully
         if !output.status.success() {
             eprintln!("error: LICENSE download failed from {license_url}");
