@@ -106,6 +106,27 @@ $> git remote get-url origin
 git@github.com:MatteoGuadrini/test.git
 ```
 
+## Help
+
+For help message, type:
+
+```console
+$> psp help
+psp (Python Scaffolding Projects), version 0.2.0
+usage: psp [shortcut]
+ie: psp [help|quick|simple|full]
+
+shortcut:
+    help:   print this help message
+    quick:  enables a rapid setup (few options included)
+    simple: enables a basic setup (only Python package)
+    full:   enables a full setup (all options)
+
+links:
+    repository:     https://github.com/MatteoGuadrini/psp
+    documentation:  https://psp.readthedocs.io/
+```
+
 ## 🔌 Prerequisites
 
 `psp` has four prerequisetes installed on own machine:

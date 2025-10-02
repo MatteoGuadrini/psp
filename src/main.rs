@@ -114,14 +114,13 @@ fn print_help(exit_code: i32) {
             "
 shortcut:
     help:   print this help message
-    quick:  enables a rapid configuration
-    simple: enables a basic configuration
-    full:   enables a full configuration
+    quick:  enables a rapid setup (few options included)
+    simple: enables a basic setup (only Python package)
+    full:   enables a full setup (all options)
 
 links:
     repository:     https://github.com/MatteoGuadrini/psp
-    documentation:  https://psp.readthedocs.io/
-            "
+    documentation:  https://psp.readthedocs.io/"
         );
     }
     exit(exit_code)
