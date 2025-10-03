@@ -105,6 +105,13 @@ fn prompt_select(question: &str, options: Vec<&str>, help: &str) -> String {
 
 // Function to print help
 fn print_help(exit_code: i32) {
+    // Collect PSP_* active variables
+    let mut psp_vars: Vec<String> = vec![];
+    for var in dotenv::vars() {
+        if var.0.contains("PSP_") {
+            psp_vars.push(var.0);
+        }
+    }
     println!("psp (Python Scaffolding Projects), version {VERSION}");
     println!("usage: psp [shortcut]");
     println!("ie: psp [help|quick|simple|full]");
@@ -116,11 +123,14 @@ shortcut:
     help:   print this help message
     quick:  enables a rapid setup (few options included)
     simple: enables a basic setup (only Python package)
-    full:   enables a full setup (all options)
+    full:   enables a full setup (all options included)
 
 links:
     repository:     https://github.com/MatteoGuadrini/psp
-    documentation:  https://psp.readthedocs.io/"
+    documentation:  https://psp.readthedocs.io/
+
+variables:
+    {psp_vars:?}"
         );
     }
     exit(exit_code)
@@ -1855,6 +1865,8 @@ clean:
 
 // Main program
 fn main() {
+    // Load env files
+    load_env();
     // Check if argument is specified
     let shortcut = get_shortcut();
     // Print help message
@@ -1863,8 +1875,6 @@ fn main() {
     }
     // Print welcome screen and version
     println!("info: welcome to psp, version {VERSION}");
-    // Load env files
-    load_env();
     // Check dependencies tools
     #[cfg(any(target_os = "linux", target_os = "macos"))]
     let tools = ["python3", "git", "pip3", "curl"];

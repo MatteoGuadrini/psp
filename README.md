@@ -125,6 +125,9 @@ shortcut:
 links:
     repository:     https://github.com/MatteoGuadrini/psp
     documentation:  https://psp.readthedocs.io/
+
+variables:
+    []
 ```
 
 ## 🔌 Prerequisites
