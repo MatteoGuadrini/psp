@@ -1772,7 +1772,7 @@ CMD -m {name}
 }
 
 // Project Makefile
-fn prj_makefile(root: &str, name: &str, tests: bool, build: bool) {
+fn prj_makefile(root: &str, name: &str, tests: bool, build: bool, container: bool) {
     // Set options for make
     let mut make_options = vec!["help", "run", "clean"];
     if tests {
@@ -1781,6 +1781,9 @@ fn prj_makefile(root: &str, name: &str, tests: bool, build: bool) {
     if build {
         make_options.push("build");
         make_options.push("deploy");
+    }
+    if container {
+        make_options.push("container");
     }
     let mut makefile_content = format!(
         "# {SIGNATURE}, version {VERSION}
@@ -1827,6 +1830,16 @@ ifneq ('$(wildcard ${{VENV}}/bin/${{PYTHON}})','')
 else
 \t${{PYTHON}} -m twine upload dist/*
 endif
+"
+        )
+        .as_str();
+    }
+    // Check if container variable has been specified
+    if container {
+        makefile_content += format!(
+            "
+container:
+\tpodman build . || docker build .
 "
         )
         .as_str();
@@ -1918,7 +1931,7 @@ fn main() {
     // Common files
     prj_files(&root, &name, container, &shortcut);
     // Makefile
-    prj_makefile(&root, &name, tests, build);
+    prj_makefile(&root, &name, tests, build, container);
     // Finish a scaffolding process
     println!(
         "info: python project `{name}` created at `{}`",
