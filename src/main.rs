@@ -218,9 +218,16 @@ fn prj_name() -> (String, String) {
         exit(1)
     }
     // Make package path parts
-    let project_name = name.to_lowercase().replace(" ", "_");
-    let project = Path::new(&name);
-    let package = project.join(project.file_name().unwrap());
+    let project_name = name.replace(" ", "_");
+    let project = Path::new(&project_name);
+    let package = project.join(
+        project
+            .file_name()
+            .unwrap()
+            .to_string_lossy()
+            .to_string()
+            .to_lowercase(),
+    );
     let root = Path::new(package.parent().unwrap());
     // Check if a project path already exists
     if package.exists() {
@@ -267,10 +274,15 @@ __version__ = '0.0.1'
 
 from .__init__ import __version__
 
-print('name: {} ')
+print('name: {}')
 print(f'version: {{__version__}}')
 ",
-            project_name
+            package
+                .file_name()
+                .unwrap()
+                .to_string_lossy()
+                .to_string()
+                .to_lowercase()
         ),
     );
     if let Err(e) = main_file_ret {
