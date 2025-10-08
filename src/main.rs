@@ -1738,11 +1738,18 @@ fn prj_container(root: &str, name: &str, shortcut: &String) -> bool {
         )
     };
     if confirm {
-        // Create README
+        // Create Dockerfile/Containerfile
         let dockerfile_content = format!(
             "# {SIGNATURE}, version {VERSION}
 
 FROM python:alpine
+
+# Update and upgrade packages
+RUN apk update && apk upgrade --no-cache
+
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
 # Copy the Python package
 COPY {name} /{name}/{name}
@@ -1750,7 +1757,7 @@ COPY pyproject.toml /{name}
 WORKDIR /{name}
 
 # Install dependencies
-RUN pip install .
+RUN pip install . --no-cache-dir
 
 # Safe user
 RUN adduser --disabled-password {name}_user
@@ -1775,6 +1782,37 @@ CMD -m {name}
             dockerfile_content,
         );
         if let Err(e) = containerfile {
+            eprintln!("error: {}", e);
+        }
+        // Create .dockerignore/.containerignore
+        let docker_ignore_content = format!(
+            "# {SIGNATURE}, version {VERSION}
+
+__pycache__
+*.pyc
+.git
+.pytest_cache
+.venv
+.env
+venv
+env
+README.md
+"
+        );
+        let dockerignore_file = Path::new(root).join(".dockerignore");
+        let dockerignore = make_file(
+            dockerignore_file.display().to_string().as_str(),
+            docker_ignore_content.clone(),
+        );
+        if let Err(e) = dockerignore {
+            eprintln!("error: {}", e);
+        }
+        let containerignore_file = Path::new(root).join(".containerignore");
+        let containerignore = make_file(
+            containerignore_file.display().to_string().as_str(),
+            docker_ignore_content,
+        );
+        if let Err(e) = containerignore {
             eprintln!("error: {}", e);
         }
         true
@@ -1851,7 +1889,7 @@ endif
         makefile_content += format!(
             "
 container:
-\tpodman build . || docker build .
+\tpodman build . -t {name}:latest || docker build . -t {name}:latest
 "
         )
         .as_str();
