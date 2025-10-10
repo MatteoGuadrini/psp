@@ -1824,7 +1824,7 @@ README.md
 // Project Makefile
 fn prj_makefile(root: &str, name: &str, tests: bool, build: bool, container: bool) {
     // Set options for make
-    let mut make_options = vec!["help", "run", "clean"];
+    let mut make_options = vec!["help", "all", "run", "clean"];
     if tests {
         make_options.push("test");
     }
@@ -1835,10 +1835,15 @@ fn prj_makefile(root: &str, name: &str, tests: bool, build: bool, container: boo
     if container {
         make_options.push("container");
     }
+    // Select binary
+    #[cfg(any(target_os = "linux", target_os = "macos"))]
+    let bin = "python3";
+    #[cfg(target_os = "windows")]
+    let bin = "python.exe";
     let mut makefile_content = format!(
         "# {SIGNATURE}, version {VERSION}
 
-PYTHON = python3
+PYTHON = {}
 VENV = venv
 
 .PHONY: {}
@@ -1846,9 +1851,24 @@ VENV = venv
 help:
 \t@echo 'help: make ({})'
 ",
+        bin,
         make_options.join(" "),
         make_options.join("|")
     );
+    // Add all target
+    make_options.remove(0);
+    make_options.remove(0);
+    if make_options[2] == "test" {
+        let removed_test = make_options.remove(2);
+        make_options.insert(0, removed_test);
+    }
+    makefile_content += format!(
+        "
+all: {}
+",
+        make_options.join(" ")
+    )
+    .as_str();
     // Check if tests variable has been specified
     if tests {
         makefile_content += format!(
