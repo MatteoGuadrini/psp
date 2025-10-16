@@ -47,7 +47,7 @@ fn check_tool(tool: &str) {
             return;
         }
     }
-    eprintln!("error: {} is not installed", tool);
+    eprintln!("error: `{}` is not installed", tool);
     exit(1);
 }
 
@@ -960,7 +960,7 @@ fn prj_remote(root: &str, name: &str, shortcut: &String) -> (String, String) {
         // Check if command exit successfully
         if !output.status.success() {
             eprintln!(
-                "error: username of remote repository {} setting failed",
+                "error: username of remote repository `{}` setting failed",
                 remote.to_lowercase()
             );
         }
@@ -1249,7 +1249,7 @@ fn prj_tox(name: &str, venv: bool, deps: &Vec<String>, shortcut: &String) {
             .expect(format!("{PIP_BIN} should be installed").as_str());
         // Check if command exit successfully
         if !output.status.success() {
-            eprintln!("error: tox installation failed");
+            eprintln!("error: `tox` installation failed");
             return;
         }
         // Write tox.ini
@@ -1324,7 +1324,7 @@ fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) {
                 .expect(format!("{PIP_BIN} should be installed").as_str());
             // Check if command exit successfully
             if !output.status.success() {
-                eprintln!("error: sphinx installation failed");
+                eprintln!("error: `sphinx` installation failed");
                 return;
             }
             // Start documentation
@@ -1356,7 +1356,7 @@ fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) {
                 .output()
                 .expect(format!("{sphinx_bin} should be installed").as_str());
             if !output.status.success() {
-                eprintln!("error: sphinx documentation creation failed");
+                eprintln!("error: `sphinx` documentation creation failed");
             }
         } else if docs.as_str().to_lowercase() == "mkdocs" {
             // Install mkdocs
@@ -1372,7 +1372,7 @@ fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) {
                 .expect(format!("{PIP_BIN} should be installed").as_str());
             // Check if command exit successfully
             if !output.status.success() {
-                eprintln!("error: mkdocs installation failed");
+                eprintln!("error: `mkdocs` installation failed");
                 return;
             }
             // Start documentation
@@ -1387,7 +1387,7 @@ fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) {
                 .expect(format!("{mkdocs_bin} should be installed").as_str());
             // Check if command exit successfully
             if !output.status.success() {
-                eprintln!("error: mkdocs documentation creation failed");
+                eprintln!("error: `mkdocs` documentation creation failed");
             }
         } else if docs.as_str().to_lowercase() != "none" {
             println!(
@@ -1571,7 +1571,7 @@ Feel free to ask questions via issues, discussions, or mail.
             .expect(format!("{command} should be installed").as_str());
         // Check if command exit successfully
         if !output.status.success() {
-            eprintln!("error: CODE_OF_CONDUCT download failed from {conduct_url}");
+            eprintln!("error: `CODE_OF_CONDUCT` download failed from `{conduct_url}`");
         }
     }
 }
@@ -1645,7 +1645,7 @@ fn prj_license(name: &str, shortcut: &String) -> String {
             .expect(format!("{command} should be installed").as_str());
         // Check if command exit successfully
         if !output.status.success() {
-            eprintln!("error: LICENSE download failed from {license_url}");
+            eprintln!("error: `LICENSE` download failed from `{license_url}`");
         }
     }
     license
