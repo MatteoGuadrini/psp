@@ -8,9 +8,22 @@
 
 ```console
 [gu]# psp help
+psp (Python Scaffolding Projects), version 0.2.0
 usage: psp [shortcut]
 ie: psp [help|quick|simple|full]
 
+shortcut:
+    help:   print this help message
+    quick:  enables a rapid setup (few options included)
+    simple: enables a basic setup (only Python package)
+    full:   enables a full setup (all options included)
+
+links:
+    repository:     https://github.com/MatteoGuadrini/psp
+    documentation:  https://psp.readthedocs.io/
+
+variables:
+    []
 [gu]# echo $?
 0
 
@@ -18,7 +31,6 @@ ie: psp [help|quick|simple|full]
 error: unknown shortcut command `whatever`
 usage: psp [shortcut]
 ie: psp [help|quick|simple|full]
-
 [gu]# echo $?
 1
 ```

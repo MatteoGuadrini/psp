@@ -398,6 +398,73 @@ mypyprj
     └── config.yml   ┘ provider
 ```
 
+## License
+
+This option download the license file and configure license into _pyproject.toml_.
+
+The default value is _None_.
+
+!!! warning
+    License file will downloaded from internet. Check your internet settings, proxy or firewall if an error occured.
+
+```console
+...
+> Select remote CI provider: CircleCI
+? Select license:
+  None
+  MIT
+> Apache
+  Mozilla
+  Creative Commons
+  Gnu Public License
+[↑↓ to move, enter to select, type to filter]
+```
+
+The project structure after this choosen:
+
+```
+mypyprj
+├── pyproject.toml
+├── mypyprj
+│   └──...
+├── venv
+│   └──...
+├── .git
+│   └──...
+├── .gitignore
+├── .github
+│   └──...
+├── tests
+│   └──...
+├── docs
+│   └──...
+├── tox.ini
+├── .circleci
+│   └── ...
+└── LICENSE.md          │ License file
+```
+## PyPi dependencies
+
+This option install [PyPi](https://packaging.python.org/en/latest/tutorials/packaging-projects/) tools for publish your package.
+
+The default value is _Yes_.
+
+```console
+...
+> Select license: Apache
+? Do you want to install dependencies to publish on pypi? (Y/n)
+```
+
+The two packages are installed:
+
+```console
+[gu]# cd mypyprj && . venv/bin/activate && twine --version && python -m build --version
+twine version 6.0.1 (keyring: 25.5.0,
+pkginfo: 1.12.0, requests: 2.32.3,
+requests-toolbelt: 1.0.0, urllib3: 2.2.3)
+build 1.2.2.post1 (/tmp/mypyprj/venv/lib/python3.13/site-packages/build)
+```
+
 ## Docker/Podman
 
 This option [creates a containerization](https://docs.docker.com/build/) files to build an imagae of your package.
@@ -438,13 +505,11 @@ mypyprj
 ├── tox.ini
 ├── .circleci
 │   └── ...
-├── Dockerfile      ┐ Files for
-└── Containerfile   ┘ containerization
+├── Dockerfile        ┐
+├── .dockerignore     │ Files for
+├── .containerignore  │ containerization
+└── Containerfile     ┘
 ```
-
-!!! note
-    As you notice, **psp** creates a Makefile to automate all process in your package.
-    If you want a help, try `make help`.
 
 Try to build an image:
 
@@ -515,7 +580,7 @@ The default value is _Yes_.
 
 ```console
 ...
-> Select remote CI provider: CircleCI
+> Do you want to create a Dockerfile and Containerfile? Yes
 ? Do you want create common files? (Y/n)
 [Create README, CONTRIBUTING, CODE_OF_CONDUCT and CHANGES]
 ```
@@ -539,6 +604,7 @@ mypyprj
 ├── docs
 │   └──...
 ├── tox.ini
+├── Makefile
 ├── .circleci
 │   └── ...
 ├── README.md           ┐
@@ -547,75 +613,6 @@ mypyprj
 └── CHANGES.md          ┘
 ```
 
-## License
-
-This option download the license file and configure license into _pyproject.toml_.
-
-The default value is _None_.
-
-!!! warning
-    License file will downloaded from internet. Check your internet settings, proxy or firewall if an error occured.
-
-```console
-...
-> Do you want create common files? Yes
-? Select license:
-  None
-  MIT
-> Apache
-  Mozilla
-  Creative Commons
-  Gnu Public License
-[↑↓ to move, enter to select, type to filter]
-```
-
-The project structure after this choosen:
-
-```
-mypyprj
-├── pyproject.toml
-├── mypyprj
-│   └──...
-├── venv
-│   └──...
-├── .git
-│   └──...
-├── .gitignore
-├── .github
-│   └──...
-├── tests
-│   └──...
-├── docs
-│   └──...
-├── tox.ini
-├── .circleci
-│   └── ...
-├── README.md
-├── CONTRIBUTING.md
-├── CODE_OF_CONDUCT.md
-├── CHANGES.md
-└── LICENSE.md          │ License file
-```
-
-## PyPi dependencies
-
-This option install [PyPi](https://packaging.python.org/en/latest/tutorials/packaging-projects/) tools for publish your package.
-
-The default value is _Yes_.
-
-```console
-...
-> Do you want create common files? Yes
-> Select license: Apache
-? Do you want to install dependencies to publish on pypi? (Y/n)
-```
-
-The two packages are installed:
-
-```console
-[gu]# cd mypyprj && . venv/bin/activate && twine --version && python -m build --version
-twine version 6.0.1 (keyring: 25.5.0,
-pkginfo: 1.12.0, requests: 2.32.3,
-requests-toolbelt: 1.0.0, urllib3: 2.2.3)
-build 1.2.2.post1 (/tmp/mypyprj/venv/lib/python3.13/site-packages/build)
-```
+!!! note
+    As you notice, **psp** creates a Makefile to automate all process in your package.
+    If you want a help, try `make help`.
