@@ -789,7 +789,7 @@ license = {{text = '{}'}}
 authors = [{{name = '{username}', email = '{email}'}}]
 maintainers = [{{name = '{username}', email = '{email}'}}]
 description = 'A simple but structured Python project'
-requires-python = '>=3.13'
+requires-python = '>=3.14'
 classifiers = {:?}
 dependencies = {}
 
@@ -839,9 +839,9 @@ fn prj_ci(name: &str, deps: &Vec<String>, shortcut: &String) {
 language: python
 cache: pip
 python:
-  - 3.11
   - 3.12
   - 3.13
+  - 3.14
 before_install:
   - sudo apt-get update
   - sudo apt-get install python3-pip

@@ -5,7 +5,7 @@
 
 - ⚡️ 1-100x faster compared to other scaffolding tools
 - 🛠️ `pyproject.toml` support
-- 🤝 Python 3.13 compatibility
+- 🤝 Python 3.14 compatibility
 - 🗃 Scaffolding file and folder structures for your Python project
 - 📦 Unit-test and [pytest](https://docs.pytest.org/) support
 - 🧪 Create a virtual environment
@@ -84,9 +84,9 @@ test                    # Project folder
 └── venv                # Virtual environment
     ├── bin  [33 entries exceeds filelimit, not opening dir]
     ├── include
-    │   └── python3.13
+    │   └── python3.14
     ├── lib
-    │   └── python3.13
+    │   └── python3.14
     │       └── site-packages  [68 entries exceeds filelimit, not opening dir]
     ├── lib64 -> lib
     └── pyvenv.cfg
@@ -149,7 +149,7 @@ brew install python git
 
 ```console
 winget install -e --id Git.Git
-winget install -e --id Python.Python.3.13
+winget install -e --id Python.Python.3.14
 ```
 
 ### Ubuntu based prerequisites installation
