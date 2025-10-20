@@ -11,7 +11,7 @@ theme:
   palette:
     # Palette toggle for light mode
     - media: "(prefers-color-scheme: light)"
-      scheme: slate
+      scheme: default
       primary: blue
       accent: yellow
       toggle:
@@ -20,7 +20,7 @@ theme:
 
     # Palette toggle for dark mode
     - media: "(prefers-color-scheme: dark)"
-      scheme: default
+      scheme: slate
       primary: yellow
       accent: blue
       toggle:

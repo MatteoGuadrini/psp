@@ -8,17 +8,28 @@
 
 ```console
 [gu]# psp help
+psp (Python Scaffolding Projects), version 0.3.0
 usage: psp [shortcut]
 ie: psp [help|quick|simple|full]
 
+shortcut:
+    help:   print this help message
+    quick:  enables a rapid setup (few options included)
+    simple: enables a basic setup (only Python package)
+    full:   enables a full setup (all options included)
+
+links:
+    repository:     https://github.com/MatteoGuadrini/psp
+    documentation:  https://psp.readthedocs.io/
+
+variables:
+    []
 [gu]# echo $?
 0
-
 [gu]# psp whatever
 error: unknown shortcut command `whatever`
 usage: psp [shortcut]
 ie: psp [help|quick|simple|full]
-
 [gu]# echo $?
 1
 ```
@@ -29,7 +40,7 @@ The _quick_ shortcut enables a rapid configuration of your Python project:
 
 ```console
 [gu]# psp quick
-Welcome to PSP (Python Scaffolding Projects): 0.1.0
+info: welcome to psp, version 0.3.0
 > Name of Python project: mypyprj
 > Select documentation generator: MKDocs
 > Select license: MIT
@@ -53,7 +64,7 @@ The _simple_ shortcut enables a basic configuration of your Python project:
 
 ```console
 [gu]# psp simple
-Welcome to PSP (Python Scaffolding Projects): 0.1.0
+info: welcome to psp, version 0.3.0
 > Name of Python project: mypyprj
 Python project `mypyprj` created at mypyprj
 ```
@@ -68,7 +79,7 @@ The _full_ shortcut enables a full configuration of your Python project:
 
 ```console
 [gu]# psp full
-Welcome to PSP (Python Scaffolding Projects): 0.1.0
+info: welcome to psp, version 0.3.0
 > Name of Python project: mypyprj
 > Select git remote provider: Github
 > Username of Github: MatteoGuadrini

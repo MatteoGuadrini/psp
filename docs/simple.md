@@ -12,7 +12,7 @@ To start with **psp**, type `psp`:
 
 ```console
 [gu]# psp
-Welcome to PSP (Python Scaffolding Projects): 0.1.0
+info: welcome to psp, version 0.3.0
 ? Name of Python project: mypyprj
 [Type name or path]
 ```
@@ -34,7 +34,7 @@ You can also specify a relative/absolute path; in this case the last name of pat
 
 ```console
 [gu]# psp
-Welcome to PSP (Python Scaffolding Projects): 0.1.0
+info: welcome to psp, version 0.3.0
 ? Name of Python project: /tmp/mypyprj
 [Type name or path]
 ```
@@ -43,7 +43,7 @@ Welcome to PSP (Python Scaffolding Projects): 0.1.0
     If the folder exists, **psp** prompt a choice of overwritten.
 
 ```console
-Welcome to PSP (Python Scaffolding Projects): 0.1.0
+info: welcome to psp, version 0.3.0
 > Name of Python project: /tmp/mypyprj
 ? Path /tmp/mypyprj exists. Do you want continue? (y/N)
 [Some files will be overwritten]
@@ -59,7 +59,7 @@ and may optionally be isolated from the packages in the base environment, so onl
 The default value is _Yes_.
 
 ```console
-Welcome to PSP (Python Scaffolding Projects): 0.1.0
+info: welcome to psp, version 0.3.0
 > Name of Python project: mypyprj
 ? Do you want to create a virtual environment? (Y/n)
 ```
@@ -398,49 +398,6 @@ mypyprj
     └── config.yml   ┘ provider
 ```
 
-## Common files
-
-This option configure a common files for Python projects, as a _README, CONTRIBUTING, CODE_OF_CONDUCT and CHANGES_.
-
-The default value is _Yes_.
-
-!!! warning
-    In this option some files will downloaded from internet. Check your internet settings, proxy or firewall if an error occured.
-
-```console
-...
-> Select remote CI provider: CircleCI
-? Do you want create common files? (Y/n)
-[Create README, CONTRIBUTING, CODE_OF_CONDUCT and CHANGES]
-```
-
-The project structure after this choosen:
-
-```
-mypyprj
-├── pyproject.toml
-├── mypyprj
-│   └──...
-├── venv
-│   └──...
-├── .git
-│   └──...
-├── .gitignore
-├── .github
-│   └──...
-├── tests
-│   └──...
-├── docs
-│   └──...
-├── tox.ini
-├── .circleci
-│   └── ...
-├── README.md           ┐
-├── CONTRIBUTING.md     │ Common
-├── CODE_OF_CONDUCT.md  │ files
-└── CHANGES.md          ┘
-```
-
 ## License
 
 This option download the license file and configure license into _pyproject.toml_.
@@ -452,7 +409,7 @@ The default value is _None_.
 
 ```console
 ...
-> Do you want create common files? Yes
+> Select remote CI provider: CircleCI
 ? Select license:
   None
   MIT
@@ -484,13 +441,8 @@ mypyprj
 ├── tox.ini
 ├── .circleci
 │   └── ...
-├── README.md
-├── CONTRIBUTING.md
-├── CODE_OF_CONDUCT.md
-├── CHANGES.md
 └── LICENSE.md          │ License file
 ```
-
 ## PyPi dependencies
 
 This option install [PyPi](https://packaging.python.org/en/latest/tutorials/packaging-projects/) tools for publish your package.
@@ -499,7 +451,6 @@ The default value is _Yes_.
 
 ```console
 ...
-> Do you want create common files? Yes
 > Select license: Apache
 ? Do you want to install dependencies to publish on pypi? (Y/n)
 ```
@@ -554,19 +505,11 @@ mypyprj
 ├── tox.ini
 ├── .circleci
 │   └── ...
-├── README.md
-├── CONTRIBUTING.md
-├── CODE_OF_CONDUCT.md
-├── CHANGES.md
-├── LICENSE.md
-├── Makefile
-├── Dockerfile      ┐ Files for
-└── Containerfile   ┘ containerization
+├── Dockerfile        ┐
+├── .dockerignore     │ Files for
+├── .containerignore  │ containerization
+└── Containerfile     ┘
 ```
-
-!!! note
-    As you notice, **psp** creates a Makefile to automate all process in your package.
-    If you want a help, try `make help`.
 
 Try to build an image:
 
@@ -625,3 +568,51 @@ Type "help", "copyright", "credits" or "license" for more information.
 0.0.1
 >>>
 ```
+
+## Common files
+
+This option configure a common files for Python projects, as a _README, CONTRIBUTING, CODE_OF_CONDUCT and CHANGES_.
+
+The default value is _Yes_.
+
+!!! warning
+    In this option some files will downloaded from internet. Check your internet settings, proxy or firewall if an error occured.
+
+```console
+...
+> Do you want to create a Dockerfile and Containerfile? Yes
+? Do you want create common files? (Y/n)
+[Create README, CONTRIBUTING, CODE_OF_CONDUCT and CHANGES]
+```
+
+The project structure after this choosen:
+
+```
+mypyprj
+├── pyproject.toml
+├── mypyprj
+│   └──...
+├── venv
+│   └──...
+├── .git
+│   └──...
+├── .gitignore
+├── .github
+│   └──...
+├── tests
+│   └──...
+├── docs
+│   └──...
+├── tox.ini
+├── Makefile
+├── .circleci
+│   └── ...
+├── README.md           ┐
+├── CONTRIBUTING.md     │ Common
+├── CODE_OF_CONDUCT.md  │ files
+└── CHANGES.md          ┘
+```
+
+!!! note
+    As you notice, **psp** creates a Makefile to automate all process in your package.
+    If you want a help, try `make help`.

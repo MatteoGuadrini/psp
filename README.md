@@ -5,7 +5,7 @@
 
 - ⚡️ 1-100x faster compared to other scaffolding tools
 - 🛠️ `pyproject.toml` support
-- 🤝 Python 3.13 compatibility
+- 🤝 Python 3.14 compatibility
 - 🗃 Scaffolding file and folder structures for your Python project
 - 📦 Unit-test and [pytest](https://docs.pytest.org/) support
 - 🧪 Create a virtual environment
@@ -23,9 +23,9 @@
 
 ## 🚀 Get Started in 30 Seconds
 
-[![asciicast](https://asciinema.org/a/707474.svg)](https://asciinema.org/a/707474)
+[![asciicast](https://asciinema.org/a/750186.svg)](https://asciinema.org/a/750186)
 
-<img src="https://i.ibb.co/bMGTM4GM/psp020.png" alt="psp" width="790"/>
+<img src="https://i.ibb.co/4RDPZWtC/psp030.png" alt="psp" width="790"/>
 
 The result is:
 
@@ -75,6 +75,8 @@ test                    # Project folder
 │   └── PULL_REQUEST_TEMPLATE
 │       └── pull_request_template.md
 ├── .gitignore          # Git ignore file
+├── .dockerignore       # Docker ignore file
+├── .containerignore    # Container ignore file
 ├── test                # Python package
 │   └── __init__.py
 ├── tests               # Tests package for modules
@@ -84,9 +86,9 @@ test                    # Project folder
 └── venv                # Virtual environment
     ├── bin  [33 entries exceeds filelimit, not opening dir]
     ├── include
-    │   └── python3.13
+    │   └── python3.14
     ├── lib
-    │   └── python3.13
+    │   └── python3.14
     │       └── site-packages  [68 entries exceeds filelimit, not opening dir]
     ├── lib64 -> lib
     └── pyvenv.cfg
@@ -106,13 +108,54 @@ $> git remote get-url origin
 git@github.com:MatteoGuadrini/test.git
 ```
 
+## Help
+
+For help message, type:
+
+```console
+$> psp help
+psp (Python Scaffolding Projects), version 0.3.0
+usage: psp [shortcut]
+ie: psp [help|quick|simple|full]
+
+shortcut:
+    help:   print this help message
+    quick:  enables a rapid setup (few options included)
+    simple: enables a basic setup (only Python package)
+    full:   enables a full setup (all options)
+
+links:
+    repository:     https://github.com/MatteoGuadrini/psp
+    documentation:  https://psp.readthedocs.io/
+
+variables:
+    ["PSP_GIT","PSP_GIT_REMOTE","PSP_GIT_USER"]
+```
+
+> [!NOTE]
+> More details for shortcuts, variables and other things, available in official documentation: [psp docs](https://psp.readthedocs.io/)
+
 ## 🔌 Prerequisites
 
-`psp` has four prerequisetes installed on own machine:
+`psp` has four mandatory prerequisetes installed on own machine:
 - `git`
 - `python3`
 - `pip`
-- `curl`
+- `curl` (Linux/MacOS only)
+
+### MacOS prerequisites installation
+
+```console
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+brew install python git
+```
+
+### Windows prerequisites installation
+
+```console
+winget install -e --id Git.Git
+winget install -e --id Python.Python.3.14
+```
 
 ### Ubuntu based prerequisites installation
 
@@ -138,16 +181,16 @@ To install compiled file into your machine, download it:
 
 ### Linux
 
-For all users:
+For **all users** (required root access):
 ```console
 sudo -i
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.2.0/psp_linux -o /usr/bin/psp
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.3.0/psp_linux -o /usr/bin/psp
 chmod +x /usr/bin/psp
 ```
 
-For current user:
+For **current user**:
 ```console
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.2.0/psp_linux -o $HOME/.local/bin/psp
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.3.0/psp_linux -o $HOME/.local/bin/psp
 chmod +x $HOME/.local/bin/psp
 ```
 
@@ -155,25 +198,39 @@ chmod +x $HOME/.local/bin/psp
 
 ```console
 sudo su -
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.2.0/psp_macos -o /usr/bin/psp
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.3.0/psp_macos -o /usr/bin/psp
 chmod +x /usr/bin/psp
+```
+
+### Windows
+
+For **all users** (required Administrator):
+```powershell
+iwr -OutFile "C:\Windows\system32\psp.exe" "https://github.com/MatteoGuadrini/psp/releases/download/v0.3.0/psp_windows"
+```
+
+For **current user**:
+```powershell
+mkdir "$($Env:USERPROFILE)\bin"
+[System.Environment]::SetEnvironmentVariable("PATH", $Env:PATH + ";$($Env:USERPROFILE)\bin","USER")
+iwr -OutFile "$($Env:USERPROFILE)\bin\psp.exe" "https://github.com/MatteoGuadrini/psp/releases/download/v0.3.0/psp_windows"
 ```
 
 ### Packages
 
-If you want install OS package, follow instructions for your Operating System:
+If you want to install OS package, follow instructions for your Operating System:
 
 For **Debian/Ubuntu**:
 
 ```console
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.2.0/psp.deb -o psp.deb
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.3.0/psp.deb -o psp.deb
 sudo dpkg -i psp.deb
 ```
 
 For **Fedora/Mageia/OpenSuse**:
 
 ```console
-sudo rpm -i https://github.com/MatteoGuadrini/psp/releases/download/v0.2.0/psp.rpm
+sudo rpm -i https://github.com/MatteoGuadrini/psp/releases/download/v0.3.0/psp.rpm
 ```
 
 ### Compile as your own
@@ -185,8 +242,19 @@ git clone https://github.com/MatteoGuadrini/psp.git
 cd psp && cargo build --release && sudo cp -v target/release/psp /usr/bin/psp && chmod +x /usr/bin/psp
 ```
 
+## 🧰 Next features
+- [x] `windows` operating system support
+- [ ] Container support for psp program
+- [ ] `conda`, `uv` and `poetry` support
+- [ ] `hatch` support
+- [ ] `docker-compose` and `kubernetes` support
+- [ ] command line flags support
+- [ ] updating/merging project
+- [ ] templating folder support
+- [ ] YAML configuration file
+
 ## Open source
-_psp_ is an open source project. Any contribute, It's welcome.
+_psp_ is an open source project. Any contribution, It's welcome.
 
 **A great thanks**.
 
@@ -205,13 +273,12 @@ Come today, we are organized to dare to listen to them and answers, every day of
 [Adopt the future](https://www.ioadottoilfuturo.it/)
 
 
-## Treeware
-
-This package is [Treeware](https://treeware.earth). If you use it in production,
-then we ask that you [**buy the world a tree**](https://plant.treeware.earth/matteoguadrini/mkpl) to thank us for our work.
+## Licence
+This package is [Treeware](https://treeware.earth).
+If you use it in production, then we ask that you [**buy the world a tree**](https://plant.treeware.earth/MatteoGuadrini/psp) to thank us for our work.
 By contributing to the Treeware forest you’ll be creating employment for local families and restoring wildlife habitats.
 
-[![Treeware](https://img.shields.io/badge/dynamic/json?color=brightgreen&label=Treeware&query=%24.total&url=https%3A%2F%2Fpublic.offset.earth%2Fusers%2Ftreeware%2Ftrees)](https://treeware.earth)
+[![Buy us a tree](https://img.shields.io/badge/Treeware-%F0%9F%8C%B3-lightgreen?style=for-the-badge)](https://plant.treeware.earth/MatteoGuadrini/psp)
 
 
 ## Acknowledgments

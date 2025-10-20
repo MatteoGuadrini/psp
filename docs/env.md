@@ -108,3 +108,6 @@ Ran 1 test in 0.000s
 
 OK
 ```
+
+!!! note
+    All loaded _psp_ variable are visible in help subcommand: `psp help`
