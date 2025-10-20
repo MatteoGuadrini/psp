@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.3.0] - 2025-10-20
+
+### Added
+- Add Windows OS support
+- Add more stuff into _gitignore_ file
+- Add more details in _README_ file
+- Add _container_ into **prj_makefile** function
+- Add **make_command** function
+
+### Changed
+- Rewrite **help** function
+- Convert some variable into constant
+
+### Fixed
+- Fix absolute path on _pip_ process
+
 ## [0.2.0] - 2025-03-11
 
 ### Added

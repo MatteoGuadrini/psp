@@ -23,9 +23,9 @@
 
 ## 🚀 Get Started in 30 Seconds
 
-[![asciicast](https://asciinema.org/a/707474.svg)](https://asciinema.org/a/707474)
+[![asciicast](https://asciinema.org/a/750186.svg)](https://asciinema.org/a/750186)
 
-<img src="https://i.ibb.co/bMGTM4GM/psp020.png" alt="psp" width="790"/>
+<img src="https://i.ibb.co/4RDPZWtC/psp030.png" alt="psp" width="790"/>
 
 The result is:
 
@@ -75,6 +75,8 @@ test                    # Project folder
 │   └── PULL_REQUEST_TEMPLATE
 │       └── pull_request_template.md
 ├── .gitignore          # Git ignore file
+├── .dockerignore       # Docker ignore file
+├── .containerignore    # Container ignore file
 ├── test                # Python package
 │   └── __init__.py
 ├── tests               # Tests package for modules
@@ -112,7 +114,7 @@ For help message, type:
 
 ```console
 $> psp help
-psp (Python Scaffolding Projects), version 0.2.0
+psp (Python Scaffolding Projects), version 0.3.0
 usage: psp [shortcut]
 ie: psp [help|quick|simple|full]
 
@@ -127,12 +129,15 @@ links:
     documentation:  https://psp.readthedocs.io/
 
 variables:
-    []
+    ["PSP_GIT","PSP_GIT_REMOTE","PSP_GIT_USER"]
 ```
+
+> [!NOTE]
+> More details for shortcuts, variables and other things, available in official documentation: [psp docs](https://psp.readthedocs.io/)
 
 ## 🔌 Prerequisites
 
-`psp` has four prerequisetes installed on own machine:
+`psp` has four mandatory prerequisetes installed on own machine:
 - `git`
 - `python3`
 - `pip`
@@ -176,16 +181,16 @@ To install compiled file into your machine, download it:
 
 ### Linux
 
-For all users:
+For **all users** (required root access):
 ```console
 sudo -i
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.2.0/psp_linux -o /usr/bin/psp
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.3.0/psp_linux -o /usr/bin/psp
 chmod +x /usr/bin/psp
 ```
 
-For current user:
+For **current user**:
 ```console
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.2.0/psp_linux -o $HOME/.local/bin/psp
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.3.0/psp_linux -o $HOME/.local/bin/psp
 chmod +x $HOME/.local/bin/psp
 ```
 
@@ -193,22 +198,22 @@ chmod +x $HOME/.local/bin/psp
 
 ```console
 sudo su -
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.2.0/psp_macos -o /usr/bin/psp
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.3.0/psp_macos -o /usr/bin/psp
 chmod +x /usr/bin/psp
 ```
 
 ### Windows
 
-For all users (required Administrator):
+For **all users** (required Administrator):
 ```powershell
-iwr -OutFile "C:\Windows\system32\psp.exe" "https://github.com/MatteoGuadrini/psp/releases/download/v0.2.0/psp_windows"
+iwr -OutFile "C:\Windows\system32\psp.exe" "https://github.com/MatteoGuadrini/psp/releases/download/v0.3.0/psp_windows"
 ```
 
-For current user:
+For **current user**:
 ```powershell
 mkdir "$($Env:USERPROFILE)\bin"
 [System.Environment]::SetEnvironmentVariable("PATH", $Env:PATH + ";$($Env:USERPROFILE)\bin","USER")
-iwr -OutFile "$($Env:USERPROFILE)\bin\psp.exe" "https://github.com/MatteoGuadrini/psp/releases/download/v0.2.0/psp_windows"
+iwr -OutFile "$($Env:USERPROFILE)\bin\psp.exe" "https://github.com/MatteoGuadrini/psp/releases/download/v0.3.0/psp_windows"
 ```
 
 ### Packages
@@ -218,14 +223,14 @@ If you want to install OS package, follow instructions for your Operating System
 For **Debian/Ubuntu**:
 
 ```console
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.2.0/psp.deb -o psp.deb
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.3.0/psp.deb -o psp.deb
 sudo dpkg -i psp.deb
 ```
 
 For **Fedora/Mageia/OpenSuse**:
 
 ```console
-sudo rpm -i https://github.com/MatteoGuadrini/psp/releases/download/v0.2.0/psp.rpm
+sudo rpm -i https://github.com/MatteoGuadrini/psp/releases/download/v0.3.0/psp.rpm
 ```
 
 ### Compile as your own
@@ -237,14 +242,16 @@ git clone https://github.com/MatteoGuadrini/psp.git
 cd psp && cargo build --release && sudo cp -v target/release/psp /usr/bin/psp && chmod +x /usr/bin/psp
 ```
 
-## Next features
-[x] `windows` operating system support
-[ ] `conda`, `uv` and `poetry` support
-[ ] `hatch` support
-[ ] `docker-compose` and `kubernetes` support
-[ ] command line flags support
-[ ] updating/merging project
-[ ] templating folder support
+## 🧰 Next features
+- [x] `windows` operating system support
+- [ ] Container support for psp program
+- [ ] `conda`, `uv` and `poetry` support
+- [ ] `hatch` support
+- [ ] `docker-compose` and `kubernetes` support
+- [ ] command line flags support
+- [ ] updating/merging project
+- [ ] templating folder support
+- [ ] YAML configuration file
 
 ## Open source
 _psp_ is an open source project. Any contribution, It's welcome.
