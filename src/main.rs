@@ -38,6 +38,16 @@ fn split_env_path() -> Vec<String> {
     paths
 }
 
+fn join_env_path(path: String) -> String {
+    let mut paths = split_env_path();
+    paths.push(path);
+    #[cfg(any(target_os = "linux", target_os = "macos"))]
+    let separator: String = String::from(":");
+    #[cfg(target_os = "windows")]
+    let separator: String = String::from(";");
+    paths.join(&separator)
+}
+
 // Function for check if tool is installed
 fn check_tool(tool: &str) {
     let paths: Vec<String> = split_env_path();
@@ -195,12 +205,13 @@ fn make_command(
     if venv {
         command.env(
             "PATH",
-            Path::new(absolute(root).unwrap().display().to_string().as_str())
-                .join("venv")
-                .join(bin_folder)
-                .display()
-                .to_string()
-                .as_str(),
+            join_env_path(
+                Path::new(absolute(root).unwrap().display().to_string().as_str())
+                    .join("venv")
+                    .join(bin_folder)
+                    .display()
+                    .to_string(),
+            ),
         );
     }
     command.args(&args).current_dir(start_path);
