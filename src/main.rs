@@ -40,7 +40,7 @@ fn split_env_path() -> Vec<String> {
 
 fn join_env_path(path: String) -> String {
     let mut paths = split_env_path();
-    paths.push(path);
+    paths.insert(0, path);
     #[cfg(any(target_os = "linux", target_os = "macos"))]
     let separator: String = String::from(":");
     #[cfg(target_os = "windows")]
