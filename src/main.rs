@@ -932,11 +932,22 @@ fn prj_remote(root: &str, name: &str, shortcut: &String) -> (String, String) {
         // Username of remote git service
         // Check environment variable
         let env_git_user = var("PSP_GIT_USER").ok();
-        let username = if let Some(env_git_user) = env_git_user {
+        let mut username = if let Some(env_git_user) = env_git_user {
             env_git_user
         } else {
-            prompt_text(format!("Username of {remote}:").as_str(), "None", "None")
+            prompt_text(
+                format!("Username of {remote}:").as_str(),
+                "None",
+                "The username must not be empty",
+            )
         };
+        while username.is_empty() {
+            username = prompt_text(
+                format!("Username of {remote}:").as_str(),
+                "None",
+                "The username must not be empty",
+            );
+        }
         if username.is_empty() {
             eprintln!("error: the username must be not empty");
             return (git_remote, git_user);
