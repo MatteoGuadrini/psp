@@ -948,10 +948,6 @@ fn prj_remote(root: &str, name: &str, shortcut: &String) -> (String, String) {
                 "The username must not be empty",
             );
         }
-        if username.is_empty() {
-            eprintln!("error: the username must be not empty");
-            return (git_remote, git_user);
-        }
         git_remote = remote.to_owned();
         git_user = username.to_owned();
         // Add a git remote path
