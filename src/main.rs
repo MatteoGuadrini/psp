@@ -84,6 +84,19 @@ fn make_file(file: &str, content: String) -> std::io::Result<()> {
     }
 }
 
+fn get_python_version() -> String {
+    let mut python = make_command(PYTHON_BIN, ".", ".", vec!["--version".to_string()], false);
+    let output = python
+        .output()
+        .expect(format!("{PYTHON_BIN} should be installed").as_str());
+    let version = str::from_utf8(&output.stdout)
+        .unwrap()
+        .replace("Python", "")
+        .replace(" ", "")
+        .replace("\n", "");
+    format!("{}", &version[..4])
+}
+
 // Function for prompt text
 fn prompt_text(question: &str, default: &str, help: &str) -> String {
     let answer = if help != "None" && default != "None" {
