@@ -346,11 +346,10 @@ fn prj_git(name: &str, shortcut: &String) -> bool {
         prompt_confirm("Do you want to start git repository?", true, "None")
     };
     if confirm {
-        let output = std::process::Command::new("git")
-            .arg("init")
-            .current_dir(name)
+        let mut git = make_command("git", name, name, vec!["init".to_string()], false);
+        let output = git
             .output()
-            .expect("git should be installed");
+            .expect(format!("git should be installed").as_str());
         // Check if command exit successfully
         if !output.status.success() {
             eprintln!("error: something wrong with `git init`");
@@ -652,9 +651,14 @@ fn prj_venv(name: &str, shortcut: &String) -> bool {
         prompt_confirm("Do you want to create a virtual environment?", true, "None")
     };
     if confirm {
-        let output = std::process::Command::new(PYTHON_BIN)
-            .args(["-m", "venv", "venv"])
-            .current_dir(name)
+        let mut python = make_command(
+            PYTHON_BIN,
+            name,
+            name,
+            vec!["-m".to_string(), "venv".to_string(), "venv".to_string()],
+            false,
+        );
+        let output = python
             .output()
             .expect(format!("{PYTHON_BIN} should be installed").as_str());
         // Check if command exit successfully
