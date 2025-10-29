@@ -817,7 +817,7 @@ license = {{text = '{}'}}
 authors = [{{name = '{username}', email = '{email}'}}]
 maintainers = [{{name = '{username}', email = '{email}'}}]
 description = 'A simple but structured Python project'
-requires-python = '>=3.14'
+requires-python = '>={}'
 classifiers = {:?}
 dependencies = {}
 
@@ -829,6 +829,7 @@ changelog = '{changelog}'
 ",
         name.to_lowercase(),
         license,
+        get_python_version(),
         classifiers,
         requirements
     );
