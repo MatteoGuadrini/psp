@@ -1293,7 +1293,7 @@ fn prj_tox(name: &str, venv: bool, deps: &Vec<String>, shortcut: &String) {
             "# {SIGNATURE}, version {VERSION}
 
 [tox]
-envlist = py311, py312, py313
+envlist = {}
 isolated_build = True
 
 [testenv]
@@ -1302,6 +1302,7 @@ deps=
     pytest
 {}
 commands = pytest tests",
+            format!("py{}", get_python_version().replace(".", "")),
             deps.iter()
                 .map(|s| if s != "No" {
                     format!("\t{s}")
