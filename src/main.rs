@@ -347,9 +347,7 @@ fn prj_git(name: &str, shortcut: &String) -> bool {
     };
     if confirm {
         let mut git = make_command("git", name, name, vec!["init".to_string()], false);
-        let output = git
-            .output()
-            .expect(format!("git should be installed").as_str());
+        let output = git.output().expect("git should be installed");
         // Check if command exit successfully
         if !output.status.success() {
             eprintln!("error: something wrong with `git init`");
@@ -1634,16 +1632,18 @@ fn prj_license(name: &str, shortcut: &String) -> String {
         prompt_select("Select license:", options, "None")
     };
     let mut license_url = String::new();
+    let repo_license =
+        "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/main/licenses";
     if license.to_lowercase() == "mit" {
-        license_url.push_str("https://www.mit.edu/~amini/LICENSE.md")
+        license_url.push_str(format!("{repo_license}/mit.md").as_str())
     } else if license.to_lowercase() == "apache" {
-        license_url.push_str("https://www.apache.org/licenses/LICENSE-2.0.txt")
+        license_url.push_str(format!("{repo_license}/apache.md").as_str())
     } else if license.to_lowercase() == "creative commons" || license.to_lowercase() == "cc" {
-        license_url.push_str("https://creativecommons.org/licenses/by/4.0/legalcode.txt")
+        license_url.push_str(format!("{repo_license}/cc.md").as_str())
     } else if license.to_lowercase() == "mozilla" {
-        license_url.push_str("https://www.mozilla.org/media/MPL/2.0/index.f75d2927d3c1.txt")
+        license_url.push_str(format!("{repo_license}/mozilla.md").as_str())
     } else if license.to_lowercase() == "gnu public license" || license.to_lowercase() == "gpl" {
-        license_url.push_str("https://www.gnu.org/licenses/gpl-3.0.md")
+        license_url.push_str(format!("{repo_license}/gplv3.md").as_str())
     } else if license.as_str().to_lowercase() != "none" {
         println!(
             "warning: `{}` is not recognized as a valid license",
