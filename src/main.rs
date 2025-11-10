@@ -89,7 +89,7 @@ fn get_python_version() -> String {
     let output = python
         .output()
         .expect(format!("{PYTHON_BIN} should be installed").as_str());
-    let version = str::from_utf8(&output.stdout)
+    let version = std::str::from_utf8(&output.stdout)
         .unwrap()
         .replace("Python", "")
         .replace(" ", "")
