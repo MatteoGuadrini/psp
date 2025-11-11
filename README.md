@@ -242,9 +242,22 @@ git clone https://github.com/MatteoGuadrini/psp.git
 cd psp && cargo build --release && sudo cp -v target/release/psp /usr/bin/psp && chmod +x /usr/bin/psp
 ```
 
+## Docker/Podman
+
+If you want to use `psp` in a containerized environment, follow this:
+
+```console
+# Clone...
+git clone https://github.com/MatteoGuadrini/psp.git
+# Build...
+cd psp && docker build . -t psp:latest
+# Run...
+docker run -it --rm -v ~/python_projects:/psp:z localhost/psp:latest
+```
+
 ## 🧰 Next features
 - [x] `windows` operating system support
-- [ ] Container support for psp program
+- [x] Container support for psp program
 - [ ] `conda`, `uv` and `poetry` support
 - [ ] `hatch` support
 - [ ] `docker-compose` and `kubernetes` support
