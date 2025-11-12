@@ -568,6 +568,13 @@ fn prj_test(root: &str, name: &str, shortcut: &String) -> bool {
         prompt_confirm("Do you want unit test files?", true, "None")
     };
     if confirm {
+        // Check version of Python project
+        let env_pyver = var("PSP_PYVER").ok();
+        let pyver = if let Some(ver) = env_pyver {
+            ver
+        } else {
+            "0.0.1".to_string()
+        };
         let project_name = name.to_lowercase();
         // Make directories structure
         let tests_dir = Path::new(root).join("tests");
@@ -611,13 +618,13 @@ from {project_name} import __version__
 class TestAll(unittest.TestCase):
 
     def test_all(self):
-        self.assertEqual(__version__, '0.0.1')
+        self.assertEqual(__version__, '{pyver}')
         print('Test all {project_name} successfully!')
 
 
 # Test functions for pytest
 def test_all():
-    assert __version__ == '0.0.1'
+    assert __version__ == '{pyver}'
 
 
 if __name__ == '__main__':
