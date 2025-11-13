@@ -282,6 +282,13 @@ fn prj_name() -> (String, String) {
     if let Err(e) = dir_ret {
         eprintln!("error: {}", e);
     }
+    // Check version of Python project
+    let env_pyver = var("PSP_PYVER").ok();
+    let pyver = if let Some(ver) = env_pyver {
+        ver
+    } else {
+        "0.0.1".to_string()
+    };
     // Make file structures
     let init_file = package.join("__init__.py");
     let file_ret = make_file(
@@ -292,7 +299,7 @@ fn prj_name() -> (String, String) {
 # vim: se ts=4 et syn=python:
 # {SIGNATURE}, version {VERSION}
 
-__version__ = '0.0.1'
+__version__ = '{pyver}'
 "
         ),
     );
