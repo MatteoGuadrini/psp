@@ -177,6 +177,12 @@ sudo pacman -Qi python3 python3-pip git curl
 
 ## 💿 Installation
 
+To install with `pip`:
+```console
+pip install psp-scaffold
+```
+
+
 To install compiled file into your machine, download it:
 
 ### Linux
