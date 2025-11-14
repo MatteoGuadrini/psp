@@ -814,6 +814,13 @@ fn prj_toml(
         license = "GNU General Public License v3 (GPLv3)".to_string();
         classifiers.push("License :: OSI Approved :: GNU General Public License v3 (GPLv3)")
     }
+    // Check version of Python project
+    let env_pyver = var("PSP_PYVER").ok();
+    let pyver = if let Some(ver) = env_pyver {
+        ver
+    } else {
+        "0.0.1".to_string()
+    };
     let content = format!(
         "# {SIGNATURE}, version {VERSION}
 
@@ -823,7 +830,7 @@ build-backend = 'setuptools.build_meta'
 
 [project]
 name = '{}'
-version = '0.0.1'
+version = '{pyver}'
 readme = 'README.md'
 license = {{text = '{}'}}
 authors = [{{name = '{username}', email = '{email}'}}]
