@@ -4,6 +4,7 @@ use std::{
     env::{args, var},
     fs::{create_dir_all, remove_dir_all, File},
     io::Write,
+    os::unix::fs::symlink,
     path::{absolute, Path},
     process::exit,
 };
@@ -1450,6 +1451,11 @@ fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) {
                 "warning: `{}` is not recognized as documentation generator",
                 docs
             )
+        }
+        // Link requirements
+        let requirements_file = Path::new(root).join("requirements.txt");
+        if requirements_file.exists() {
+            symlink(requirements_file, docs_home.join("requirements.txt")).ok();
         }
     }
 }
