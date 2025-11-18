@@ -32,6 +32,11 @@ You can configure two files for configure these environment variables:
 | `PSP_PYPI`        | [PyPi dependencies](simple.md#pypi-dependencies)           | `true|false`                   |
 | `PSP_CONTAINER`   | [Containers](simple.md#dockerpodman)                       | `true|false`                   |
 
+## Python variables
+
+| **NAME**          | **REFERENCE**                                              | **VALUE**                      |
+|-------------------|------------------------------------------------------------|--------------------------------|
+| `PSP_PYVER`       | Python project's version                                   | `0.0.1`                        |
 
 ## Examples
 
