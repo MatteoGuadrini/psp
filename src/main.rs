@@ -772,8 +772,15 @@ fn prj_toml(
     let mut documentation = "https://docs.python.org/3/".to_string();
     let mut repository = "https://github.com/python".to_string();
     let mut changelog = "https://docs.python.org/3/whatsnew/changelog.html".to_string();
-    let mut username = "psp".to_string();
-    let mut email = "psp@python.com".to_string();
+    // Check author of Python project
+    let env_pyauthor = var("PSP_PYAUTHOR").ok();
+    let pyauthor = if let Some(author) = env_pyauthor {
+        author
+    } else {
+        "psp@python.com".to_string()
+    };
+    let mut email = pyauthor;
+    let mut username = email.split("@").collect::<Vec<&str>>()[0].to_string();
     if git_info.0 != "None" && git_info.1 != "None" {
         let git_repo = &git_info.0.to_lowercase();
         let git_user = &git_info.1.to_lowercase();
@@ -784,8 +791,10 @@ fn prj_toml(
             name.to_lowercase()
         );
         changelog = format!("{}/CHANGES.md", &repository);
-        username = format!("{}", git_user);
-        email = format!("{}@{}.com", git_user, git_repo);
+        if email == "psp@python.com" {
+            username = format!("{}", git_user);
+            email = format!("{}@{}.com", git_user, git_repo);
+        }
         homepage = format!("https://{}.org/", name.to_lowercase());
         documentation = format!("https://docs.{}.org/", name.to_lowercase());
     }

@@ -37,6 +37,7 @@ You can configure two files for configure these environment variables:
 | **NAME**          | **REFERENCE**                                              | **VALUE**                      |
 |-------------------|------------------------------------------------------------|--------------------------------|
 | `PSP_PYVER`       | Python project's version                                   | `0.0.1`                        |
+| `PSP_PYAUTHOR`    | Python project's author                                    | `matteo.guadrini@github.io`    |
 
 ## Examples
 
