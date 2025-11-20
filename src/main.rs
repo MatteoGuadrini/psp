@@ -768,7 +768,6 @@ fn prj_toml(
     mut license: String,
 ) {
     // Check git information
-    let mut homepage = "https://python.org/".to_string();
     let mut documentation = "https://docs.python.org/3/".to_string();
     let mut repository = "https://github.com/python".to_string();
     let mut changelog = "https://docs.python.org/3/whatsnew/changelog.html".to_string();
@@ -779,6 +778,14 @@ fn prj_toml(
     } else {
         "psp@python.com".to_string()
     };
+    // Check homepage of Python project
+    let env_pyhomepage = var("PSP_PYHOMEPAGE").ok();
+    let pyhomepage = if let Some(homepage) = env_pyhomepage {
+        homepage
+    } else {
+        "https://python.org/".to_string()
+    };
+    let mut homepage = pyhomepage;
     let mut email = pyauthor;
     let mut username = email.split("@").collect::<Vec<&str>>()[0].to_string();
     if git_info.0 != "None" && git_info.1 != "None" {
@@ -790,12 +797,14 @@ fn prj_toml(
             git_user,
             name.to_lowercase()
         );
-        changelog = format!("{}/CHANGES.md", &repository);
+        changelog = format!("{}/blob/main/CHANGES.md", &repository);
         if email == "psp@python.com" {
             username = format!("{}", git_user);
             email = format!("{}@{}.com", git_user, git_repo);
         }
-        homepage = format!("https://{}.org/", name.to_lowercase());
+        if homepage == "https://python.org/" {
+            homepage = format!("https://{}.org/", name.to_lowercase());
+        }
         documentation = format!("https://docs.{}.org/", name.to_lowercase());
     }
     let mut classifiers = vec!["Programming Language :: Python :: 3"];
