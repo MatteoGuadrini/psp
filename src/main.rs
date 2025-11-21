@@ -785,6 +785,14 @@ fn prj_toml(
     } else {
         "https://python.org/".to_string()
     };
+    // Check description of Python project
+    let env_pydescription = var("PSP_PYDESC").ok();
+    let pydescription = if let Some(description) = env_pydescription {
+        description
+    } else {
+        format!("{} Python package", name.to_lowercase())
+    };
+    let description = pydescription;
     let mut homepage = pyhomepage;
     let mut email = pyauthor;
     let mut username = email.split("@").collect::<Vec<&str>>()[0].to_string();
@@ -854,7 +862,7 @@ readme = 'README.md'
 license = {{text = '{}'}}
 authors = [{{name = '{username}', email = '{email}'}}]
 maintainers = [{{name = '{username}', email = '{email}'}}]
-description = 'A simple but structured Python project'
+description = '{description}'
 requires-python = '>={}'
 classifiers = {:?}
 dependencies = {}
