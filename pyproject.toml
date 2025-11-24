@@ -1,19 +1,19 @@
 [project]
 name = "psp_scaffold"
-version = "0.3.0"
+version = "0.3.1"
 description = "psp (Python Scaffolding Projects)"
 authors = [{ name = "matteoguadrini", email = "matteo.guadrini@hotmail.it" }]
+maintainers = [{ name = "matteoguadrini", email = "matteo.guadrini@hotmail.it" }]
 requires-python = ">=3.8"
-keywords = ["scaffold", "tool", "python", "package", "library"]
+keywords = ["scaffold", "tool", "python", "package", "library", "project"]
 readme = "README.md"
 license = { file = "LICENSE.md" }
 classifiers = [
   "Environment :: Console",
   "Intended Audience :: Developers",
   "Operating System :: OS Independent",
-  "License :: OSI Approved :: MIT License",
-  "Programming Language :: Rust",
-  "Topic :: Software Development :: Quality Assurance"
+  "License :: OSI Approved :: Apache Software License",
+  "Programming Language :: Rust"
 ]
 
 [project.urls]
