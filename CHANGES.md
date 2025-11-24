@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.3.1] - 2025-11-24
+
+### Added
+- Add new `PSP_PY*` variables for `pyproject.toml`
+
+### Changed
+- Add current Python version to help message
+- Change licenses repository to https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/main/licenses
+
+### Fixed
+- Fix the insertion of new path into `join_env_path` function
+
 ## [0.3.0] - 2025-10-20
 
 ### Added
