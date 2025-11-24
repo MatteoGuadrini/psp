@@ -19,7 +19,7 @@
 - 🐳 Create `Dockerfile` and `Containerfile` for your project
 - 💡 Can use _quick_, _simple_ and _full_ argument for rapid configuration
 - 💾 Create `$HOME/.psp.env` and `$PWD/.env` files with your customizations
-- 🎛️ Can use some `PSP_` variables to control your defaults
+- 🎛️ Can use some [`PSP_`](https://psp.readthedocs.io/en/latest/env/) variables to control your defaults
 
 ## 🚀 Get Started in 30 Seconds
 
@@ -260,6 +260,16 @@ cd psp && docker build . -t psp:latest
 # Run...
 docker run -it --rm -v ~/python_projects:/psp:z localhost/psp:latest
 ```
+
+You can use `.env` files and environment variables:
+
+```console
+# .env file
+docker run -it --rm -v ~/python_projects:/psp:z -v ~/python_projects/.env:/psp/.env localhost/psp:latest
+# PSP_ environment variables
+docker run -it --rm -v ~/python_projects:/psp:z -e "PSP_GIT=true" -e "PSP_PYVER=1.0.0" localhost/psp:latest
+```
+
 
 ## 🧰 Next features
 - [x] `windows` operating system support
