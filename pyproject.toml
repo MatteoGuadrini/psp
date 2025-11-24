@@ -1,0 +1,30 @@
+[project]
+name = "psp_scaffold"
+version = "0.3.1"
+description = "psp (Python Scaffolding Projects)"
+authors = [{ name = "matteoguadrini", email = "matteo.guadrini@hotmail.it" }]
+maintainers = [{ name = "matteoguadrini", email = "matteo.guadrini@hotmail.it" }]
+requires-python = ">=3.8"
+keywords = ["scaffold", "tool", "python", "package", "library", "project"]
+readme = "README.md"
+license = { file = "LICENSE.md" }
+classifiers = [
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "License :: OSI Approved :: Apache Software License",
+  "Programming Language :: Rust"
+]
+
+[project.urls]
+homepage = 'https://matteoguadrini.github.io/psp/'
+documentation = 'https://psp.readthedocs.io/en/latest/'
+repository = 'https://github.com/matteoguadrini/psp'
+changelog = 'https://github.com/MatteoGuadrini/psp/blob/main/CHANGES.md'
+
+[build-system]
+requires = ["maturin>=1.0,<2.0"]
+build-backend = "maturin"
+
+[tool.maturin]
+bindings = "bin"
