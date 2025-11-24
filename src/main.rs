@@ -167,7 +167,11 @@ links:
     documentation:  https://psp.readthedocs.io/
 
 variables:
-    {psp_vars:?}"
+    {psp_vars:?}
+
+environments:
+    Python version: {}",
+            get_python_version()
         );
     }
     exit(exit_code)
