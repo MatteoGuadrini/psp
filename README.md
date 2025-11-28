@@ -180,15 +180,18 @@ sudo pacman -Qi python3 python3-pip git curl
 
 ## 💿 Installation
 
+### 🐍 Python
+
 To install with `pip`:
 ```console
 pip install psp-scaffold
 ```
 
+### Binary file
 
 To install compiled file into your machine, download it:
 
-### Linux
+#### Linux
 
 For **all users** (required root access):
 ```console
@@ -203,7 +206,7 @@ curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.3.1/psp_linux
 chmod +x $HOME/.local/bin/psp
 ```
 
-### MacOS
+#### MacOS
 
 ```console
 sudo su -
@@ -211,7 +214,7 @@ curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.3.1/psp_macos
 chmod +x /usr/bin/psp
 ```
 
-### Windows
+#### Windows
 
 For **all users** (required Administrator):
 ```powershell
@@ -249,6 +252,21 @@ Instead, if you compile this project as own, follow this steps:
 ```console
 git clone https://github.com/MatteoGuadrini/psp.git
 cd psp && cargo build --release && sudo cp -v target/release/psp /usr/bin/psp && chmod +x /usr/bin/psp
+```
+
+or build with script:
+
+```console
+git clone https://github.com/MatteoGuadrini/psp.git
+cd psp 
+# Build
+./build_psp.sh
+# Copy binary
+sudo cp -v target/release/psp /usr/bin/psp && chmod +x /usr/bin/psp
+# Install rpm
+sudo rpm -i /tmp/psp_rpm/psp.rpm
+# Instal deb
+sudo dpkg -i /tmp/psp_deb/psp.deb
 ```
 
 ## Docker/Podman
