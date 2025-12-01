@@ -2,7 +2,7 @@ use dotenv::dotenv;
 use inquire::{Confirm, Select, Text};
 use std::{
     env::{args, var},
-    fs::{create_dir_all, remove_dir_all, File},
+    fs::{create_dir_all, read_to_string, remove_dir_all, File},
     io::Write,
     path::{absolute, Path},
     process::exit,
@@ -1672,7 +1672,7 @@ Feel free to ask questions via issues, discussions, or mail.
 }
 
 // Project license
-fn prj_license(name: &str, shortcut: &String) -> String {
+fn prj_license(name: &str, shortcut: &String, author: &String) -> String {
     // Select license
     let options = vec![
         "None",
@@ -1743,6 +1743,20 @@ fn prj_license(name: &str, shortcut: &String) -> String {
         // Check if command exit successfully
         if !output.status.success() {
             eprintln!("error: `LICENSE` download failed from `{license_url}`");
+        }
+        // Check author
+        if author != &String::from("None") {
+            let license_path = Path::new(name).join("LICENSE.md");
+            let license_string = read_to_string(license_path.as_path())
+                .unwrap()
+                .replace("{author}", author);
+            let license_file = make_file(
+                format!("{}", license_path.display()).as_str(),
+                license_string.to_owned(),
+            );
+            if let Err(e) = license_file {
+                eprintln!("error: {}", e);
+            }
         }
     }
     license
@@ -2069,7 +2083,7 @@ fn main() {
         prj_ci(&root, &deps, &shortcut);
     }
     // License
-    let license = prj_license(&root, &shortcut);
+    let license = prj_license(&root, &shortcut, &git_info.1);
     // Build dependencies
     let build = prj_pypi(&root, venv, &shortcut);
     // Write pyproject.toml
