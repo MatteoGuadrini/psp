@@ -97,6 +97,42 @@ fn get_python_version() -> String {
     format!("{}", &version[..4])
 }
 
+fn get_file_from_url(url: &str, start_path: &str, output_file: &str) {
+    #[cfg(any(target_os = "linux", target_os = "macos"))]
+    let command = "curl";
+    #[cfg(target_os = "windows")]
+    let command = "powershell.exe";
+    #[cfg(any(target_os = "linux", target_os = "macos"))]
+    let command_args = vec![
+        format!("-o{output_file}"),
+        "-k".to_string(),
+        "--connect-timeout".to_string(),
+        "10".to_string(),
+        url.to_string(),
+    ];
+    #[cfg(target_os = "windows")]
+    let command_args = vec![
+        "-NoProfile".to_string(),
+        "-ExecutionPolicy".to_string(),
+        "Bypass".to_string(),
+        "-Command".to_string(),
+        "iwr".to_string(),
+        "-TimeoutSec".to_string(),
+        "10".to_string(),
+        "-OutFile".to_string(),
+        format!("{output_file}"),
+        url.to_string(),
+    ];
+    let mut downloader = make_command(command, ".", start_path, command_args, false);
+    let output = downloader
+        .output()
+        .expect(format!("{command} should be installed").as_str());
+    // Check if command exit successfully
+    if !output.status.success() {
+        eprintln!("error: `{output_file}` download failed from `{url}`");
+    }
+}
+
 // Function for prompt text
 fn prompt_text(question: &str, default: &str, help: &str) -> String {
     let answer = if help != "None" && default != "None" {
@@ -1633,41 +1669,11 @@ Feel free to ask questions via issues, discussions, or mail.
             eprintln!("error: {}", e);
         }
         // Create CODE_OF_CONDUCT
-        let conduct_url =
-            "https://www.contributor-covenant.org/version/2/1/code_of_conduct/code_of_conduct.md";
-        #[cfg(any(target_os = "linux", target_os = "macos"))]
-        let command = "curl";
-        #[cfg(target_os = "windows")]
-        let command = "powershell.exe";
-        #[cfg(any(target_os = "linux", target_os = "macos"))]
-        let command_args = vec![
-            "-oCODE_OF_CONDUCT.md".to_string(),
-            "-k".to_string(),
-            "--connect-timeout".to_string(),
-            "10".to_string(),
-            conduct_url.to_string(),
-        ];
-        #[cfg(target_os = "windows")]
-        let command_args = vec![
-            "-NoProfile".to_string(),
-            "-ExecutionPolicy".to_string(),
-            "Bypass".to_string(),
-            "-Command".to_string(),
-            "iwr".to_string(),
-            "-TimeoutSec".to_string(),
-            "10".to_string(),
-            "-OutFile".to_string(),
-            "CODE_OF_CONDUCT.md".to_string(),
-            conduct_url.to_string(),
-        ];
-        let mut downloader = make_command(command, root, root, command_args, false);
-        let output = downloader
-            .output()
-            .expect(format!("{command} should be installed").as_str());
-        // Check if command exit successfully
-        if !output.status.success() {
-            eprintln!("error: `CODE_OF_CONDUCT` download failed from `{conduct_url}`");
-        }
+        get_file_from_url(
+            "https://www.contributor-covenant.org/version/2/1/code_of_conduct/code_of_conduct.md",
+            root,
+            "CODE_OF_CONDUCT.md",
+        );
     }
 }
 
