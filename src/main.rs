@@ -1675,6 +1675,33 @@ Feel free to ask questions via issues, discussions, or mail.
             "CODE_OF_CONDUCT.md",
         );
     }
+    // Create samples folder
+    let sample_dir = Path::new(root).join("samples");
+    let dir_ret = make_dirs(sample_dir.display().to_string().as_str());
+    if let Err(e) = dir_ret {
+        eprintln!("error: {}", e);
+    }
+    // Create sample files
+    let sample_file = Path::new(&sample_dir).join(format!("{name}_sample.py"));
+    let sample = make_file(
+        sample_file.display().to_string().as_str(),
+        format!(
+            "#! /usr/bin/env python3
+# -*- encoding: utf-8 -*-
+# vim: se ts=4 et syn=python:
+# {SIGNATURE}, version {VERSION}
+
+import sys
+from test import __version__
+sys.path.append('..')
+
+print(f'WARNING: this is a sample file of {name} package, version {{__version__}}')
+"
+        ),
+    );
+    if let Err(e) = sample {
+        eprintln!("error: {}", e);
+    }
 }
 
 // Project license
