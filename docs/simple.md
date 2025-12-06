@@ -607,10 +607,12 @@ mypyprj
 ├── Makefile
 ├── .circleci
 │   └── ...
-├── README.md           ┐
-├── CONTRIBUTING.md     │ Common
-├── CODE_OF_CONDUCT.md  │ files
-└── CHANGES.md          ┘
+├── samples                 ┐
+│   └── mypyprj_sample.py   │
+├── README.md               │ Common
+├── CONTRIBUTING.md         │ files
+├── CODE_OF_CONDUCT.md      │ 
+└── CHANGES.md              ┘
 ```
 
 !!! note

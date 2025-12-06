@@ -30,8 +30,8 @@
 The result is:
 
 ```console
-$> tree test/ --filelimit=19 -a
-test                    # Project folder
+$> tree wtf/ --filelimit=19 -a
+wtf                     # Project folder
 ├── LICENSE.md          # License file
 ├── pyproject.toml      # Python package configuration file
 ├── README.md           # Readme file
@@ -77,12 +77,14 @@ test                    # Project folder
 ├── .gitignore          # Git ignore file
 ├── .dockerignore       # Docker ignore file
 ├── .containerignore    # Container ignore file
-├── test                # Python package
+├── wtf                 # Python package
 │   └── __init__.py
 ├── tests               # Tests package for modules
 │   ├── __init__.py
-│   └── test_test.py    # Test module "test_<name_python_package>"
+│   └── test_wtf.py     # Test module "test_<name_python_package>"
 ├── tox.ini             # Tox configuration files
+├── samples
+│   └── wtf_sample.py   # Sample code of package "<name_python_package>_sample"
 └── venv                # Virtual environment
     ├── bin  [33 entries exceeds filelimit, not opening dir]
     ├── include
