@@ -1467,6 +1467,13 @@ fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) {
                 eprintln!("error: `sphinx` installation failed");
                 return;
             }
+            // Check version of Python project
+            let env_pyver = var("PSP_PYVER").ok();
+            let pyver = if let Some(ver) = env_pyver {
+                ver
+            } else {
+                "0.0.1".to_string()
+            };
             // Start documentation
             #[cfg(any(target_os = "linux", target_os = "macos"))]
             let sphinx_bin = "sphinx-quickstart";
@@ -1477,7 +1484,7 @@ fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) {
                 "--sep".to_string(),
                 format!("--project={}", name.to_lowercase()),
                 "--author=''".to_string(),
-                "-v='0.0.1'".to_string(),
+                format!("-v='{pyver}'"),
                 "--ext-autodoc".to_string(),
                 "--ext-doctest".to_string(),
                 "--ext-viewcode".to_string(),
@@ -1565,6 +1572,13 @@ fn prj_files(root: &str, name: &str, container: bool, shortcut: &String) {
         )
     };
     if confirm {
+        // Check version of Python project
+        let env_pyver = var("PSP_PYVER").ok();
+        let pyver = if let Some(ver) = env_pyver {
+            ver
+        } else {
+            "0.0.1".to_string()
+        };
         // Create README
         let mut readme_content = format!(
             "<!-- {SIGNATURE}, version {VERSION} -->
@@ -1598,8 +1612,8 @@ import {name}
 To containerize `{name}`, follow this:
 
 ```console
-docker build . -t {name}:0.0.1
-docker tag {name}:0.0.1 {name}:latest
+docker build . -t {name}:{pyver}
+docker tag {name}:{pyver} {name}:latest
 docker run {name}
 ```
 
@@ -1627,7 +1641,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
-## [0.0.1] - 1970-01-01
+## [{pyver}] - 1970-01-01
 
 ### Added
 - Start **{name}** project
