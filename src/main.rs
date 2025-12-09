@@ -274,6 +274,18 @@ fn make_command(
     command
 }
 
+// Function to get project version
+fn project_version() -> String {
+    // Check version of Python project
+    let env_version = var("PSP_PYVER").ok();
+    let version = if let Some(ver) = env_version {
+        ver
+    } else {
+        "0.0.1".to_string()
+    };
+    version
+}
+
 // Function check other package manager
 fn check_pm(pm: &str) -> bool {
     // Check if tool is supported
@@ -341,12 +353,7 @@ fn prj_name() -> (String, String) {
         eprintln!("error: {}", e);
     }
     // Check version of Python project
-    let env_pyver = var("PSP_PYVER").ok();
-    let pyver = if let Some(ver) = env_pyver {
-        ver
-    } else {
-        "0.0.1".to_string()
-    };
+    let pyver = project_version();
     // Make file structures
     let init_file = package.join("__init__.py");
     let file_ret = make_file(
@@ -634,12 +641,7 @@ fn prj_test(root: &str, name: &str, shortcut: &String) -> bool {
     };
     if confirm {
         // Check version of Python project
-        let env_pyver = var("PSP_PYVER").ok();
-        let pyver = if let Some(ver) = env_pyver {
-            ver
-        } else {
-            "0.0.1".to_string()
-        };
+        let pyver = project_version();
         let project_name = name.to_lowercase();
         // Make directories structure
         let tests_dir = Path::new(root).join("tests");
@@ -899,12 +901,7 @@ fn prj_toml(
         classifiers.push("License :: OSI Approved :: GNU General Public License v3 (GPLv3)")
     }
     // Check version of Python project
-    let env_pyver = var("PSP_PYVER").ok();
-    let pyver = if let Some(ver) = env_pyver {
-        ver
-    } else {
-        "0.0.1".to_string()
-    };
+    let pyver = project_version();
     let content = format!(
         "# {SIGNATURE}, version {VERSION}
 
@@ -1468,12 +1465,7 @@ fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) {
                 return;
             }
             // Check version of Python project
-            let env_pyver = var("PSP_PYVER").ok();
-            let pyver = if let Some(ver) = env_pyver {
-                ver
-            } else {
-                "0.0.1".to_string()
-            };
+            let pyver = project_version();
             // Start documentation
             #[cfg(any(target_os = "linux", target_os = "macos"))]
             let sphinx_bin = "sphinx-quickstart";
@@ -1573,12 +1565,7 @@ fn prj_files(root: &str, name: &str, container: bool, shortcut: &String) {
     };
     if confirm {
         // Check version of Python project
-        let env_pyver = var("PSP_PYVER").ok();
-        let pyver = if let Some(ver) = env_pyver {
-            ver
-        } else {
-            "0.0.1".to_string()
-        };
+        let pyver = project_version();
         // Create README
         let mut readme_content = format!(
             "<!-- {SIGNATURE}, version {VERSION} -->
