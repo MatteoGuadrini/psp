@@ -288,17 +288,72 @@ fn project_version() -> String {
 
 // Function check other package manager
 fn check_pm(pm: &str) -> bool {
-    // Check if tool is supported
-    if !SUPPORTED_PM.contains(&pm) {
-        eprintln!("error: tool `{pm}` is not supported");
+    // Check if package manager is supported
+    if pm != PIP_BIN && !SUPPORTED_PM.contains(&pm) {
+        eprintln!("error: package manager `{pm}` is not supported");
         return false;
     }
-    // Check if tool is avalaible
+    // Check if package manager is avalaible
     if !check_tool(pm) {
-        eprintln!("error: tool `{pm}` is not installed");
+        eprintln!("error: package manager `{pm}` is not installed");
         return false;
     }
     true
+}
+
+// Function make package manager command
+fn make_pm(
+    pm: &str,
+    root: &str,
+    start_path: &str,
+    pkgs: Vec<String>,
+    venv: bool,
+) -> std::process::Command {
+    // Define binary for package manager
+    let bin = if pm.to_lowercase() == "conda" {
+        #[cfg(any(target_os = "linux", target_os = "macos"))]
+        let bin = "conda";
+        #[cfg(target_os = "windows")]
+        let bin = "conda.exe";
+        bin
+    } else if pm.to_lowercase() == "poetry" {
+        #[cfg(any(target_os = "linux", target_os = "macos"))]
+        let bin = "poetry";
+        #[cfg(target_os = "windows")]
+        let bin = "poetry.exe";
+        bin
+    } else if pm.to_lowercase() == "uv" {
+        #[cfg(any(target_os = "linux", target_os = "macos"))]
+        let bin = "uv";
+        #[cfg(target_os = "windows")]
+        let bin = "uv.exe";
+        bin
+    } else {
+        let bin = PIP_BIN;
+        bin
+    };
+    // Define arguments for package manager
+    let mut args: Vec<String> = vec![];
+    if pm.to_lowercase() == "conda" {
+        args.extend(vec!["install".to_string()]);
+    } else if pm.to_lowercase() == "poetry" {
+        args.extend(vec!["add".to_string(), "--no-interaction".to_string()]);
+    } else if pm.to_lowercase() == "uv" {
+        args.extend(vec!["pip".to_string(), "install".to_string()]);
+    } else {
+        args.extend(vec![
+            "install".to_string(),
+            "--timeout=10".to_string(),
+            "--retries=1".to_string(),
+        ]);
+    }
+    args.extend(pkgs.clone());
+    // Check if package manager is supported and installed
+    if !check_pm(bin) {
+        println!("warning: fallback package manager to `{PIP_BIN}`")
+    }
+    // Make command
+    make_command(bin, root, start_path, args, venv)
 }
 
 // Core functions
@@ -745,9 +800,10 @@ fn prj_venv(name: &str, shortcut: &String) -> bool {
 
 // Project dependencies
 fn prj_deps(name: &str, venv: bool, shortcut: &String) -> Vec<String> {
-    // Check environment variable
+    // Check environment variableS
     let env_common_deps = var("PSP_COMMON_DEPS").ok();
     let env_deps = var("PSP_DEPS").ok();
+    let env_pm = var("PSP_PACKAGE_MANAGER").ok();
     let deps = if let Some(env_deps) = env_deps {
         env_deps
     } else if shortcut == "simple" || shortcut == "quick" {
@@ -783,16 +839,15 @@ fn prj_deps(name: &str, venv: bool, shortcut: &String) -> Vec<String> {
         dependencies.extend(common_dependencies);
     }
     if !dependencies.is_empty() {
-        let mut args = vec![
-            "install".to_string(),
-            "--timeout=10".to_string(),
-            "--retries=1".to_string(),
-        ];
-        args.extend(dependencies.clone());
-        let mut pip = make_command(PIP_BIN, name, name, args, venv);
+        let bin = if let Some(env_pm) = &env_pm {
+            env_pm.as_str()
+        } else {
+            PIP_BIN
+        };
+        let mut pip = make_pm(bin, name, name, dependencies.clone(), venv);
         let output = pip
             .output()
-            .expect(format!("{PIP_BIN} should be installed").as_str());
+            .expect(format!("{bin} should be installed").as_str());
         // Check if command exit successfully
         if !output.status.success() {
             eprintln!("error: dependencies ({deps}) installation failed");
