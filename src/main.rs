@@ -20,12 +20,12 @@ const PYTHON_BIN: &str = "python3";
 const PIP_BIN: &str = "pip3";
 #[cfg(any(target_os = "linux", target_os = "macos"))]
 const TOOLS: [&str; 4] = ["python3", "git", "pip3", "curl"];
-#[cfg(target_os = "windows")]
-const TOOLS: [&str; 4] = ["python.exe", "git.exe", "pip.exe", "powershell.exe"];
 #[cfg(target_family = "windows")]
 const PYTHON_BIN: &str = "python.exe";
 #[cfg(target_family = "windows")]
 const PIP_BIN: &str = "pip.exe";
+#[cfg(target_os = "windows")]
+const TOOLS: [&str; 4] = ["python.exe", "git.exe", "pip.exe", "powershell.exe"];
 
 // Utility functions
 
@@ -284,6 +284,20 @@ fn project_version() -> String {
         "0.0.1".to_string()
     };
     version
+}
+
+// Function to get author
+fn project_author() -> (String, String) {
+    // Check author of Python project
+    let env_pyauthor = var("PSP_PYAUTHOR").ok();
+    let pyauthor = if let Some(author) = env_pyauthor {
+        author
+    } else {
+        "psp@python.com".to_string()
+    };
+    let email = pyauthor;
+    let username = email.split("@").collect::<Vec<&str>>()[0].to_string();
+    (username, email)
 }
 
 // Function check other package manager
