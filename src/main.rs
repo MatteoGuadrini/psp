@@ -275,7 +275,7 @@ fn make_command(
 }
 
 // Function to get project version
-fn project_version() -> String {
+fn env_pyversion() -> String {
     // Check version of Python project
     let env_version = var("PSP_PYVER").ok();
     let version = if let Some(ver) = env_version {
@@ -287,7 +287,7 @@ fn project_version() -> String {
 }
 
 // Function to get author
-fn project_author() -> (String, String) {
+fn env_pyauthor() -> (String, String) {
     // Check author of Python project
     let env_pyauthor = var("PSP_PYAUTHOR").ok();
     let pyauthor = if let Some(author) = env_pyauthor {
@@ -422,7 +422,7 @@ fn prj_name() -> (String, String) {
         eprintln!("error: {}", e);
     }
     // Check version of Python project
-    let pyver = project_version();
+    let pyver = env_pyversion();
     // Make file structures
     let init_file = package.join("__init__.py");
     let file_ret = make_file(
@@ -710,7 +710,7 @@ fn prj_test(root: &str, name: &str, shortcut: &String) -> bool {
     };
     if confirm {
         // Check version of Python project
-        let pyver = project_version();
+        let pyver = env_pyversion();
         let project_name = name.to_lowercase();
         // Make directories structure
         let tests_dir = Path::new(root).join("tests");
@@ -899,13 +899,6 @@ fn prj_toml(
     let mut documentation = "https://docs.python.org/3/".to_string();
     let mut repository = "https://github.com/python".to_string();
     let mut changelog = "https://docs.python.org/3/whatsnew/changelog.html".to_string();
-    // Check author of Python project
-    let env_pyauthor = var("PSP_PYAUTHOR").ok();
-    let pyauthor = if let Some(author) = env_pyauthor {
-        author
-    } else {
-        "psp@python.com".to_string()
-    };
     // Check homepage of Python project
     let env_pyhomepage = var("PSP_PYHOMEPAGE").ok();
     let pyhomepage = if let Some(homepage) = env_pyhomepage {
@@ -921,9 +914,8 @@ fn prj_toml(
         format!("{} Python package", name.to_lowercase())
     };
     let description = pydescription;
+    let (mut email, mut username) = env_pyauthor();
     let mut homepage = pyhomepage;
-    let mut email = pyauthor;
-    let mut username = email.split("@").collect::<Vec<&str>>()[0].to_string();
     if git_info.0 != "None" && git_info.1 != "None" {
         let git_repo = &git_info.0.to_lowercase();
         let git_user = &git_info.1.to_lowercase();
@@ -970,7 +962,7 @@ fn prj_toml(
         classifiers.push("License :: OSI Approved :: GNU General Public License v3 (GPLv3)")
     }
     // Check version of Python project
-    let pyver = project_version();
+    let pyver = env_pyversion();
     let content = format!(
         "# {SIGNATURE}, version {VERSION}
 
@@ -1534,7 +1526,7 @@ fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) {
                 return;
             }
             // Check version of Python project
-            let pyver = project_version();
+            let pyver = env_pyversion();
             // Start documentation
             #[cfg(any(target_os = "linux", target_os = "macos"))]
             let sphinx_bin = "sphinx-quickstart";
@@ -1634,7 +1626,7 @@ fn prj_files(root: &str, name: &str, container: bool, shortcut: &String) {
     };
     if confirm {
         // Check version of Python project
-        let pyver = project_version();
+        let pyver = env_pyversion();
         // Create README
         let mut readme_content = format!(
             "<!-- {SIGNATURE}, version {VERSION} -->
