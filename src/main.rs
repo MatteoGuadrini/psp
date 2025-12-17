@@ -295,6 +295,9 @@ fn env_pyauthor() -> (String, String) {
     } else {
         "psp@python.com".to_string()
     };
+    if !pyauthor.contains('@') {
+        println!("warning: `PSP_PYAUTHOR` is not a valid email")
+    }
     let email = pyauthor;
     let username = email.split("@").collect::<Vec<&str>>()[0].to_string();
     (username, email)
