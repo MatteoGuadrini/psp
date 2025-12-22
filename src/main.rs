@@ -1827,39 +1827,7 @@ fn prj_license(name: &str, shortcut: &String, author: &String) -> String {
         )
     }
     if !license_url.is_empty() {
-        #[cfg(any(target_os = "linux", target_os = "macos"))]
-        let command = "curl";
-        #[cfg(target_os = "windows")]
-        let command = "powershell.exe";
-        #[cfg(any(target_os = "linux", target_os = "macos"))]
-        let command_args = vec![
-            "-oLICENSE.md".to_string(),
-            "-k".to_string(),
-            "--connect-timeout".to_string(),
-            "10".to_string(),
-            license_url.to_string(),
-        ];
-        #[cfg(target_os = "windows")]
-        let command_args = vec![
-            "-NoProfile".to_string(),
-            "-ExecutionPolicy".to_string(),
-            "Bypass".to_string(),
-            "-Command".to_string(),
-            "iwr".to_string(),
-            "-TimeoutSec".to_string(),
-            "10".to_string(),
-            "-OutFile".to_string(),
-            "LICENSE.md".to_string(),
-            license_url.to_string(),
-        ];
-        let mut downloader = make_command(command, name, name, command_args, false);
-        let output = downloader
-            .output()
-            .expect(format!("{command} should be installed").as_str());
-        // Check if command exit successfully
-        if !output.status.success() {
-            eprintln!("error: `LICENSE` download failed from `{license_url}`");
-        }
+        get_file_from_url(license_url.as_str(), name, "LICENSE.md");
         // Check author
         if author != &String::from("None") {
             let license_path = Path::new(name).join("LICENSE.md");
