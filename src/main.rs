@@ -39,7 +39,7 @@ fn split_env_path() -> Vec<String> {
     paths
 }
 
-// Function to join a path into environment PATH variable
+// Function to join a path into the environment PATH variable
 fn join_env_path(path: String) -> String {
     let mut paths = split_env_path();
     paths.insert(0, path);
@@ -50,7 +50,7 @@ fn join_env_path(path: String) -> String {
     paths.join(&separator)
 }
 
-// Function for check if tool is installed
+// Function for check if a tool is installed
 fn check_tool(tool: &str) -> bool {
     let paths: Vec<String> = split_env_path();
     for path in paths {
@@ -85,7 +85,7 @@ fn make_file(file: &str, content: String) -> std::io::Result<()> {
     }
 }
 
-// Function get Python version <MAJOR.MINOR>
+// Function get a Python version <MAJOR.MINOR>
 fn get_python_version() -> String {
     let mut python = make_command(PYTHON_BIN, ".", ".", vec!["--version".to_string()], false);
     let output = python
@@ -99,7 +99,7 @@ fn get_python_version() -> String {
     format!("{}", &version[..4])
 }
 
-// Function get from url
+// Function gets from url
 fn get_file_from_url(url: &str, start_path: &str, output_file: &str) {
     #[cfg(any(target_os = "linux", target_os = "macos"))]
     let command = "curl";
@@ -130,7 +130,7 @@ fn get_file_from_url(url: &str, start_path: &str, output_file: &str) {
     let output = downloader
         .output()
         .expect(format!("{command} should be installed").as_str());
-    // Check if command exit successfully
+    // Check if the command exits successfully
     if !output.status.success() {
         eprintln!("error: `{output_file}` download failed from `{url}`");
     }
@@ -215,7 +215,7 @@ environments:
     exit(exit_code)
 }
 
-// Function that captures keyword argument
+// Function that captures a keyword argument
 fn get_shortcut() -> String {
     let args: Vec<String> = args().collect();
     if args.len() > 1 {
@@ -234,7 +234,7 @@ fn get_shortcut() -> String {
 fn load_env() {
     // Load first, .env file from the current working directory
     dotenv().ok();
-    // Load second, .psp.env file from home
+    // Load the second, .psp.env file from home
     #[cfg(any(target_os = "linux", target_os = "macos"))]
     let home_var_name = "HOME";
     #[cfg(target_os = "windows")]
@@ -244,7 +244,7 @@ fn load_env() {
     dotenv::from_filename(home_env).ok();
 }
 
-// Function that make a command
+// Function that makes a command
 fn make_command(
     bin: &str,
     root: &str,
@@ -274,9 +274,9 @@ fn make_command(
     command
 }
 
-// Function to get project version
+// Function to get a project version
 fn env_pyversion() -> String {
-    // Check version of Python project
+    // Check the version of a Python project
     let env_version = var("PSP_PYVER").ok();
     let version = if let Some(ver) = env_version {
         ver
@@ -288,7 +288,7 @@ fn env_pyversion() -> String {
 
 // Function to get author
 fn env_pyauthor() -> (String, String) {
-    // Check author of Python project
+    // Check the author of a Python project
     let env_pyauthor = var("PSP_PYAUTHOR").ok();
     let pyauthor = if let Some(author) = env_pyauthor {
         author
@@ -303,9 +303,9 @@ fn env_pyauthor() -> (String, String) {
     (username, email)
 }
 
-// Function check other package manager
+// Function check another package manager
 fn check_pm(pm: &str) -> bool {
-    // Check if package manager is supported
+    // Check if a package manager is supported
     if pm != PIP_BIN && !SUPPORTED_PM.contains(&pm) {
         eprintln!("error: package manager `{pm}` is not supported");
         return false;
@@ -365,7 +365,7 @@ fn make_pm(
         ]);
     }
     args.extend(pkgs.clone());
-    // Check if package manager is supported and installed
+    // Check if a package manager is supported and installed
     if !check_pm(bin) {
         println!("warning: fallback package manager to `{PIP_BIN}`")
     }
@@ -424,7 +424,7 @@ fn prj_name() -> (String, String) {
     if let Err(e) = dir_ret {
         eprintln!("error: {}", e);
     }
-    // Check version of Python project
+    // Check the version of a Python project
     let pyver = env_pyversion();
     // Make file structures
     let init_file = package.join("__init__.py");
@@ -492,7 +492,7 @@ fn prj_git(name: &str, shortcut: &String) -> bool {
     if confirm {
         let mut git = make_command("git", name, name, vec!["init".to_string()], false);
         let output = git.output().expect("git should be installed");
-        // Check if command exit successfully
+        // Check if the command exits successfully
         if !output.status.success() {
             eprintln!("error: something wrong with `git init`");
             return false;
@@ -712,7 +712,7 @@ fn prj_test(root: &str, name: &str, shortcut: &String) -> bool {
         prompt_confirm("Do you want unit test files?", true, "None")
     };
     if confirm {
-        // Check version of Python project
+        // Check the version of a Python project
         let pyver = env_pyversion();
         let project_name = name.to_lowercase();
         // Make directories structure
@@ -805,7 +805,7 @@ fn prj_venv(name: &str, shortcut: &String) -> bool {
         let output = python
             .output()
             .expect(format!("{PYTHON_BIN} should be installed").as_str());
-        // Check if command exit successfully
+        // Check if the command exits successfully
         if !output.status.success() {
             eprintln!("error: `venv` creation failed");
         } else {
@@ -865,7 +865,7 @@ fn prj_deps(name: &str, venv: bool, shortcut: &String) -> Vec<String> {
         let output = pip
             .output()
             .expect(format!("{bin} should be installed").as_str());
-        // Check if command exit successfully
+        // Check if the command exits successfully
         if !output.status.success() {
             eprintln!("error: dependencies ({deps}) installation failed");
         }
@@ -902,14 +902,14 @@ fn prj_toml(
     let mut documentation = "https://docs.python.org/3/".to_string();
     let mut repository = "https://github.com/python".to_string();
     let mut changelog = "https://docs.python.org/3/whatsnew/changelog.html".to_string();
-    // Check homepage of Python project
+    // Check the homepage of a Python project
     let env_pyhomepage = var("PSP_PYHOMEPAGE").ok();
     let pyhomepage = if let Some(homepage) = env_pyhomepage {
         homepage
     } else {
         "https://python.org/".to_string()
     };
-    // Check description of Python project
+    // Check description of a Python project
     let env_pydescription = var("PSP_PYDESC").ok();
     let pydescription = if let Some(description) = env_pydescription {
         description
@@ -964,7 +964,7 @@ fn prj_toml(
         license = "GNU General Public License v3 (GPLv3)".to_string();
         classifiers.push("License :: OSI Approved :: GNU General Public License v3 (GPLv3)")
     }
-    // Check version of Python project
+    // Check the version of a Python project
     let pyver = env_pyversion();
     let content = format!(
         "# {SIGNATURE}, version {VERSION}
@@ -1157,7 +1157,7 @@ fn prj_remote(root: &str, name: &str, shortcut: &String) -> (String, String) {
             .current_dir(root)
             .output()
             .expect("git should be installed");
-        // Check if command exit successfully
+        // Check if the command exits successfully
         if !output.status.success() {
             eprintln!(
                 "error: username of remote repository `{}` setting failed",
@@ -1447,7 +1447,7 @@ fn prj_tox(name: &str, venv: bool, deps: &Vec<String>, shortcut: &String) {
         let output = pip
             .output()
             .expect(format!("{PIP_BIN} should be installed").as_str());
-        // Check if command exit successfully
+        // Check if the command exits successfully
         if !output.status.success() {
             eprintln!("error: `tox` installation failed");
             return;
@@ -1506,7 +1506,7 @@ fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) {
                 eprintln!("error: {}", e);
             }
         }
-        // Create docs folder
+        // Create a docs folder
         let docs_folder = make_dirs(docs_folder.display().to_string().as_str());
         if let Err(e) = docs_folder {
             eprintln!("error: {}", e);
@@ -1523,12 +1523,12 @@ fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) {
             let output = pip
                 .output()
                 .expect(format!("{PIP_BIN} should be installed").as_str());
-            // Check if command exit successfully
+            // Check if the command exits successfully
             if !output.status.success() {
                 eprintln!("error: `sphinx` installation failed");
                 return;
             }
-            // Check version of Python project
+            // Check the version of a Python project
             let pyver = env_pyversion();
             // Start documentation
             #[cfg(any(target_os = "linux", target_os = "macos"))]
@@ -1573,7 +1573,7 @@ fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) {
             let output = pip
                 .output()
                 .expect(format!("{PIP_BIN} should be installed").as_str());
-            // Check if command exit successfully
+            // Check if the command exits successfully
             if !output.status.success() {
                 eprintln!("error: `mkdocs` installation failed");
                 return;
@@ -1588,7 +1588,7 @@ fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) {
             let output = mkdocs_new
                 .output()
                 .expect(format!("{mkdocs_bin} should be installed").as_str());
-            // Check if command exit successfully
+            // Check if the command exits successfully
             if !output.status.success() {
                 eprintln!("error: `mkdocs` documentation creation failed");
             }
@@ -1628,7 +1628,7 @@ fn prj_files(root: &str, name: &str, container: bool, shortcut: &String) {
         )
     };
     if confirm {
-        // Check version of Python project
+        // Check the version of a Python project
         let pyver = env_pyversion();
         // Create README
         let mut readme_content = format!(
@@ -1893,7 +1893,7 @@ fn prj_pypi(root: &str, venv: bool, shortcut: &String) -> bool {
             .current_dir(&root)
             .output()
             .expect(format!("{PIP_BIN} should be installed").as_str());
-        // Check if command exit successfully
+        // Check if the command exits successfully
         if !output.status.success() {
             eprintln!("error: `build` and `twine` installation failed");
             return false;
@@ -2036,7 +2036,7 @@ help:
         make_options.join(" "),
         make_options.join("|")
     );
-    // Add all target
+    // Add all targets
     make_options.remove(0);
     make_options.remove(0);
     if make_options[2] == "test" {
@@ -2064,7 +2064,7 @@ endif
         )
         .as_str();
     }
-    // Check if build variable has been specified
+    // Check if a build variable has been specified
     if build {
         makefile_content += format!(
             "
@@ -2085,7 +2085,7 @@ endif
         )
         .as_str();
     }
-    // Check if container variable has been specified
+    // Check if a container variable has been specified
     if container {
         makefile_content += format!(
             "
@@ -2131,7 +2131,7 @@ clean:
 fn main() {
     // Load env files
     load_env();
-    // Check if argument is specified
+    // Check if an argument is specified
     let shortcut = get_shortcut();
     // Print help message
     if shortcut == "help" {
@@ -2145,7 +2145,7 @@ fn main() {
             exit(1);
         }
     }
-    // Create project structure by name or path
+    // Create a project structure by name or path
     let (root, name) = prj_name();
     // Virtual Environment
     let venv = prj_venv(&root, &shortcut);
