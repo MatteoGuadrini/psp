@@ -297,7 +297,7 @@ docker run -it --rm -v ~/python_projects:/psp:z -e "PSP_GIT=true" -e "PSP_PYVER=
 ## 🧰 Next features
 - [x] `windows` operating system support
 - [x] Container support for psp program
-- [ ] `conda`, `uv` and `poetry` support
+- [ ] `conda`and `uv` support
 - [ ] `hatch` support
 - [ ] `docker-compose` and `kubernetes` support
 - [ ] command line flags support
