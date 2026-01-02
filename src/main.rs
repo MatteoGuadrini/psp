@@ -263,7 +263,7 @@ fn make_command(
             "PATH",
             join_env_path(
                 Path::new(absolute(root).unwrap().display().to_string().as_str())
-                    .join("venv")
+                    .join(".venv")
                     .join(bin_folder)
                     .display()
                     .to_string(),
@@ -791,7 +791,7 @@ fn prj_venv(name: &str, shortcut: &String) -> bool {
             PYTHON_BIN,
             name,
             name,
-            vec!["-m".to_string(), "venv".to_string(), "venv".to_string()],
+            vec!["-m".to_string(), "venv".to_string(), ".venv".to_string()],
             false,
         );
         let output = python
@@ -1863,13 +1863,17 @@ fn prj_pypi(root: &str, venv: bool, shortcut: &String) -> bool {
             #[cfg(any(target_os = "linux", target_os = "macos"))]
             pip.env(
                 "PATH",
-                Path::new("venv").join("bin").display().to_string().as_str(),
+                Path::new(".venv")
+                    .join("bin")
+                    .display()
+                    .to_string()
+                    .as_str(),
             );
             #[cfg(target_os = "windows")]
             pip.env(
                 "PATH",
                 Path::new(absolute(root).unwrap().display().to_string().as_str())
-                    .join("venv")
+                    .join(".venv")
                     .join("Scripts")
                     .display()
                     .to_string()
