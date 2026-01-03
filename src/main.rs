@@ -853,8 +853,8 @@ fn prj_deps(name: &str, venv: bool, shortcut: &String) -> Vec<String> {
         } else {
             PIP_BIN
         };
-        let mut pip = make_pm(bin, name, name, dependencies.clone(), venv);
-        let output = pip
+        let mut pm = make_pm(bin, name, name, dependencies.clone(), venv);
+        let output = pm
             .output()
             .expect(format!("{bin} should be installed").as_str());
         // Check if the command exits successfully
@@ -1481,6 +1481,7 @@ fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) {
     let options = vec!["None", "Sphinx", "MKDocs"];
     // Check environment variable
     let env_docs = var("PSP_DOCS").ok();
+    let env_pm = var("PSP_PACKAGE_MANAGER").ok();
     let docs = if let Some(env_docs) = env_docs {
         env_docs
     } else if shortcut == "simple" {
@@ -1503,22 +1504,20 @@ fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) {
         if let Err(e) = docs_folder {
             eprintln!("error: {}", e);
         }
+        let bin = if let Some(env_pm) = &env_pm {
+            env_pm.as_str()
+        } else {
+            PIP_BIN
+        };
         if docs.as_str().to_lowercase() == "sphinx" {
             // Install sphinx
-            let args = vec![
-                "install".to_string(),
-                "--timeout=10".to_string(),
-                "--retries=1".to_string(),
-                "sphinx".to_string(),
-            ];
-            let mut pip = make_command(PIP_BIN, root, root, args, venv);
-            let output = pip
+            let mut pm = make_pm(bin, root, root, vec!["sphinx".to_string()], venv);
+            let output = pm
                 .output()
-                .expect(format!("{PIP_BIN} should be installed").as_str());
+                .expect(format!("{bin} should be installed").as_str());
             // Check if the command exits successfully
             if !output.status.success() {
                 eprintln!("error: `sphinx` installation failed");
-                return;
             }
             // Check the version of a Python project
             let pyver = env_pyversion();
@@ -1555,20 +1554,13 @@ fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) {
             }
         } else if docs.as_str().to_lowercase() == "mkdocs" {
             // Install mkdocs
-            let args = vec![
-                "install".to_string(),
-                "--timeout=10".to_string(),
-                "--retries=1".to_string(),
-                "mkdocs".to_string(),
-            ];
-            let mut pip = make_command(PIP_BIN, root, root, args, venv);
-            let output = pip
+            let mut pm = make_pm(bin, root, root, vec!["mkdocs".to_string()], venv);
+            let output = pm
                 .output()
-                .expect(format!("{PIP_BIN} should be installed").as_str());
+                .expect(format!("{bin} should be installed").as_str());
             // Check if the command exits successfully
             if !output.status.success() {
                 eprintln!("error: `mkdocs` installation failed");
-                return;
             }
             // Start documentation
             #[cfg(any(target_os = "linux", target_os = "macos"))]
