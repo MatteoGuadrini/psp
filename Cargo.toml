@@ -13,5 +13,5 @@ categories = ["command-line-utilities", "python-tools"]
 keywords = ["scaffold", "tool", "python", "package", "library"]
 
 [dependencies]
-inquire = "0.7"
+inquire = "0.9"
 dotenv = "0.14"
