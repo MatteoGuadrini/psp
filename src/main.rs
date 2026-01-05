@@ -1418,6 +1418,7 @@ assignees: {}
 fn prj_tox(name: &str, venv: bool, deps: &Vec<String>, shortcut: &String) {
     // Check environment variable
     let env_tox = var("PSP_TOX").unwrap_or("false".to_string()).parse().ok();
+    let env_pm = var("PSP_PACKAGE_MANAGER").ok();
     let confirm = if let Some(true) = env_tox {
         true
     } else if shortcut == "quick" || shortcut == "simple" {
@@ -1429,16 +1430,16 @@ fn prj_tox(name: &str, venv: bool, deps: &Vec<String>, shortcut: &String) {
     };
     // Create tox ini
     if confirm {
-        let args = vec![
-            "install".to_string(),
-            "--timeout=10".to_string(),
-            "--retries=1".to_string(),
-            "tox".to_string(),
-        ];
-        let mut pip = make_command(PIP_BIN, name, name, args, venv);
-        let output = pip
+        let bin = if let Some(env_pm) = &env_pm {
+            env_pm.as_str()
+        } else {
+            PIP_BIN
+        };
+        // Install sphinx
+        let mut pm = make_pm(bin, name, name, vec!["sphinx".to_string()], venv);
+        let output = pm
             .output()
-            .expect(format!("{PIP_BIN} should be installed").as_str());
+            .expect(format!("{bin} should be installed").as_str());
         // Check if the command exits successfully
         if !output.status.success() {
             eprintln!("error: `tox` installation failed");
