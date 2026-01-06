@@ -909,7 +909,7 @@ fn prj_toml(
         format!("{} Python package", name.to_lowercase())
     };
     let description = pydescription;
-    let (mut email, mut username) = env_pyauthor();
+    let (mut username, mut email) = env_pyauthor();
     let mut homepage = pyhomepage;
     if git_info.0 != "None" && git_info.1 != "None" {
         let git_repo = &git_info.0.to_lowercase();
@@ -1436,7 +1436,7 @@ fn prj_tox(name: &str, venv: bool, deps: &Vec<String>, shortcut: &String) {
             PIP_BIN
         };
         // Install sphinx
-        let mut pm = make_pm(bin, name, name, vec!["sphinx".to_string()], venv);
+        let mut pm = make_pm(bin, name, name, vec!["tox".to_string()], venv);
         let output = pm
             .output()
             .expect(format!("{bin} should be installed").as_str());
