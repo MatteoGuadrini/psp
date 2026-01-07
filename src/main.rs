@@ -1435,7 +1435,7 @@ fn prj_tox(name: &str, venv: bool, deps: &Vec<String>, shortcut: &String) {
         } else {
             PIP_BIN
         };
-        // Install sphinx
+        // Install tox
         let mut pm = make_pm(bin, name, name, vec!["tox".to_string()], venv);
         let output = pm
             .output()
@@ -1835,6 +1835,7 @@ fn prj_license(name: &str, shortcut: &String, author: &String) -> String {
 fn prj_pypi(root: &str, venv: bool, shortcut: &String) -> bool {
     // Check environment variable
     let env_pypi = var("PSP_PYPI").unwrap_or("false".to_string()).parse().ok();
+    let env_pm = var("PSP_PACKAGE_MANAGER").ok();
     let confirm = if let Some(true) = env_pypi {
         true
     } else if shortcut == "quick" || shortcut == "full" {
@@ -1849,42 +1850,25 @@ fn prj_pypi(root: &str, venv: bool, shortcut: &String) -> bool {
         )
     };
     if confirm {
+        let bin = if let Some(env_pm) = &env_pm {
+            env_pm.as_str()
+        } else {
+            PIP_BIN
+        };
         // Install twine and build
-        let mut pip = std::process::Command::new(PIP_BIN);
-        // Activate venv
-        if venv {
-            #[cfg(any(target_os = "linux", target_os = "macos"))]
-            pip.env(
-                "PATH",
-                Path::new(".venv")
-                    .join("bin")
-                    .display()
-                    .to_string()
-                    .as_str(),
-            );
-            #[cfg(target_os = "windows")]
-            pip.env(
-                "PATH",
-                Path::new(absolute(root).unwrap().display().to_string().as_str())
-                    .join(".venv")
-                    .join("Scripts")
-                    .display()
-                    .to_string()
-                    .as_str(),
-            );
-        }
-        let output = pip
-            .arg("install")
-            .arg("--timeout=10")
-            .arg("--retries=1")
-            .arg("twine")
-            .arg("build")
-            .current_dir(&root)
+        let mut pm = make_pm(
+            bin,
+            root,
+            root,
+            vec!["twine".to_string(), "build".to_string()],
+            venv,
+        );
+        let output = pm
             .output()
-            .expect(format!("{PIP_BIN} should be installed").as_str());
+            .expect(format!("{bin} should be installed").as_str());
         // Check if the command exits successfully
         if !output.status.success() {
-            eprintln!("error: `build` and `twine` installation failed");
+            eprintln!("error: `twine` and `build` installation failed");
             return false;
         }
         return true;
