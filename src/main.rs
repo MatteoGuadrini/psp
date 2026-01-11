@@ -370,23 +370,26 @@ fn make_pm(
 // Project name
 fn prj_name() -> (String, String) {
     // Check environment variable
+    #[cfg(any(target_os = "linux", target_os = "macos"))]
+    let folder_separator = "/";
+    #[cfg(target_os = "windows")]
+    let folder_separator = "\\";
     let env_name = var("PSP_NAME").ok();
-    let name = if let Some(env_name) = env_name {
+    let mut name = if let Some(env_name) = env_name {
         env_name
     } else {
-        #[cfg(any(target_os = "linux", target_os = "macos"))]
-        let folder_separator = "/";
-        #[cfg(target_os = "windows")]
-        let folder_separator = "\\";
         prompt_text("Name of Python project:", "None", "Type name or path")
             .trim()
             .trim_end_matches(folder_separator)
             .to_string()
     };
     // Check is path is empty
-    if name.is_empty() {
-        eprintln!("error: empty path is not allowed");
-        exit(1)
+    while name.is_empty() {
+        println!("warning: write a valid name or path");
+        name = prompt_text("Name of Python project:", "None", "Type name or path")
+            .trim()
+            .trim_end_matches(folder_separator)
+            .to_string()
     }
     // Make package path parts
     let project_name = name.replace(" ", "_");
