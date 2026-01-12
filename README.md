@@ -7,7 +7,7 @@
 - 🛠️ `pyproject.toml` support
 - 🤝 Python 3.14 compatibility
 - 🗃 Scaffolding file and folder structures for your Python project
-- 📦 Unit-test and [pytest](https://docs.pytest.org/) support
+- 🗂️ Unit-test and [pytest](https://docs.pytest.org/) support
 - 🧪 Create a virtual environment
 - 🔧 Automagically dependencies installation
 - 🪛 Add build and deploy dependencies to distribute the package
@@ -20,6 +20,7 @@
 - 💡 Can use _quick_, _simple_ and _full_ argument for rapid configuration
 - 💾 Create `$HOME/.psp.env` and `$PWD/.env` files with your customizations
 - 🎛️ Can use some [`PSP_`](https://psp.readthedocs.io/en/latest/env/) variables to control your defaults
+- 📦 Support `pip`, `conda` and `uv` package manager
 
 ## 🚀 Get Started in 30 Seconds
 
@@ -297,7 +298,7 @@ docker run -it --rm -v ~/python_projects:/psp:z -e "PSP_GIT=true" -e "PSP_PYVER=
 ## 🧰 Next features
 - [x] `windows` operating system support
 - [x] Container support for psp program
-- [ ] `conda`and `uv` support
+- [x] `conda`and `uv` support
 - [ ] `hatch` support
 - [ ] `docker-compose` and `kubernetes` support
 - [ ] command line flags support

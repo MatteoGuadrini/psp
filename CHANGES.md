@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-01-13
+
+### Added
+- Add new `PSP_PY*` variables for `pyproject.toml`
+- Add support for `uv` and `conda` package manager
+- Add **get_file_from_url** function
+- Add **check_pm** function
+- Add **env_pyauthor** function
+- Add **make_pm** function
+
+### Changed
+- Move from _venv_ folder to _.venv_
+
+### Fixed
+
 ## [0.3.1] - 2025-11-24
 
 ### Added
