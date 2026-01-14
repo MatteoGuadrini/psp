@@ -7,7 +7,7 @@
 - 🛠️ `pyproject.toml` support
 - 🤝 Python 3.14 compatibility
 - 🗃 Scaffolding file and folder structures for your Python project
-- 📦 Unit-test and [pytest](https://docs.pytest.org/) support
+- 🗂️ Unit-test and [pytest](https://docs.pytest.org/) support
 - 🧪 Create a virtual environment
 - 🔧 Automagically dependencies installation
 - 🪛 Add build and deploy dependencies to distribute the package
@@ -20,18 +20,19 @@
 - 💡 Can use _quick_, _simple_ and _full_ argument for rapid configuration
 - 💾 Create `$HOME/.psp.env` and `$PWD/.env` files with your customizations
 - 🎛️ Can use some [`PSP_`](https://psp.readthedocs.io/en/latest/env/) variables to control your defaults
+- 📦 Support `pip`, `conda` and `uv` package manager
 
 ## 🚀 Get Started in 30 Seconds
 
-[![asciicast](https://asciinema.org/a/750186.svg)](https://asciinema.org/a/750186)
+[![asciicast](https://asciinema.org/a/767972.svg)](https://asciinema.org/a/767972)
 
-<img src="https://i.ibb.co/4RDPZWtC/psp030.png" alt="psp" width="790"/>
+<img src="https://i.ibb.co/fVvy4Thk/psp040.png" alt="psp" width="790"/>
 
 The result is:
 
 ```console
-$> tree test/ --filelimit=19 -a
-test                    # Project folder
+$> tree wtf/ --filelimit=19 -a
+wtf                     # Project folder
 ├── LICENSE.md          # License file
 ├── pyproject.toml      # Python package configuration file
 ├── README.md           # Readme file
@@ -77,13 +78,15 @@ test                    # Project folder
 ├── .gitignore          # Git ignore file
 ├── .dockerignore       # Docker ignore file
 ├── .containerignore    # Container ignore file
-├── test                # Python package
+├── wtf                 # Python package
 │   └── __init__.py
 ├── tests               # Tests package for modules
 │   ├── __init__.py
-│   └── test_test.py    # Test module "test_<name_python_package>"
+│   └── test_wtf.py     # Test module "test_<name_python_package>"
 ├── tox.ini             # Tox configuration files
-└── venv                # Virtual environment
+├── samples
+│   └── wtf_sample.py   # Sample code of package "<name_python_package>_sample"
+└── .venv                # Virtual environment
     ├── bin  [33 entries exceeds filelimit, not opening dir]
     ├── include
     │   └── python3.14
@@ -114,7 +117,7 @@ For help message, type:
 
 ```console
 $> psp help
-psp (Python Scaffolding Projects), version 0.3.1
+psp (Python Scaffolding Projects), version 0.4.0
 usage: psp [shortcut]
 ie: psp [help|quick|simple|full]
 
@@ -180,49 +183,52 @@ sudo pacman -Qi python3 python3-pip git curl
 
 ## 💿 Installation
 
+### 🐍 Python
+
 To install with `pip`:
 ```console
 pip install psp-scaffold
 ```
 
+### Binary file
 
 To install compiled file into your machine, download it:
 
-### Linux
+#### Linux
 
 For **all users** (required root access):
 ```console
 sudo -i
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.3.1/psp_linux -o /usr/bin/psp
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.4.0/psp_linux -o /usr/bin/psp
 chmod +x /usr/bin/psp
 ```
 
 For **current user**:
 ```console
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.3.1/psp_linux -o $HOME/.local/bin/psp
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.4.0/psp_linux -o $HOME/.local/bin/psp
 chmod +x $HOME/.local/bin/psp
 ```
 
-### MacOS
+#### MacOS
 
 ```console
 sudo su -
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.3.1/psp_macos -o /usr/bin/psp
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.4.0/psp_macos -o /usr/bin/psp
 chmod +x /usr/bin/psp
 ```
 
-### Windows
+#### Windows
 
 For **all users** (required Administrator):
 ```powershell
-iwr -OutFile "C:\Windows\system32\psp.exe" "https://github.com/MatteoGuadrini/psp/releases/download/v0.3.1/psp_windows"
+iwr -OutFile "C:\Windows\system32\psp.exe" "https://github.com/MatteoGuadrini/psp/releases/download/v0.4.0/psp_windows"
 ```
 
 For **current user**:
 ```powershell
 mkdir "$($Env:USERPROFILE)\bin"
 [System.Environment]::SetEnvironmentVariable("PATH", $Env:PATH + ";$($Env:USERPROFILE)\bin","USER")
-iwr -OutFile "$($Env:USERPROFILE)\bin\psp.exe" "https://github.com/MatteoGuadrini/psp/releases/download/v0.3.1/psp_windows"
+iwr -OutFile "$($Env:USERPROFILE)\bin\psp.exe" "https://github.com/MatteoGuadrini/psp/releases/download/v0.4.0/psp_windows"
 ```
 
 ### Packages
@@ -232,14 +238,14 @@ If you want to install OS package, follow instructions for your Operating System
 For **Debian/Ubuntu**:
 
 ```console
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.3.1/psp.deb -o psp.deb
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.4.0/psp.deb -o psp.deb
 sudo dpkg -i psp.deb
 ```
 
 For **Fedora/Mageia/OpenSuse**:
 
 ```console
-sudo rpm -i https://github.com/MatteoGuadrini/psp/releases/download/v0.3.1/psp.rpm
+sudo rpm -i https://github.com/MatteoGuadrini/psp/releases/download/v0.4.0/psp.rpm
 ```
 
 ### Compile as your own
@@ -249,6 +255,21 @@ Instead, if you compile this project as own, follow this steps:
 ```console
 git clone https://github.com/MatteoGuadrini/psp.git
 cd psp && cargo build --release && sudo cp -v target/release/psp /usr/bin/psp && chmod +x /usr/bin/psp
+```
+
+or build with script:
+
+```console
+git clone https://github.com/MatteoGuadrini/psp.git
+cd psp 
+# Build
+./build_psp.sh
+# Copy binary
+sudo cp -v target/release/psp /usr/bin/psp && chmod +x /usr/bin/psp
+# Install rpm
+sudo rpm -i /tmp/psp_rpm/psp.rpm
+# Instal deb
+sudo dpkg -i /tmp/psp_deb/psp.deb
 ```
 
 ## Docker/Podman
@@ -277,7 +298,7 @@ docker run -it --rm -v ~/python_projects:/psp:z -e "PSP_GIT=true" -e "PSP_PYVER=
 ## 🧰 Next features
 - [x] `windows` operating system support
 - [x] Container support for psp program
-- [ ] `conda`, `uv` and `poetry` support
+- [x] `conda`and `uv` support
 - [ ] `hatch` support
 - [ ] `docker-compose` and `kubernetes` support
 - [ ] command line flags support

@@ -19,18 +19,6 @@ FROM python:3.14-slim AS final
 # Install psp dependencies
 RUN apt-get -y update && apt-get install -y --no-install-recommends git curl
 
-# Add psp user
-RUN adduser \
-    --disabled-password \
-    --gecos "" \
-    --home "/nonexistent" \
-    --shell "/sbin/nologin" \
-    --no-create-home \
-    --uid "10001" \
-    pspuser
-
-USER pspuser
-
 # Set the working directory for final
 WORKDIR /psp
 
