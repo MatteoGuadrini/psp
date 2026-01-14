@@ -107,9 +107,9 @@ drwxrwxr-x 4 gu gu  120 Mar  7 12:47 docs
 -rw-rw-r-- 1 gu gu  106 Mar  7 12:47 requirements.txt
 drwxrwxr-x 2 gu gu   80 Mar  7 12:46 tests
 -rw-rw-r-- 1 gu gu  239 Mar  7 12:47 tox.ini
-drwxrwxr-x 5 gu gu  140 Mar  7 12:46 venv
+drwxrwxr-x 5 gu gu  140 Mar  7 12:46 .venv
 [gu]# cd biopy && make test
-venv/bin/python3 -m unittest
+.venv/bin/python3 -m unittest
 Test all biopy successfully!
 .
 ----------------------------------------------------------------------

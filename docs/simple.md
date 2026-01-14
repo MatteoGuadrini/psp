@@ -12,7 +12,7 @@ To start with **psp**, type `psp`:
 
 ```console
 [gu]# psp
-info: welcome to psp, version 0.3.0
+info: welcome to psp, version 0.4.0
 ? Name of Python project: mypyprj
 [Type name or path]
 ```
@@ -34,7 +34,7 @@ You can also specify a relative/absolute path; in this case the last name of pat
 
 ```console
 [gu]# psp
-info: welcome to psp, version 0.3.0
+info: welcome to psp, version 0.4.0
 ? Name of Python project: /tmp/mypyprj
 [Type name or path]
 ```
@@ -43,7 +43,7 @@ info: welcome to psp, version 0.3.0
     If the folder exists, **psp** prompt a choice of overwritten.
 
 ```console
-info: welcome to psp, version 0.3.0
+info: welcome to psp, version 0.4.0
 > Name of Python project: /tmp/mypyprj
 ? Path /tmp/mypyprj exists. Do you want continue? (y/N)
 [Some files will be overwritten]
@@ -59,7 +59,7 @@ and may optionally be isolated from the packages in the base environment, so onl
 The default value is _Yes_.
 
 ```console
-info: welcome to psp, version 0.3.0
+info: welcome to psp, version 0.4.0
 > Name of Python project: mypyprj
 ? Do you want to create a virtual environment? (Y/n)
 ```
@@ -71,7 +71,7 @@ mypyprj
 ├── pyproject.toml
 ├── mypyprj
 │   └──...
-└── venv                       ┐
+└── .venv                       ┐
     ├── bin                    │
     ├── include                │
     │   └── python3.13         │
@@ -104,7 +104,7 @@ mypyprj
 ├── pyproject.toml
 ├── mypyprj
 │   └──...
-├── venv
+├── .venv
 │   └──...
 ├── .git                 ┐
 │   ├── branches         │
@@ -161,7 +161,7 @@ mypyprj
 ├── pyproject.toml
 ├── mypyprj
 │   └──...
-├── venv
+├── .venv
 │   └──...
 ├── .git
 │   └──...
@@ -217,7 +217,7 @@ mypyprj
 ├── pyproject.toml
 ├── mypyprj
 │   └──...
-├── venv
+├── .venv
 │   └──...
 ├── .git
 │   └──...
@@ -250,10 +250,10 @@ The default value is _No_.
 !!! warning
     If has been specified the option [Virtual Environment](#virtual-environment), the packages will be installed in the _Virtual Environment_; otherwise, for the current user.
 
-The project structure after this choosen will be the same; will change the _venv_ folder:
+The project structure after this choosen will be the same; will change the _.venv_ folder:
 
 ```console
-[gu]# ls -l mypyprj/venv/lib64/python3.12/site-packages
+[gu]# ls -l mypyprj/.venv/lib64/python3.12/site-packages
 total 25700
 ...
 drwxrwxr-x 24 gu gu      960 Dec  2 10:32 numpy
@@ -299,7 +299,7 @@ mypyprj
 ├── pyproject.toml
 ├── mypyprj
 │   └──...
-├── venv
+├── .venv
 │   └──...
 ├── .git
 │   └──...
@@ -345,7 +345,7 @@ mypyprj
 ├── pyproject.toml
 ├── mypyprj
 │   └──...
-├── venv
+├── .venv
 │   └──...
 ├── .git
 │   └──...
@@ -382,7 +382,7 @@ mypyprj
 ├── pyproject.toml
 ├── mypyprj
 │   └──...
-├── venv
+├── .venv
 │   └──...
 ├── .git
 │   └──...
@@ -427,7 +427,7 @@ mypyprj
 ├── pyproject.toml
 ├── mypyprj
 │   └──...
-├── venv
+├── .venv
 │   └──...
 ├── .git
 │   └──...
@@ -458,11 +458,11 @@ The default value is _Yes_.
 The two packages are installed:
 
 ```console
-[gu]# cd mypyprj && . venv/bin/activate && twine --version && python -m build --version
+[gu]# cd mypyprj && . .venv/bin/activate && twine --version && python -m build --version
 twine version 6.0.1 (keyring: 25.5.0,
 pkginfo: 1.12.0, requests: 2.32.3,
 requests-toolbelt: 1.0.0, urllib3: 2.2.3)
-build 1.2.2.post1 (/tmp/mypyprj/venv/lib/python3.13/site-packages/build)
+build 1.2.2.post1 (/tmp/mypyprj/.venv/lib/python3.13/site-packages/build)
 ```
 
 ## Docker/Podman
@@ -491,7 +491,7 @@ mypyprj
 ├── pyproject.toml
 ├── mypyprj
 │   └──...
-├── venv
+├── .venv
 │   └──...
 ├── .git
 │   └──...
@@ -592,7 +592,7 @@ mypyprj
 ├── pyproject.toml
 ├── mypyprj
 │   └──...
-├── venv
+├── .venv
 │   └──...
 ├── .git
 │   └──...

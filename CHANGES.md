@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Move from _venv_ folder to _.venv_
 
 ### Fixed
+- Fix error if name of project is empty
 
 ## [0.3.1] - 2025-11-24
 
