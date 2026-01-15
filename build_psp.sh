@@ -1,11 +1,11 @@
 #! /usr/bin/env bash
 
-VERSION=$(grep ^version Cargo.toml | awk '{print $3}' | tr -d '"')
+export VERSION=$(grep ^version Cargo.toml | awk '{print $3}' | tr -d '"')
 
-if [ -n "$(which docker)" ]; then
-    ccli="$(which docker)"
-elif [ -n "$(which podman)" ]; then
-	ccli="$(which podman)"
+if [ -n "$(which podman)" ]; then
+    ccli="$(which podman)"
+elif [ -n "$(which docker)" ]; then
+	ccli="$(which docker)"
 else
   echo "Docker or Podman is not installed"
   exit 1
@@ -14,9 +14,10 @@ fi
 # Create temporary environment for build
 mkdir -p /tmp/psp_rpm
 mkdir -p /tmp/psp_deb
+mkdir -p /tmp/psp_release
 
 # Windows compile
-$ccli run -it --rm -v $PWD:/tmp/psp "rust:1.80.1-slim" bash -c "
+$ccli run -it --rm -v $PWD:/tmp/psp "rust:1.82.0-slim" bash -c "
 cd /tmp/psp
 apt update
 apt install -y g++-mingw-w64-x86-64
@@ -25,7 +26,7 @@ rustup toolchain install stable-x86_64-pc-windows-gnu
 cargo build --release --target x86_64-pc-windows-gnu"
 
 # Linux compile
-$ccli run -it --rm -v $PWD:/tmp/psp "rust:1.80.1-slim" bash -c "
+$ccli run -it --rm -v $PWD:/tmp/psp "rust:1.82.0-slim" bash -c "
 cd /tmp/psp
 cargo build --release"
 
@@ -63,10 +64,10 @@ cp %{name} %{buildroot}/%{_bindir}
 * %{__cat} CHANGES.md
 EOL
 
-$ccli run -it --rm -v $PWD:/tmp/psp -v /tmp/psp_rpm:/tmp/psp_rpm -e "VERSION=${VERSION}"  "rockylinux:9.3" bash -c "
+$ccli run -it --rm -v $PWD:/tmp/psp -v /tmp/psp_rpm:/tmp/psp_rpm -v /tmp/psp_release:/tmp/psp_release -e "VERSION=${VERSION}" "rockylinux:9.3" bash -c "
 dnf install rpmdevtools gcc -y
 cd /tmp/psp_rpm
-mkdir "psp-${VERSION}"
+mkdir -p "psp-${VERSION}"
 cp /tmp/psp/target/release/psp "psp-${VERSION}/"
 cp /tmp/psp/LICENSE.md "psp-${VERSION}/"
 cp /tmp/psp/README.md "psp-${VERSION}/"
@@ -76,7 +77,8 @@ rpmdev-setuptree
 cp "psp-${VERSION}.tar.gz" /root/rpmbuild/SOURCES/
 cp psp.spec /root/rpmbuild/SPECS/
 rpmbuild -bb /root/rpmbuild/SPECS/psp.spec
-mv /root/rpmbuild/RPMS/x86_64/psp-${VERSION}*.x86_64.rpm psp.rpm"
+mv /root/rpmbuild/RPMS/x86_64/psp-${VERSION}*.x86_64.rpm psp.rpm
+cp psp.rpm /tmp/psp_release"
 
 # Build deb
 mkdir -p /tmp/psp_deb/psp-${VERSION}
@@ -91,7 +93,8 @@ Architecture: all
 Description: PSP (Python Scaffolding Projects)
 EOL
 
-$ccli run -it --rm -v $PWD:/tmp/psp -v /tmp/psp_deb:/tmp/psp_deb -e "VERSION=${VERSION}" ubuntu:24.04 bash -c "
+$ccli run -it --rm -v $PWD:/tmp/psp -v /tmp/psp_deb:/tmp/psp_deb -v /tmp/psp_release:/tmp/psp_release -e "VERSION=${VERSION}" ubuntu:24.04 bash -c "
 cd /tmp/psp_deb
 dpkg-deb --build "psp-${VERSION}"
-mv "psp-${VERSION}.deb" psp.deb"
+mv "psp-${VERSION}.deb" psp.deb
+cp psp.deb /tmp/psp_release"
