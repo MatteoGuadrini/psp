@@ -17,7 +17,7 @@ classifiers = [
 ]
 
 [project.urls]
-homepage = 'https://matteoguadrini.github.io/psp/'
+homepage = 'https://psp.readthedocs.io/'
 documentation = 'https://psp.readthedocs.io/en/latest/'
 repository = 'https://github.com/matteoguadrini/psp'
 changelog = 'https://github.com/MatteoGuadrini/psp/blob/main/CHANGES.md'
