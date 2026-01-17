@@ -11,6 +11,8 @@ else
   exit 1
 fi
 
+# Clean temporary environment for build
+rm -rf /tmp/psp*
 # Create temporary environment for build
 mkdir -p /tmp/psp_rpm
 mkdir -p /tmp/psp_deb
@@ -19,10 +21,10 @@ mkdir -p /tmp/psp_release
 # Windows compile
 $ccli run -it --rm -v $PWD:/tmp/psp "rust:1.82.0-slim" bash -c "
 cd /tmp/psp
-apt update
-apt install -y g++-mingw-w64-x86-64
+apt update -q
+apt install -yq g++-mingw-w64-x86-64
+rustup toolchain install stable-x86_64-pc-windows-gnu --force-non-host
 rustup target add x86_64-pc-windows-gnu
-rustup toolchain install stable-x86_64-pc-windows-gnu
 cargo build --release --target x86_64-pc-windows-gnu"
 
 # Linux compile
@@ -30,7 +32,9 @@ $ccli run -it --rm -v $PWD:/tmp/psp "rust:1.82.0-slim" bash -c "
 cd /tmp/psp
 cargo build --release"
 
-# Build rpm
+# Build RPM
+$ccli run -it --rm -v $PWD:/tmp/psp -v /tmp/psp_rpm:/tmp/psp_rpm -v /tmp/psp_release:/tmp/psp_release -e "VERSION=${VERSION}" "rockylinux:9.3" bash -c "
+chmod 777 /tmp/psp_rpm -R
 cat >/tmp/psp_rpm/psp.spec <<EOL
 Name:           psp
 Version:        ${VERSION}
@@ -63,9 +67,7 @@ cp %{name} %{buildroot}/%{_bindir}
 %changelog
 * %{__cat} CHANGES.md
 EOL
-
-$ccli run -it --rm -v $PWD:/tmp/psp -v /tmp/psp_rpm:/tmp/psp_rpm -v /tmp/psp_release:/tmp/psp_release -e "VERSION=${VERSION}" "rockylinux:9.3" bash -c "
-dnf install rpmdevtools gcc -y
+dnf install rpmdevtools gcc -yq
 cd /tmp/psp_rpm
 mkdir -p "psp-${VERSION}"
 cp /tmp/psp/target/release/psp "psp-${VERSION}/"
@@ -80,11 +82,13 @@ rpmbuild -bb /root/rpmbuild/SPECS/psp.spec
 mv /root/rpmbuild/RPMS/x86_64/psp-${VERSION}*.x86_64.rpm psp.rpm
 cp psp.rpm /tmp/psp_release"
 
-# Build deb
+# Build DEB
+$ccli run -it --rm -v $PWD:/tmp/psp -v /tmp/psp_deb:/tmp/psp_deb -v /tmp/psp_release:/tmp/psp_release -e "VERSION=${VERSION}" ubuntu:24.04 bash -c "
+chmod 755 /tmp/psp_deb -R
 mkdir -p /tmp/psp_deb/psp-${VERSION}
 mkdir -p /tmp/psp_deb/psp-${VERSION}/DEBIAN
 mkdir -p /tmp/psp_deb/psp-${VERSION}/usr/local/bin
-cp $PWD/target/release/psp "/tmp/psp_deb/psp-${VERSION}/usr/local/bin/"
+cp /tmp/psp/target/release/psp "/tmp/psp_deb/psp-${VERSION}/usr/local/bin/"
 cat >/tmp/psp_deb/psp-${VERSION}/DEBIAN/control <<EOL
 Package: psp
 Version: ${VERSION}
@@ -92,8 +96,6 @@ Maintainer: Matteo Guadrini
 Architecture: all
 Description: PSP (Python Scaffolding Projects)
 EOL
-
-$ccli run -it --rm -v $PWD:/tmp/psp -v /tmp/psp_deb:/tmp/psp_deb -v /tmp/psp_release:/tmp/psp_release -e "VERSION=${VERSION}" ubuntu:24.04 bash -c "
 cd /tmp/psp_deb
 dpkg-deb --build "psp-${VERSION}"
 mv "psp-${VERSION}.deb" psp.deb
