@@ -1,7 +1,7 @@
 [package]
 name = "psp"
 version = "0.4.0"
-rust-version = "1.80"
+rust-version = "1.82"
 edition = "2021"
 authors = ["matteoguadrini <matteo.guadrini@hotmail.it>"]
 description = "PSP (Python Scaffolding Projects)"

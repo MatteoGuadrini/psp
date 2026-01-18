@@ -31,7 +31,7 @@ You can configure two files for configure these environment variables:
 | `PSP_LICENSE`         | [License](simple.md#license)                               | `mit|apache|cc|mozilla|gpl`    |
 | `PSP_PYPI`            | [PyPi dependencies](simple.md#pypi-dependencies)           | `true|false`                   |
 | `PSP_CONTAINER`       | [Containers](simple.md#dockerpodman)                       | `true|false`                   |
-| `PSP_PACKAGE_MANAGER` | [Depedencies](simple.md#dependencies)                      | `uv|poetry|conda`              |
+| `PSP_PACKAGE_MANAGER` | [Depedencies](simple.md#dependencies)                      | `uv|conda`                     |
 
 ## Python `pyproject.toml` variables
 

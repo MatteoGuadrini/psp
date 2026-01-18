@@ -1,5 +1,5 @@
 # Use a Rust base image with Cargo installed
-FROM rust:1.80.0-slim-bullseye AS build
+FROM rust:1.82.0-slim-bullseye AS build
 
 # Set the working directory for build
 WORKDIR /psp
