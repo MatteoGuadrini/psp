@@ -971,7 +971,7 @@ build-backend = 'setuptools.build_meta'
 [project]
 name = '{}'
 version = '{pyver}'
-readme = 'README.md'
+readme = {{'file' = 'README.md', 'content-type' = 'text/markdown'}}
 license = {{text = '{}'}}
 authors = [{{name = '{username}', email = '{email}'}}]
 maintainers = [{{name = '{username}', email = '{email}'}}]
