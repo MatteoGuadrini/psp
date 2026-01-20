@@ -961,9 +961,9 @@ fn prj_toml(
     }
     // Check the version of a Python project
     let pyver = env_pyversion();
-    let content = format!(
-        "# {SIGNATURE}, version {VERSION}
-
+    let mut content = format!("# {SIGNATURE}, version {VERSION}");
+    content += format!(
+        "
 [build-system]
 requires = ['setuptools', 'wheel']
 build-backend = 'setuptools.build_meta'
@@ -991,7 +991,8 @@ changelog = '{changelog}'
         get_python_version(),
         classifiers,
         requirements
-    );
+    )
+    .as_str();
     // Write pyproject.toml
     let pyproject = make_file(format!("{root}/pyproject.toml").as_str(), content);
     if let Err(e) = pyproject {
