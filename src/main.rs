@@ -971,9 +971,16 @@ build-backend = 'setuptools.build_meta'
 [project]
 name = '{}'
 version = '{pyver}'
-readme = {{'file' = 'README.md', 'content-type' = 'text/markdown'}}
-license = {{text = '{}'}}
-authors = [{{name = '{username}', email = '{email}'}}]
+readme = {{'file' = 'README.md', 'content-type' = 'text/markdown'}}",
+        name.to_lowercase()
+    )
+    .as_str();
+    // Check if license is set
+    if license != "None" {
+        content += format!("license = {{text = '{license}'}}").as_str();
+    }
+    content += format!(
+        "authors = [{{name = '{username}', email = '{email}'}}]
 maintainers = [{{name = '{username}', email = '{email}'}}]
 description = '{description}'
 requires-python = '>={}'
@@ -986,8 +993,6 @@ documentation = '{documentation}'
 repository = '{repository}'
 changelog = '{changelog}'
 ",
-        name.to_lowercase(),
-        license,
         get_python_version(),
         classifiers,
         requirements
