@@ -971,7 +971,8 @@ build-backend = 'setuptools.build_meta'
 [project]
 name = '{}'
 version = '{pyver}'
-readme = {{'file' = 'README.md', 'content-type' = 'text/markdown'}}",
+readme = {{'file' = 'README.md', 'content-type' = 'text/markdown'}}
+",
         name.to_lowercase()
     )
     .as_str();
@@ -980,7 +981,8 @@ readme = {{'file' = 'README.md', 'content-type' = 'text/markdown'}}",
         content += format!("license = {{text = '{license}'}}").as_str();
     }
     content += format!(
-        "authors = [{{name = '{username}', email = '{email}'}}]
+        "
+authors = [{{name = '{username}', email = '{email}'}}]
 maintainers = [{{name = '{username}', email = '{email}'}}]
 description = '{description}'
 requires-python = '>={}'
