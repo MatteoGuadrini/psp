@@ -966,8 +966,11 @@ fn prj_toml(
         "
 [build-system]
 requires = ['setuptools', 'wheel']
-build-backend = 'setuptools.build_meta'
-
+build-backend = 'setuptools.build_meta'",
+    )
+    .as_str();
+    content += format!(
+        "
 [project]
 name = '{}'
 version = '{pyver}'
