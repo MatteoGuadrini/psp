@@ -303,6 +303,18 @@ fn env_pyauthor() -> (String, String) {
     (username, email)
 }
 
+// Function to get a project core builder
+fn env_pybuild() -> String {
+    // Check the version of a Python project
+    let env_pybuild = var("PSP_PYBUILD").ok();
+    let build = if let Some(b) = env_pybuild {
+        b
+    } else {
+        "setuptools".to_string()
+    };
+    build
+}
+
 // Function check another package manager
 fn check_pm(pm: &str) -> bool {
     // Check if a package manager is supported
