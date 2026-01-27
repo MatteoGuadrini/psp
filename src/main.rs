@@ -305,7 +305,7 @@ fn env_pyauthor() -> (String, String) {
 
 // Function to get a project core builder
 fn env_pybuild() -> String {
-    // Check the version of a Python project
+    // Check the builder
     let env_pybuild = var("PSP_PYBUILD").ok();
     let build = if let Some(b) = env_pybuild {
         b
@@ -313,6 +313,44 @@ fn env_pybuild() -> String {
         "setuptools".to_string()
     };
     build
+}
+
+// Function to make build system settings
+fn make_builder() -> String {
+    // Check environment variable for build
+    let builder = env_pybuild();
+    let build_settings: String;
+    if builder == "poetry" {
+        // poetry
+        build_settings = "
+[build-system]
+requires = ['poetry-core']
+build-backend = 'poetry.core.masonry.api'"
+            .to_string();
+    } else if builder == "hatch" {
+        // hatch
+        build_settings = "
+[build-system]
+requires = ['hatchling']
+build-backend = 'hatchling.build'"
+            .to_string();
+    } else if builder == "maturin" {
+        // maturin
+        build_settings = "
+[build-system]
+requires = ['maturin>=1.0,<2.0']
+build-backend = 'maturin'
+"
+        .to_string();
+    } else {
+        // setuptools: defualt
+        build_settings = "
+[build-system]
+requires = ['setuptools', 'wheel']
+build-backend = 'setuptools.build_meta'"
+            .to_string();
+    }
+    build_settings
 }
 
 // Function check another package manager
