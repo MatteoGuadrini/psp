@@ -381,7 +381,7 @@ fn check_builder(builder: &str) -> bool {
         return false;
     }
     // Check if builder is avalaible
-    if !check_tool(builder) {
+    if builder != "setuptools" && !check_tool(builder) {
         eprintln!("error: builder `{builder}` is not installed");
         return false;
     }
@@ -1032,15 +1032,10 @@ fn prj_toml(
     // Check the version of a Python project
     let pyver = env_pyversion();
     let mut content = format!("# {SIGNATURE}, version {VERSION}");
+    content += make_builder().as_str();
     content += format!(
         "
-[build-system]
-requires = ['setuptools', 'wheel']
-build-backend = 'setuptools.build_meta'",
-    )
-    .as_str();
-    content += format!(
-        "
+
 [project]
 name = '{}'
 version = '{pyver}'
