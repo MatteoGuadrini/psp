@@ -1031,7 +1031,7 @@ fn prj_toml(
     }
     // Check the version of a Python project
     let pyver = env_pyversion();
-    let mut content = format!("# {SIGNATURE}, version {VERSION}");
+    let mut content = format!("# {SIGNATURE}, version {VERSION}\n");
     content += make_builder().as_str();
     content += format!(
         "
