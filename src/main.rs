@@ -1665,11 +1665,14 @@ fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) {
         // Link requirements
         #[cfg(any(target_os = "linux", target_os = "macos"))]
         {
-            use std::os::unix::fs::symlink;
-            let requirements_file = Path::new(root).join("requirements.txt");
+            use std::{env, os::unix::fs::symlink};
+            let cwd = env::current_dir().ok();
+            env::set_current_dir(&docs_home).ok();
+            let requirements_file = Path::new("..").join("requirements.txt");
             if requirements_file.exists() {
                 symlink(requirements_file, docs_home.join("requirements.txt")).ok();
             }
+            env::set_current_dir(&cwd.unwrap()).ok();
         }
     }
 }
