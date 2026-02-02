@@ -41,6 +41,7 @@ You can configure two files for configure these environment variables:
 | `PSP_PYAUTHOR`    | Python project's author                                    | `matteo.guadrini@github.io`    |
 | `PSP_PYHOMEPAGE`  | Python project's homepage                                  | `matteoguadrini.github.io`     |
 | `PSP_PYDESC`      | Python project's description                               | `A simple Python package`      |
+| `PSP_PYBUILD`     | Python project's builder                                   | `poetry|maturin|hatch`         |
 
 ## Examples
 

@@ -21,6 +21,7 @@
 - 💾 Create `$HOME/.psp.env` and `$PWD/.env` files with your customizations
 - 🎛️ Can use some [`PSP_`](https://psp.readthedocs.io/en/latest/env/) variables to control your defaults
 - 📦 Support `pip`, `conda` and `uv` package manager
+- 🧮 Support `hatch`, `maturin` and `poetry` builder
 
 ## 🚀 Get Started in 30 Seconds
 
