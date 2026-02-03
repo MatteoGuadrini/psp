@@ -2196,7 +2196,7 @@ fn main() {
     println!("info: welcome to psp, version {VERSION}");
     for tool in TOOLS {
         if !check_tool(tool) {
-            eprintln!("error: `{}` is not installed", tool);
+            eprintln!("error: `{}` is required", tool);
             exit(1);
         }
     }
