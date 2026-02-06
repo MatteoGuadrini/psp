@@ -118,7 +118,7 @@ For help message, type:
 
 ```console
 $> psp help
-psp (Python Scaffolding Projects), version 0.4.0
+psp (Python Scaffolding Projects), version 0.5.0
 usage: psp [shortcut]
 ie: psp [help|quick|simple|full]
 
@@ -200,13 +200,13 @@ To install compiled file into your machine, download it:
 For **all users** (required root access):
 ```console
 sudo -i
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.4.0/psp_linux -o /usr/bin/psp
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.5.0/psp_linux -o /usr/bin/psp
 chmod +x /usr/bin/psp
 ```
 
 For **current user**:
 ```console
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.4.0/psp_linux -o $HOME/.local/bin/psp
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.5.0/psp_linux -o $HOME/.local/bin/psp
 chmod +x $HOME/.local/bin/psp
 ```
 
@@ -214,7 +214,7 @@ chmod +x $HOME/.local/bin/psp
 
 ```console
 sudo su -
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.4.0/psp_macos -o /usr/bin/psp
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.5.0/psp_macos -o /usr/bin/psp
 chmod +x /usr/bin/psp
 ```
 
@@ -222,14 +222,14 @@ chmod +x /usr/bin/psp
 
 For **all users** (required Administrator):
 ```powershell
-iwr -OutFile "C:\Windows\system32\psp.exe" "https://github.com/MatteoGuadrini/psp/releases/download/v0.4.0/psp_windows"
+iwr -OutFile "C:\Windows\system32\psp.exe" "https://github.com/MatteoGuadrini/psp/releases/download/v0.5.0/psp_windows"
 ```
 
 For **current user**:
 ```powershell
 mkdir "$($Env:USERPROFILE)\bin"
 [System.Environment]::SetEnvironmentVariable("PATH", $Env:PATH + ";$($Env:USERPROFILE)\bin","USER")
-iwr -OutFile "$($Env:USERPROFILE)\bin\psp.exe" "https://github.com/MatteoGuadrini/psp/releases/download/v0.4.0/psp_windows"
+iwr -OutFile "$($Env:USERPROFILE)\bin\psp.exe" "https://github.com/MatteoGuadrini/psp/releases/download/v0.5.0/psp_windows"
 ```
 
 ### Packages
@@ -239,14 +239,14 @@ If you want to install OS package, follow instructions for your Operating System
 For **Debian/Ubuntu**:
 
 ```console
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.4.0/psp.deb -o psp.deb
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.5.0/psp.deb -o psp.deb
 sudo dpkg -i psp.deb
 ```
 
 For **Fedora/Mageia/OpenSuse**:
 
 ```console
-sudo rpm -i https://github.com/MatteoGuadrini/psp/releases/download/v0.4.0/psp.rpm
+sudo rpm -i https://github.com/MatteoGuadrini/psp/releases/download/v0.5.0/psp.rpm
 ```
 
 ### Compile as your own
@@ -302,9 +302,9 @@ docker run -it --rm -v ~/python_projects:/psp:z -e "PSP_GIT=true" -e "PSP_PYVER=
 - [x] `conda`and `uv` support
 - [x] `hatch`, `maturin` and `poetry` build support
 - [ ] `docker-compose` and `kubernetes` support
-- [ ] command line flags support
 - [ ] updating/merging project
 - [ ] templating folder support
+- [ ] command line flags support
 - [ ] YAML configuration file
 
 ## Open source
