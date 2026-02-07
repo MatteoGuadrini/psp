@@ -34,7 +34,7 @@ cd /tmp/psp
 cargo build --release"
 
 # Build RPM
-$ccli run -it --rm -v $PWD:/tmp/psp -v $DIST/psp_rpm:/tmp/psp_rpm -v $DIST/psp_release:/tmp/psp_release -e "VERSION=${VERSION}" "rockylinux:9.3" bash -c "
+$ccli run -it --rm -v $PWD:/tmp/psp -v ./$DIST/psp_rpm:/tmp/psp_rpm -v ./$DIST/psp_release:/tmp/psp_release -e "VERSION=${VERSION}" "rockylinux:9.3" bash -c "
 chmod 777 /tmp/psp_rpm -R
 cat >/tmp/psp_rpm/psp.spec <<EOL
 Name:           psp
@@ -84,7 +84,7 @@ mv /root/rpmbuild/RPMS/x86_64/psp-${VERSION}*.x86_64.rpm psp.rpm
 cp psp.rpm /tmp/psp_release"
 
 # Build DEB
-$ccli run -it --rm -v $PWD:/tmp/psp -v $DIST/psp_deb:/tmp/psp_deb -v $DIST/psp_release:/tmp/psp_release -e "VERSION=${VERSION}" ubuntu:24.04 bash -c "
+$ccli run -it --rm -v $PWD:/tmp/psp -v ./$DIST/psp_deb:/tmp/psp_deb -v ./$DIST/psp_release:/tmp/psp_release -e "VERSION=${VERSION}" ubuntu:24.04 bash -c "
 chmod 755 /tmp/psp_deb -R
 mkdir -p /tmp/psp_deb/psp-${VERSION}
 mkdir -p /tmp/psp_deb/psp-${VERSION}/DEBIAN
