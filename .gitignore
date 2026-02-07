@@ -35,3 +35,6 @@ rust-project.json
 
 # User-specific stuff
 .idea/*
+
+# psp build folder
+dist/*
