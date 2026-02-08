@@ -142,6 +142,17 @@ environments:
 > [!NOTE]
 > More details for shortcuts, variables and other things, available in official documentation: [psp docs](https://psp.readthedocs.io/)
 
+## Why choose psp?
+
+`psp` is simple, fast, effective, declarative, and supports Python and the entire ecosystem of tools written for it. Rather than replacing it, `psp` seeks to integrate and provide a useful scaffold for the end user.
+
+### Differences with other tools
+
+- [cookiecutter](https://github.com/cookiecutter/cookiecutter): Users set configurations using JSON files when generating their projects.
+- [PyScaffold](https://github.com/pyscaffold/pyscaffold): Provides a command-line interface to set up projects, typically yielding a compliant project structure, which can limit customization when using templates from other sources.
+
+`psp` asks only what you need. By configuring a few environment variables, you can automate any project; in seconds, not hours.
+
 ## 🔌 Prerequisites
 
 `psp` has four mandatory prerequisetes installed on own machine:
