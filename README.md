@@ -21,12 +21,13 @@
 - 💾 Create `$HOME/.psp.env` and `$PWD/.env` files with your customizations
 - 🎛️ Can use some [`PSP_`](https://psp.readthedocs.io/en/latest/env/) variables to control your defaults
 - 📦 Support `pip`, `conda` and `uv` package manager
+- 🧮 Support `hatch`, `maturin` and `poetry` builder
 
 ## 🚀 Get Started in 30 Seconds
 
-[![asciicast](https://asciinema.org/a/767972.svg)](https://asciinema.org/a/767972)
+[![asciicast](https://asciinema.org/a/783977.svg)](https://asciinema.org/a/783977)
 
-<img src="https://i.ibb.co/fVvy4Thk/psp040.png" alt="psp" width="790"/>
+<img src="https://i.ibb.co/ksqbYHDF/psp050.png" alt="psp" width="790"/>
 
 The result is:
 
@@ -117,7 +118,7 @@ For help message, type:
 
 ```console
 $> psp help
-psp (Python Scaffolding Projects), version 0.4.0
+psp (Python Scaffolding Projects), version 0.5.0
 usage: psp [shortcut]
 ie: psp [help|quick|simple|full]
 
@@ -140,6 +141,17 @@ environments:
 
 > [!NOTE]
 > More details for shortcuts, variables and other things, available in official documentation: [psp docs](https://psp.readthedocs.io/)
+
+## Why choose psp?
+
+`psp` is simple, fast, effective, declarative, and supports Python and the entire ecosystem of tools written for it. Rather than replacing it, `psp` seeks to integrate and provide a useful scaffold for the end user.
+
+### Differences with other tools
+
+- [cookiecutter](https://github.com/cookiecutter/cookiecutter): Users set configurations using JSON files when generating their projects.
+- [PyScaffold](https://github.com/pyscaffold/pyscaffold): Provides a command-line interface to set up projects, typically yielding a compliant project structure, which can limit customization when using templates from other sources.
+
+`psp` asks only what you need. By configuring a few environment variables, you can automate any project; in seconds, not hours.
 
 ## 🔌 Prerequisites
 
@@ -199,13 +211,13 @@ To install compiled file into your machine, download it:
 For **all users** (required root access):
 ```console
 sudo -i
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.4.0/psp_linux -o /usr/bin/psp
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.5.0/psp_linux -o /usr/bin/psp
 chmod +x /usr/bin/psp
 ```
 
 For **current user**:
 ```console
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.4.0/psp_linux -o $HOME/.local/bin/psp
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.5.0/psp_linux -o $HOME/.local/bin/psp
 chmod +x $HOME/.local/bin/psp
 ```
 
@@ -213,7 +225,7 @@ chmod +x $HOME/.local/bin/psp
 
 ```console
 sudo su -
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.4.0/psp_macos -o /usr/bin/psp
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.5.0/psp_macos -o /usr/bin/psp
 chmod +x /usr/bin/psp
 ```
 
@@ -221,14 +233,14 @@ chmod +x /usr/bin/psp
 
 For **all users** (required Administrator):
 ```powershell
-iwr -OutFile "C:\Windows\system32\psp.exe" "https://github.com/MatteoGuadrini/psp/releases/download/v0.4.0/psp_windows"
+iwr -OutFile "C:\Windows\system32\psp.exe" "https://github.com/MatteoGuadrini/psp/releases/download/v0.5.0/psp_windows"
 ```
 
 For **current user**:
 ```powershell
 mkdir "$($Env:USERPROFILE)\bin"
 [System.Environment]::SetEnvironmentVariable("PATH", $Env:PATH + ";$($Env:USERPROFILE)\bin","USER")
-iwr -OutFile "$($Env:USERPROFILE)\bin\psp.exe" "https://github.com/MatteoGuadrini/psp/releases/download/v0.4.0/psp_windows"
+iwr -OutFile "$($Env:USERPROFILE)\bin\psp.exe" "https://github.com/MatteoGuadrini/psp/releases/download/v0.5.0/psp_windows"
 ```
 
 ### Packages
@@ -238,14 +250,14 @@ If you want to install OS package, follow instructions for your Operating System
 For **Debian/Ubuntu**:
 
 ```console
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.4.0/psp.deb -o psp.deb
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.5.0/psp.deb -o psp.deb
 sudo dpkg -i psp.deb
 ```
 
 For **Fedora/Mageia/OpenSuse**:
 
 ```console
-sudo rpm -i https://github.com/MatteoGuadrini/psp/releases/download/v0.4.0/psp.rpm
+sudo rpm -i https://github.com/MatteoGuadrini/psp/releases/download/v0.5.0/psp.rpm
 ```
 
 ### Compile as your own
@@ -299,11 +311,11 @@ docker run -it --rm -v ~/python_projects:/psp:z -e "PSP_GIT=true" -e "PSP_PYVER=
 - [x] `windows` operating system support
 - [x] Container support for psp program
 - [x] `conda`and `uv` support
-- [ ] `hatch` support
+- [x] `hatch`, `maturin` and `poetry` build support
 - [ ] `docker-compose` and `kubernetes` support
-- [ ] command line flags support
 - [ ] updating/merging project
 - [ ] templating folder support
+- [ ] command line flags support
 - [ ] YAML configuration file
 
 ## Open source

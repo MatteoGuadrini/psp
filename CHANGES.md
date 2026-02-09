@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-01-13
+
+### Added
+- Add new `PSP_PY*` variables for `pyproject.toml`
+- Add support for `hatch`, `poetry` and `maturin` builders
+- Add **env_pybuild** function
+- Add **make_builder** function
+- Add **check_builder** function
+
+### Changed
+- Change Rust minimum version to 1.82
+- Change homepage into pyprojects
+- Create dist folder for builder
+
+### Fixed
+- Fix conditional code for package managers and builders
+
 ## [0.4.0] - 2026-01-13
 
 ### Added
