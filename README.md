@@ -25,9 +25,9 @@
 
 ## 🚀 Get Started in 30 Seconds
 
-[![asciicast](https://asciinema.org/a/767972.svg)](https://asciinema.org/a/767972)
+[![asciicast](https://asciinema.org/a/783977.svg)](https://asciinema.org/a/783977)
 
-<img src="https://i.ibb.co/fVvy4Thk/psp040.png" alt="psp" width="790"/>
+<img src="https://i.ibb.co/ksqbYHDF/psp050.png" alt="psp" width="790"/>
 
 The result is:
 
