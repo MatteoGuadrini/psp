@@ -27,13 +27,13 @@
 
 [![asciicast](https://asciinema.org/a/783977.svg)](https://asciinema.org/a/783977)
 
-<img src="https://i.ibb.co/ksqbYHDF/psp050.png" alt="psp" width="790"/>
+<img src="https://i.ibb.co/rKBDGTDR/psp050.png" alt="psp" width="790"/>
 
 The result is:
 
 ```console
-$> tree wtf/ --filelimit=19 -a
-wtf                     # Project folder
+$> tree dream/ --filelimit=19 -a
+dream                     # Project folder
 ├── LICENSE.md          # License file
 ├── pyproject.toml      # Python package configuration file
 ├── README.md           # Readme file
@@ -79,14 +79,14 @@ wtf                     # Project folder
 ├── .gitignore          # Git ignore file
 ├── .dockerignore       # Docker ignore file
 ├── .containerignore    # Container ignore file
-├── wtf                 # Python package
+├── dream                 # Python package
 │   └── __init__.py
 ├── tests               # Tests package for modules
 │   ├── __init__.py
-│   └── test_wtf.py     # Test module "test_<name_python_package>"
+│   └── test_dream.py     # Test module "test_<name_python_package>"
 ├── tox.ini             # Tox configuration files
 ├── samples
-│   └── wtf_sample.py   # Sample code of package "<name_python_package>_sample"
+│   └── dream_sample.py   # Sample code of package "<name_python_package>_sample"
 └── .venv                # Virtual environment
     ├── bin  [33 entries exceeds filelimit, not opening dir]
     ├── include
