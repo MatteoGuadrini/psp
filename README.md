@@ -25,7 +25,7 @@
 
 ## 🚀 Get Started in 30 Seconds
 
-[![asciicast](https://asciinema.org/a/783977.svg)](https://asciinema.org/a/783977)
+[![asciicast](https://asciinema.org/a/784932.svg)](https://asciinema.org/a/784932)
 
 <img src="https://i.ibb.co/rKBDGTDR/psp050.png" alt="psp" width="790"/>
 
