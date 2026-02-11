@@ -14,4 +14,4 @@ keywords = ["scaffold", "tool", "python", "package", "library"]
 
 [dependencies]
 inquire = "0.9"
-dotenv = "0.14"
+dotenvy = "0.15"

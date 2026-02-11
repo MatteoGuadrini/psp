@@ -1,4 +1,4 @@
-use dotenv::dotenv;
+use dotenvy::dotenv;
 use inquire::{Confirm, Select, Text};
 use std::{
     env::{args, var},
@@ -189,7 +189,7 @@ fn prompt_select(question: &str, options: Vec<&str>, help: &str) -> String {
 fn print_help(exit_code: i32) {
     // Collect PSP_* active variables
     let mut psp_vars: Vec<String> = vec![];
-    for var in dotenv::vars() {
+    for var in dotenvy::vars() {
         if var.0.contains("PSP_") {
             psp_vars.push(var.0);
         }
@@ -248,7 +248,7 @@ fn load_env() {
     let home_var_name = "USERPROFILE";
     let home_var = var(home_var_name).unwrap();
     let home_env = Path::new(home_var.as_str()).join(".psp.env");
-    dotenv::from_filename(home_env).ok();
+    dotenvy::from_filename(home_env).ok();
 }
 
 // Function that makes a command
