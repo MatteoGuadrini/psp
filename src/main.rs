@@ -7,6 +7,7 @@ use std::{
     path::{absolute, Path},
     process::exit,
 };
+use std::io::Read;
 
 // Constants
 const VERSION: &str = "0.5.0";
@@ -90,6 +91,14 @@ fn make_file(file: &str, content: String) -> std::io::Result<()> {
     } else {
         Ok(())
     }
+}
+
+// Function that read the update log
+fn read_log(log: &str) -> std::io::Result<String> {
+    let mut file = File::open(log)?;
+    let mut contents = String::new();
+    file.read_to_string(&mut contents).ok();
+    Ok(contents)
 }
 
 // Function get a Python version <MAJOR.MINOR>
