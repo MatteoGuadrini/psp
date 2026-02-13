@@ -1,5 +1,6 @@
 use dotenvy::dotenv;
 use inquire::{Confirm, Select, Text};
+use std::io::Read;
 use std::{
     env::{args, var},
     fs::{create_dir_all, read_to_string, remove_dir_all, File},
@@ -7,7 +8,6 @@ use std::{
     path::{absolute, Path},
     process::exit,
 };
-use std::io::Read;
 
 // Constants
 const VERSION: &str = "0.5.0";
@@ -99,6 +99,13 @@ fn read_log(log: &str) -> std::io::Result<String> {
     let mut contents = String::new();
     file.read_to_string(&mut contents).ok();
     Ok(contents)
+}
+
+// Function that check line into log
+fn check_log(step: &str, log: &str) -> bool {
+    let log_content = read_log(log);
+    let result = log_content.unwrap().contains(step);
+    result
 }
 
 // Function get a Python version <MAJOR.MINOR>
