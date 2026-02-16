@@ -1,5 +1,6 @@
 use dotenvy::dotenv;
 use inquire::{Confirm, Select, Text};
+use std::fs::OpenOptions;
 use std::io::Read;
 use std::{
     env::{args, var},
@@ -91,6 +92,16 @@ fn make_file(file: &str, content: String) -> std::io::Result<()> {
     } else {
         Ok(())
     }
+}
+
+// Function that write te update log
+fn write_log(log: &str, content: &str) {
+    let mut file = OpenOptions::new()
+        .append(true)
+        .create(true)
+        .open(log)
+        .unwrap();
+    writeln!(file, "{}", content).ok();
 }
 
 // Function that read the update log
