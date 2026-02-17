@@ -1,10 +1,9 @@
 use dotenvy::dotenv;
 use inquire::{Confirm, Select, Text};
-use std::fs::OpenOptions;
 use std::io::Read;
 use std::{
     env::{args, var},
-    fs::{create_dir_all, read_to_string, remove_dir_all, File},
+    fs::{create_dir_all, read_to_string, remove_dir_all, File, OpenOptions},
     io::Write,
     path::{absolute, Path},
     process::exit,
@@ -347,6 +346,13 @@ fn env_pybuild() -> String {
         "setuptools".to_string()
     };
     build
+}
+
+// Function to get update log
+fn env_psplog() -> bool {
+    // Check the update log
+    let env_psplog = var("PSP_LOG").unwrap_or("false".to_string()).parse().ok();
+    env_psplog.unwrap()
 }
 
 // Function to make build system settings
