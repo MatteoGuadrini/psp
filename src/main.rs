@@ -95,12 +95,14 @@ fn make_file(file: &str, content: String) -> std::io::Result<()> {
 
 // Function that write te update log
 fn write_log(log: &str, content: &str) {
-    let mut file = OpenOptions::new()
-        .append(true)
-        .create(true)
-        .open(log)
-        .unwrap();
-    writeln!(file, "{}", content).ok();
+    if env_psplog() {
+        let mut file = OpenOptions::new()
+            .append(true)
+            .create(true)
+            .open(log)
+            .unwrap();
+        writeln!(file, "{}", content).ok();
+    }
 }
 
 // Function that read the update log
@@ -113,8 +115,11 @@ fn read_log(log: &str) -> std::io::Result<String> {
 
 // Function that check line into log
 fn check_log(step: &str, log: &str) -> bool {
-    let log_content = read_log(log);
-    let result = log_content.unwrap().contains(step);
+    let mut result = false;
+    if env_psplog() {
+        let log_content = read_log(log);
+        result = log_content.unwrap().contains(step);
+    }
     result
 }
 
