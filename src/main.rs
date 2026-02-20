@@ -117,7 +117,7 @@ fn read_log(log: &str) -> std::io::Result<String> {
 // Function that check line into log
 fn check_log(step: &str, log: &str) -> bool {
     let mut result = false;
-    if env_psplog() {
+    if env_psplog() && std::fs::exists(log).ok().unwrap() {
         let log_content = read_log(log);
         result = log_content.unwrap().contains(step);
     }
@@ -497,6 +497,18 @@ fn make_pm(
 
 // Project name
 fn prj_name() -> (String, String) {
+    // Check psp log for update
+    let log_step = "prj_name";
+    if check_log(log_step, LOGFILE) {
+        let log_content = read_log(LOGFILE);
+        let value = get_log_value(log_step, log_content.unwrap().as_str());
+        if let Some(v) = value {
+            let values: Vec<&str> = v.split(" ").collect();
+            if std::fs::exists(values[0]).unwrap() && std::fs::exists(values[1]).unwrap() {
+                return (values[0].to_string(), values[1].to_string());
+            }
+        }
+    }
     // Check environment variable
     #[cfg(any(target_os = "linux", target_os = "macos"))]
     let folder_separator = "/";
@@ -593,10 +605,16 @@ print(f'version: {{__version__}}')
         eprintln!("error: {}", e);
         exit(4);
     }
-    (
+    let values = (
         root.to_string_lossy().to_string(),
         package.file_name().unwrap().to_string_lossy().to_string(),
-    )
+    );
+    // Write psp log
+    write_log(
+        LOGFILE,
+        format!("prj_name: {} {}", values.0, values.1).as_str(),
+    );
+    values
 }
 
 // Project git
