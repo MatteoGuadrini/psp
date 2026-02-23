@@ -504,7 +504,7 @@ fn prj_name() -> (String, String) {
         let value = get_log_value(log_step, log_content.unwrap().as_str());
         if let Some(v) = value {
             let values: Vec<&str> = v.split(" ").collect();
-            if std::fs::exists(values[0]).unwrap() && std::fs::exists(values[1]).unwrap() {
+            if std::fs::exists(values[0]).unwrap() {
                 return (values[0].to_string(), values[1].to_string());
             }
         }
@@ -612,13 +612,22 @@ print(f'version: {{__version__}}')
     // Write psp log
     write_log(
         LOGFILE,
-        format!("prj_name: {} {}", values.0, values.1).as_str(),
+        format!("{}: {} {}", log_step, values.0, values.1).as_str(),
     );
     values
 }
 
 // Project git
 fn prj_git(name: &str, shortcut: &String) -> bool {
+    // Check psp log for update
+    let log_step = "prj_git";
+    if check_log(log_step, LOGFILE) {
+        let log_content = read_log(LOGFILE);
+        let value = get_log_value(log_step, log_content.unwrap().as_str());
+        if let Some(v) = value {
+            return v.parse::<bool>().unwrap();
+        }
+    }
     // Check environment variable
     let env_git = var("PSP_GIT").unwrap_or("false".to_string()).parse().ok();
     let confirm = if let Some(true) = env_git {
@@ -836,6 +845,8 @@ tags
         } else {
             true
         };
+        // Write psp log
+        write_log(LOGFILE, format!("{}: {}", log_step, ret).as_str());
         return ret;
     }
     false
