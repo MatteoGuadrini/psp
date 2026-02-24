@@ -854,6 +854,16 @@ tags
 
 // Project unit tests
 fn prj_test(root: &str, name: &str, shortcut: &String) -> bool {
+    // Check psp log for update
+    let ret: bool;
+    let log_step = "prj_test";
+    if check_log(log_step, LOGFILE) {
+        let log_content = read_log(LOGFILE);
+        let value = get_log_value(log_step, log_content.unwrap().as_str());
+        if let Some(v) = value {
+            return v.parse::<bool>().unwrap();
+        }
+    }
     // Check environment variable
     let env_test = var("PSP_TEST").unwrap_or("false".to_string()).parse().ok();
     let confirm = if let Some(true) = env_test {
@@ -927,10 +937,13 @@ if __name__ == '__main__':
             eprintln!("error: {}", e);
             return false;
         }
-        true
+        ret = true;
     } else {
-        false
+        ret = false;
     }
+    // Write psp log
+    write_log(LOGFILE, format!("{}: {}", log_step, ret).as_str());
+    return ret;
 }
 
 // Project venv
