@@ -948,6 +948,16 @@ if __name__ == '__main__':
 
 // Project venv
 fn prj_venv(name: &str, shortcut: &String) -> bool {
+    // Check psp log for update
+    let mut ret: bool;
+    let log_step = "prj_venv";
+    if check_log(log_step, LOGFILE) {
+        let log_content = read_log(LOGFILE);
+        let value = get_log_value(log_step, log_content.unwrap().as_str());
+        if let Some(v) = value {
+            return v.parse::<bool>().unwrap();
+        }
+    }
     // Check environment variable
     let env_venv = var("PSP_VENV").unwrap_or("false".to_string()).parse().ok();
     let confirm = if let Some(true) = env_venv {
@@ -959,6 +969,7 @@ fn prj_venv(name: &str, shortcut: &String) -> bool {
     } else {
         prompt_confirm("Do you want to create a virtual environment?", true, "None")
     };
+    ret = false;
     if confirm {
         let mut python = make_command(
             PYTHON_BIN,
@@ -974,10 +985,12 @@ fn prj_venv(name: &str, shortcut: &String) -> bool {
         if !output.status.success() {
             eprintln!("error: `venv` creation failed");
         } else {
-            return true;
+            ret = true;
         }
     }
-    false
+    // Write psp log
+    write_log(LOGFILE, format!("{}: {}", log_step, ret).as_str());
+    ret
 }
 
 // Project dependencies
