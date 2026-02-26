@@ -943,7 +943,7 @@ if __name__ == '__main__':
     }
     // Write psp log
     write_log(LOGFILE, format!("{}: {}", log_step, ret).as_str());
-    return ret;
+    ret
 }
 
 // Project venv
@@ -995,6 +995,18 @@ fn prj_venv(name: &str, shortcut: &String) -> bool {
 
 // Project dependencies
 fn prj_deps(name: &str, venv: bool, shortcut: &String) -> Vec<String> {
+    // Check psp log for update
+    let log_step = "prj_deps";
+    if check_log(log_step, LOGFILE) {
+        let log_content = read_log(LOGFILE);
+        let value = get_log_value(log_step, log_content.unwrap().as_str());
+        if let Some(v) = value {
+            let values: Vec<&str> = v.split(" ").collect();
+            if values[0] != "No" {
+                return values.iter().map(|s| s.to_string()).collect();
+            }
+        }
+    }
     // Check environment variableS
     let env_common_deps = var("PSP_COMMON_DEPS").ok();
     let env_deps = var("PSP_DEPS").ok();
@@ -1065,6 +1077,8 @@ fn prj_deps(name: &str, venv: bool, shortcut: &String) -> Vec<String> {
             eprintln!("error: {}", e);
         }
     }
+    // Write psp log
+    write_log(LOGFILE, format!("{}: {}", log_step, deps).as_str());
     dependencies
 }
 
