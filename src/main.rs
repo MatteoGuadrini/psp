@@ -1205,6 +1205,11 @@ changelog = '{changelog}'
 
 // Project CI
 fn prj_ci(name: &str, deps: &Vec<String>, shortcut: &String) {
+    // Check psp log for update
+    let log_step = "prj_ci";
+    if check_log(log_step, LOGFILE) {
+        return;
+    }
     let options = vec!["None", "TravisCI", "CircleCI"];
     let env_ci = var("PSP_CI").ok();
     let ci = if let Some(env_ci) = env_ci {
@@ -1289,6 +1294,8 @@ jobs:
         if let Err(e) = circle {
             eprintln!("error: {}", e);
         }
+        // Write psp log
+        write_log(LOGFILE, format!("{}: {}", log_step, ci).as_str());
     } else if ci.as_str().to_lowercase() != "none" {
         println!("warning: `{}` is not recognized as remote CI", ci)
     }
