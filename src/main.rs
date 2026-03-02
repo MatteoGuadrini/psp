@@ -1303,6 +1303,16 @@ jobs:
 
 // Project Gitlab/GitHub
 fn prj_remote(root: &str, name: &str, shortcut: &String) -> (String, String) {
+    // Check psp log for update
+    let log_step = "prj_remote";
+    if check_log(log_step, LOGFILE) {
+        let log_content = read_log(LOGFILE);
+        let value = get_log_value(log_step, log_content.unwrap().as_str());
+        if let Some(v) = value {
+            let values: Vec<&str> = v.split(" ").collect();
+            return (values[0].to_string(), values[1].to_string());
+        }
+    }
     let mut git_user = "None".to_string();
     let mut git_remote = "None".to_string();
     let options = vec!["None", "Gitlab", "Github"];
@@ -1624,6 +1634,11 @@ assignees: {}
             )
         }
     }
+    // Write psp log
+    write_log(
+        LOGFILE,
+        format!("{}: {} {}", log_step, git_remote, git_user).as_str(),
+    );
     (git_remote, git_user)
 }
 
