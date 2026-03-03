@@ -1644,6 +1644,11 @@ assignees: {}
 
 // Project tox
 fn prj_tox(name: &str, venv: bool, deps: &Vec<String>, shortcut: &String) {
+    // Check psp log for update
+    let log_step = "prj_tox";
+    if check_log(log_step, LOGFILE) {
+        return;
+    }
     // Check environment variable
     let env_tox = var("PSP_TOX").unwrap_or("false".to_string()).parse().ok();
     let env_pm = var("PSP_PACKAGE_MANAGER").ok();
@@ -1703,6 +1708,8 @@ commands = pytest tests",
             eprintln!("error: {}", e);
         }
     }
+    // Write psp log
+    write_log(LOGFILE, format!("{}: {}", log_step, confirm).as_str());
 }
 
 // Project documentation site generator
