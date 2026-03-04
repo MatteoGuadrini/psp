@@ -1714,6 +1714,11 @@ commands = pytest tests",
 
 // Project documentation site generator
 fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) {
+    // Check psp log for update
+    let log_step = "prj_docs";
+    if check_log(log_step, LOGFILE) {
+        return;
+    }
     let options = vec!["None", "Sphinx", "MKDocs"];
     // Check environment variable
     let env_docs = var("PSP_DOCS").ok();
@@ -1831,6 +1836,8 @@ fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) {
             env::set_current_dir(&cwd.unwrap()).ok();
         }
     }
+    // Write psp log
+    write_log(LOGFILE, format!("{}: {}", log_step, docs).as_str());
 }
 
 // Project common files
