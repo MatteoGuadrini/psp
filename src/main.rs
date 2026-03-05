@@ -1,10 +1,9 @@
 use dotenvy::dotenv;
 use inquire::{Confirm, Select, Text};
-use std::io::Read;
 use std::{
     env::{args, var},
     fs::{create_dir_all, read_to_string, remove_dir_all, File, OpenOptions},
-    io::Write,
+    io::{Read, Write},
     path::{absolute, Path},
     process::exit,
 };
@@ -1842,6 +1841,11 @@ fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) {
 
 // Project common files
 fn prj_files(root: &str, name: &str, container: bool, shortcut: &String) {
+    // Check psp log for update
+    let log_step = "prj_files";
+    if check_log(log_step, LOGFILE) {
+        return;
+    }
     // Check environment variable
     let env_files = var("PSP_FILES").unwrap_or("false".to_string()).parse().ok();
     let confirm = if let Some(true) = env_files {
@@ -2015,6 +2019,8 @@ print(f'WARNING: this is a sample file of {name} package, version {{__version__}
     if let Err(e) = sample {
         eprintln!("error: {}", e);
     }
+    // Write psp log
+    write_log(LOGFILE, format!("{}: {}", log_step, confirm).as_str());
 }
 
 // Project license
