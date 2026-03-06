@@ -2025,6 +2025,15 @@ print(f'WARNING: this is a sample file of {name} package, version {{__version__}
 
 // Project license
 fn prj_license(name: &str, shortcut: &String, author: &String) -> String {
+    // Check psp log for update
+    let log_step = "prj_license";
+    if check_log(log_step, LOGFILE) {
+        let log_content = read_log(LOGFILE);
+        let value = get_log_value(log_step, log_content.unwrap().as_str());
+        if let Some(v) = value {
+            return v;
+        }
+    }
     // Select license
     let options = vec![
         "None",
@@ -2079,6 +2088,8 @@ fn prj_license(name: &str, shortcut: &String, author: &String) -> String {
             }
         }
     }
+    // Write psp log
+    write_log(LOGFILE, format!("{}: {}", log_step, license).as_str());
     license
 }
 
