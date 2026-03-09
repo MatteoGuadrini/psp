@@ -2095,9 +2095,19 @@ fn prj_license(name: &str, shortcut: &String, author: &String) -> String {
 
 // Project pypi dependencies
 fn prj_pypi(root: &str, venv: bool, shortcut: &String) -> bool {
+    // Check psp log for update
+    let log_step = "prj_pypi";
+    if check_log(log_step, LOGFILE) {
+        let log_content = read_log(LOGFILE);
+        let value = get_log_value(log_step, log_content.unwrap().as_str());
+        if let Some(v) = value {
+            return v.parse::<bool>().unwrap();
+        }
+    }
     // Check environment variable
     let env_pypi = var("PSP_PYPI").unwrap_or("false".to_string()).parse().ok();
     let env_pm = var("PSP_PACKAGE_MANAGER").ok();
+    let mut ret = false;
     let confirm = if let Some(true) = env_pypi {
         true
     } else if shortcut == "quick" || shortcut == "full" {
@@ -2131,11 +2141,13 @@ fn prj_pypi(root: &str, venv: bool, shortcut: &String) -> bool {
         // Check if the command exits successfully
         if !output.status.success() {
             eprintln!("error: `twine` and `build` installation failed");
-            return false;
+        } else {
+            ret = true;
         }
-        return true;
     }
-    false
+    // Write psp log
+    write_log(LOGFILE, format!("{}: {}", log_step, ret).as_str());
+    ret
 }
 
 // Project Docker/Podman
