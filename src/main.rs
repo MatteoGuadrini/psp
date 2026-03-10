@@ -2152,7 +2152,17 @@ fn prj_pypi(root: &str, venv: bool, shortcut: &String) -> bool {
 
 // Project Docker/Podman
 fn prj_container(root: &str, name: &str, shortcut: &String) -> bool {
+    // Check psp log for update
+    let log_step = "prj_container";
+    if check_log(log_step, LOGFILE) {
+        let log_content = read_log(LOGFILE);
+        let value = get_log_value(log_step, log_content.unwrap().as_str());
+        if let Some(v) = value {
+            return v.parse::<bool>().unwrap();
+        }
+    }
     // Check environment variable
+    let ret;
     let env_container = var("PSP_CONTAINER")
         .unwrap_or("false".to_string())
         .parse()
@@ -2248,10 +2258,13 @@ README.md
         if let Err(e) = containerignore {
             eprintln!("error: {}", e);
         }
-        true
+        ret = true;
     } else {
-        false
+        ret = false;
     }
+    // Write psp log
+    write_log(LOGFILE, format!("{}: {}", log_step, ret).as_str());
+    ret
 }
 
 // Project Makefile
