@@ -22,6 +22,7 @@
 - 🎛️ Can use some [`PSP_`](https://psp.readthedocs.io/en/latest/env/) variables to control your defaults
 - 📦 Support `pip`, `conda` and `uv` package manager
 - 🧮 Support `hatch`, `maturin` and `poetry` builder
+- 🍿 Stop, pause and resume project creation when you want; see [PSP_LOG](https://psp.readthedocs.io/en/latest/env/)
 
 ## 🚀 Get Started in 30 Seconds
 
@@ -148,8 +149,8 @@ environments:
 
 ### Differences with other tools
 
-- [cookiecutter](https://github.com/cookiecutter/cookiecutter): Users set configurations using JSON files when generating their projects.
-- [PyScaffold](https://github.com/pyscaffold/pyscaffold): Provides a command-line interface to set up projects, typically yielding a compliant project structure, which can limit customization when using templates from other sources.
+- [cookiecutter](https://github.com/cookiecutter/cookiecutter): Templates are prescriptive by design. Cookiecutter enforces a particular project structure and conventions, which may not align with your or your organization's preferences. **If a template's opinions don't match your needs, you're forced to either choose a different template or heavily modify an existing one**. This can become tedious when you need something slightly different from what's available. `psp` is dynamic; scaffold what you need.
+- [PyScaffold](https://github.com/pyscaffold/pyscaffold): **PyScaffold doesn't manage virtual environments directly**. You have to manually create and activate a virtualenv or use external tools like `pipenv`, `poetry`, `conda`, or `pyenv`. While PyScaffold documents integrations with these tools, it doesn't provide a unified interface for environment management like `psp` do.
 
 `psp` asks only what you need. By configuring a few environment variables, you can automate any project; in seconds, not hours.
 
@@ -312,7 +313,7 @@ docker run -it --rm -v ~/python_projects:/psp:z -e "PSP_GIT=true" -e "PSP_PYVER=
 - [x] Container support for psp program
 - [x] `conda`and `uv` support
 - [x] `hatch`, `maturin` and `poetry` build support
-- [ ] updating/merging project
+- [x] updating/merging project
 - [ ] templating folder support
 - [ ] command line flags support
 - [ ] YAML configuration file
