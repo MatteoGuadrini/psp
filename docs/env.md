@@ -32,6 +32,7 @@ You can configure two files for configure these environment variables:
 | `PSP_PYPI`            | [PyPi dependencies](simple.md#pypi-dependencies)           | `true|false`                   |
 | `PSP_CONTAINER`       | [Containers](simple.md#dockerpodman)                       | `true|false`                   |
 | `PSP_PACKAGE_MANAGER` | [Depedencies](simple.md#dependencies)                      | `uv|conda`                     |
+| `PSP_LOG`             | [Update](simple.md#update)                                 | `true|false`                   |
 
 ## Python `pyproject.toml` variables
 
