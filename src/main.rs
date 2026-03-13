@@ -2,7 +2,7 @@ use dotenvy::dotenv;
 use inquire::{Confirm, Select, Text};
 use std::{
     env::{args, var},
-    fs::{create_dir_all, read_to_string, remove_dir_all, File, OpenOptions},
+    fs::{create_dir_all, read_to_string, remove_dir_all, remove_file, File, OpenOptions},
     io::{Read, Write},
     path::{absolute, Path},
     process::exit,
@@ -102,6 +102,14 @@ fn write_log(log: &str, content: &str) {
             .open(log)
             .unwrap();
         writeln!(file, "{}", content).ok();
+    }
+}
+
+// Function that delete log
+fn delete_log(log: &str) {
+    let log_deletion = remove_file(log);
+    if let Err(err) = log_deletion {
+        println!("error: deletion log {} failed; {}", log, err)
     }
 }
 
