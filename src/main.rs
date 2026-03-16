@@ -107,9 +107,11 @@ fn write_log(log: &str, content: &str) {
 
 // Function that delete log
 fn delete_log(log: &str) {
-    let log_deletion = remove_file(log);
-    if let Err(err) = log_deletion {
-        println!("error: deletion log {} failed; {}", log, err)
+    if env_psplog() {
+        let log_deletion = remove_file(log);
+        if let Err(err) = log_deletion {
+            println!("error: deletion log {} failed; {}", log, err)
+        }
     }
 }
 
@@ -2449,6 +2451,8 @@ fn main() {
     prj_files(&root, &name, container, &shortcut);
     // Makefile
     prj_makefile(&root, &name, tests, build, container);
+    // Delete log if enabled
+    delete_log(LOGFILE);
     // Finish a scaffolding process
     println!(
         "info: python project `{name}` created at `{}`",
