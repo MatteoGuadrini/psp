@@ -149,8 +149,8 @@ This option creates a git remote repository configuration files.
 > Do you want to start git repository? Yes
 ? Select git remote provider:
   None
-  Gitlab
 > Github
+  Gitlab
 [↑↓ to move, enter to select, type to filter]
 ```
 

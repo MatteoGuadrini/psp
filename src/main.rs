@@ -1324,7 +1324,7 @@ fn prj_remote(root: &str, name: &str, shortcut: &String) -> (String, String) {
     }
     let mut git_user = "None".to_string();
     let mut git_remote = "None".to_string();
-    let options = vec!["None", "Gitlab", "Github"];
+    let options = vec!["None", "Github", "Gitlab"];
     // Check environment variable
     let env_remote = var("PSP_GIT_REMOTE").ok();
     let remote = if let Some(env_remote) = env_remote {
