@@ -1335,9 +1335,9 @@ fn prj_remote(root: &str, name: &str, shortcut: &String) -> (String, String) {
         prompt_select("Select git remote provider:", options, "None")
     };
     if remote.as_str().to_lowercase() != "none" {
-        // Username of remote git service
         // Check environment variable
         let env_git_user = var("PSP_GIT_USER").ok();
+        // Username of remote git service
         let mut username = if let Some(env_git_user) = env_git_user {
             env_git_user
         } else {
@@ -2019,8 +2019,8 @@ Feel free to ask questions via issues, discussions, or mail.
 # {SIGNATURE}, version {VERSION}
 
 import sys
-from test import __version__
 sys.path.append('..')
+from test import __version__
 
 print(f'WARNING: this is a sample file of {name} package, version {{__version__}}')
 "
