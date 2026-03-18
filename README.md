@@ -28,13 +28,13 @@
 
 [![asciicast](https://asciinema.org/a/784932.svg)](https://asciinema.org/a/784932)
 
-<img src="https://i.ibb.co/rKBDGTDR/psp050.png" alt="psp" width="790"/>
+<img src="https://i.ibb.co/fGQC5bJY/psp060.png" alt="psp" width="790"/>
 
 The result is:
 
 ```console
 $> tree dream/ --filelimit=19 -a
-dream                     # Project folder
+dream                   # Project folder
 ├── LICENSE.md          # License file
 ├── pyproject.toml      # Python package configuration file
 ├── README.md           # Readme file
@@ -78,17 +78,18 @@ dream                     # Project folder
 │   └── PULL_REQUEST_TEMPLATE
 │       └── pull_request_template.md
 ├── .gitignore          # Git ignore file
+├── .psp.log            # Update log (if enabled)
 ├── .dockerignore       # Docker ignore file
 ├── .containerignore    # Container ignore file
-├── dream                 # Python package
+├── dream               # Python package
 │   └── __init__.py
 ├── tests               # Tests package for modules
 │   ├── __init__.py
-│   └── test_dream.py     # Test module "test_<name_python_package>"
+│   └── test_dream.py   # Test module "test_<name_python_package>"
 ├── tox.ini             # Tox configuration files
 ├── samples
-│   └── dream_sample.py   # Sample code of package "<name_python_package>_sample"
-└── .venv                # Virtual environment
+│   └── dream_sample.py # Sample code of package "<name_python_package>_sample"
+└── .venv               # Virtual environment
     ├── bin  [33 entries exceeds filelimit, not opening dir]
     ├── include
     │   └── python3.14
@@ -314,6 +315,7 @@ docker run -it --rm -v ~/python_projects:/psp:z -e "PSP_GIT=true" -e "PSP_PYVER=
 - [x] `conda`and `uv` support
 - [x] `hatch`, `maturin` and `poetry` build support
 - [x] updating/merging project
+- [ ] Gitlab CI/CD and Github Actions
 - [ ] templating folder support
 - [ ] command line flags support
 - [ ] YAML configuration file
