@@ -12,7 +12,7 @@ To start with **psp**, type `psp`:
 
 ```console
 [gu]# psp
-info: welcome to psp, version 0.5.0
+info: welcome to psp, version 0.6.0
 ? Name of Python project: mypyprj
 [Type name or path]
 ```
@@ -34,7 +34,7 @@ You can also specify a relative/absolute path; in this case the last name of pat
 
 ```console
 [gu]# psp
-info: welcome to psp, version 0.5.0
+info: welcome to psp, version 0.6.0
 ? Name of Python project: /tmp/mypyprj
 [Type name or path]
 ```
@@ -43,7 +43,7 @@ info: welcome to psp, version 0.5.0
     If the folder exists, **psp** prompt a choice of overwritten.
 
 ```console
-info: welcome to psp, version 0.5.0
+info: welcome to psp, version 0.6.0
 > Name of Python project: /tmp/mypyprj
 ? Path /tmp/mypyprj exists. Do you want continue? (y/N)
 [Some files will be overwritten]
@@ -59,7 +59,7 @@ and may optionally be isolated from the packages in the base environment, so onl
 The default value is _Yes_.
 
 ```console
-info: welcome to psp, version 0.5.0
+info: welcome to psp, version 0.6.0
 > Name of Python project: mypyprj
 ? Do you want to create a virtual environment? (Y/n)
 ```
@@ -625,7 +625,7 @@ With `PSP_LOG` variable you enable the ability to stop or pause the scaffolding 
 
 ```console
 [gu]# psp
-info: welcome to psp, version 0.5.0
+info: welcome to psp, version 0.6.0
 > Name of Python project: mypyprj
 > Do you want to create a virtual environment? (Y/n)
 ? Install dependencies: <canceled>
@@ -639,7 +639,7 @@ note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 prj_name: mypyprj mypyprj
 prj_venv: true
 [gu]# psp
-info: welcome to psp, version 0.5.0
+info: welcome to psp, version 0.6.0
 ? Install dependencies: (No) tablib==3.4.0 pyreports<1.7.0 scipy numpy
 ...
 info: python project `mypyprj` created at `/tmp/mypyprj`

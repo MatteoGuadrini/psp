@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-03-19
+
+### Added
+- Add new `PSP_UPDATE` variables for stop/pause/resume project creation
+- Adopt dotenvy crate
+- Add **read_log** function
+- Add **check_log** function
+- Add **write_log** function
+- Add **env_psplog** function
+- Add **get_log_value** function
+- Add **delete_log** function
+
 ## [0.5.0] - 2026-01-13
 
 ### Added
