@@ -12,7 +12,7 @@ To start with **psp**, type `psp`:
 
 ```console
 [gu]# psp
-info: welcome to psp, version 0.5.0
+info: welcome to psp, version 0.6.0
 ? Name of Python project: mypyprj
 [Type name or path]
 ```
@@ -34,7 +34,7 @@ You can also specify a relative/absolute path; in this case the last name of pat
 
 ```console
 [gu]# psp
-info: welcome to psp, version 0.5.0
+info: welcome to psp, version 0.6.0
 ? Name of Python project: /tmp/mypyprj
 [Type name or path]
 ```
@@ -43,7 +43,7 @@ info: welcome to psp, version 0.5.0
     If the folder exists, **psp** prompt a choice of overwritten.
 
 ```console
-info: welcome to psp, version 0.5.0
+info: welcome to psp, version 0.6.0
 > Name of Python project: /tmp/mypyprj
 ? Path /tmp/mypyprj exists. Do you want continue? (y/N)
 [Some files will be overwritten]
@@ -59,7 +59,7 @@ and may optionally be isolated from the packages in the base environment, so onl
 The default value is _Yes_.
 
 ```console
-info: welcome to psp, version 0.5.0
+info: welcome to psp, version 0.6.0
 > Name of Python project: mypyprj
 ? Do you want to create a virtual environment? (Y/n)
 ```
@@ -149,8 +149,8 @@ This option creates a git remote repository configuration files.
 > Do you want to start git repository? Yes
 ? Select git remote provider:
   None
-  Gitlab
 > Github
+  Gitlab
 [↑↓ to move, enter to select, type to filter]
 ```
 
@@ -618,3 +618,31 @@ mypyprj
 !!! note
     As you notice, **psp** creates a Makefile to automate all process in your package.
     If you want a help, try `make help`.
+
+## Update
+
+With `PSP_LOG` variable you enable the ability to stop or pause the scaffolding of the project and resume it later.
+
+```console
+[gu]# psp
+info: welcome to psp, version 0.6.0
+> Name of Python project: mypyprj
+> Do you want to create a virtual environment? (Y/n)
+? Install dependencies: <canceled>
+
+thread 'main' (36598) panicked at src/main.rs:204:12:
+called `Result::unwrap()` on an `Err` value: OperationCanceled
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+[gu]# ls -a
+.psp.log mypyprj
+[gu]# cat .psp.log
+prj_name: mypyprj mypyprj
+prj_venv: true
+[gu]# psp
+info: welcome to psp, version 0.6.0
+? Install dependencies: (No) tablib==3.4.0 pyreports<1.7.0 scipy numpy
+...
+info: python project `mypyprj` created at `/tmp/mypyprj`
+[gu]# ls -a
+mypyprj
+```

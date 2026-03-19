@@ -32,6 +32,7 @@ You can configure two files for configure these environment variables:
 | `PSP_PYPI`            | [PyPi dependencies](simple.md#pypi-dependencies)           | `true|false`                   |
 | `PSP_CONTAINER`       | [Containers](simple.md#dockerpodman)                       | `true|false`                   |
 | `PSP_PACKAGE_MANAGER` | [Depedencies](simple.md#dependencies)                      | `uv|conda`                     |
+| `PSP_LOG`             | [Update](simple.md#update)                                 | `true|false`                   |
 
 ## Python `pyproject.toml` variables
 
@@ -89,7 +90,7 @@ PSP_DEPS="numpy scipy pydata-sphinx-theme"
 PSP_DOCS=sphinx     # Overwritten
 PSP_LICENSE=mit     # Overwritten
 [gu]# psp
-info: welcome to psp, version 0.5.0
+info: welcome to psp, version 0.6.0
 > Name of Python project: biopy
 info: python project `biopy` created at /tmp/mypyenv/biopy
 [gu]# ll biopy

@@ -22,18 +22,19 @@
 - 🎛️ Can use some [`PSP_`](https://psp.readthedocs.io/en/latest/env/) variables to control your defaults
 - 📦 Support `pip`, `conda` and `uv` package manager
 - 🧮 Support `hatch`, `maturin` and `poetry` builder
+- 🍿 Stop, pause and resume project creation when you want; see [Update](https://psp.readthedocs.io/en/latest/simple/#update)
 
 ## 🚀 Get Started in 30 Seconds
 
-[![asciicast](https://asciinema.org/a/784932.svg)](https://asciinema.org/a/784932)
+[![asciicast](https://asciinema.org/a/852156.svg)](https://asciinema.org/a/852156)
 
-<img src="https://i.ibb.co/rKBDGTDR/psp050.png" alt="psp" width="790"/>
+<img src="https://i.ibb.co/fGQC5bJY/psp060.png" alt="psp" width="790"/>
 
 The result is:
 
 ```console
 $> tree dream/ --filelimit=19 -a
-dream                     # Project folder
+dream                   # Project folder
 ├── LICENSE.md          # License file
 ├── pyproject.toml      # Python package configuration file
 ├── README.md           # Readme file
@@ -77,17 +78,18 @@ dream                     # Project folder
 │   └── PULL_REQUEST_TEMPLATE
 │       └── pull_request_template.md
 ├── .gitignore          # Git ignore file
+├── .psp.log            # Update log (if enabled)
 ├── .dockerignore       # Docker ignore file
 ├── .containerignore    # Container ignore file
-├── dream                 # Python package
+├── dream               # Python package
 │   └── __init__.py
 ├── tests               # Tests package for modules
 │   ├── __init__.py
-│   └── test_dream.py     # Test module "test_<name_python_package>"
+│   └── test_dream.py   # Test module "test_<name_python_package>"
 ├── tox.ini             # Tox configuration files
 ├── samples
-│   └── dream_sample.py   # Sample code of package "<name_python_package>_sample"
-└── .venv                # Virtual environment
+│   └── dream_sample.py # Sample code of package "<name_python_package>_sample"
+└── .venv               # Virtual environment
     ├── bin  [33 entries exceeds filelimit, not opening dir]
     ├── include
     │   └── python3.14
@@ -118,7 +120,7 @@ For help message, type:
 
 ```console
 $> psp help
-psp (Python Scaffolding Projects), version 0.5.0
+psp (Python Scaffolding Projects), version 0.6.0
 usage: psp [shortcut]
 ie: psp [help|quick|simple|full]
 
@@ -148,8 +150,8 @@ environments:
 
 ### Differences with other tools
 
-- [cookiecutter](https://github.com/cookiecutter/cookiecutter): Users set configurations using JSON files when generating their projects.
-- [PyScaffold](https://github.com/pyscaffold/pyscaffold): Provides a command-line interface to set up projects, typically yielding a compliant project structure, which can limit customization when using templates from other sources.
+- [cookiecutter](https://github.com/cookiecutter/cookiecutter): Templates are prescriptive by design. Cookiecutter enforces a particular project structure and conventions, which may not align with your or your organization's preferences. **If a template's opinions don't match your needs, you're forced to either choose a different template or heavily modify an existing one**. This can become tedious when you need something slightly different from what's available. `psp` is dynamic; scaffold what you need.
+- [PyScaffold](https://github.com/pyscaffold/pyscaffold): **PyScaffold doesn't manage virtual environments directly**. You have to manually create and activate a virtualenv or use external tools like `pipenv`, `poetry`, `conda`, or `pyenv`. While PyScaffold documents integrations with these tools, it doesn't provide a unified interface for environment management like `psp` do.
 
 `psp` asks only what you need. By configuring a few environment variables, you can automate any project; in seconds, not hours.
 
@@ -211,13 +213,13 @@ To install compiled file into your machine, download it:
 For **all users** (required root access):
 ```console
 sudo -i
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.5.0/psp_linux -o /usr/bin/psp
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.6.0/psp_linux -o /usr/bin/psp
 chmod +x /usr/bin/psp
 ```
 
 For **current user**:
 ```console
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.5.0/psp_linux -o $HOME/.local/bin/psp
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.6.0/psp_linux -o $HOME/.local/bin/psp
 chmod +x $HOME/.local/bin/psp
 ```
 
@@ -225,7 +227,7 @@ chmod +x $HOME/.local/bin/psp
 
 ```console
 sudo su -
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.5.0/psp_macos -o /usr/bin/psp
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.6.0/psp_macos -o /usr/bin/psp
 chmod +x /usr/bin/psp
 ```
 
@@ -233,14 +235,14 @@ chmod +x /usr/bin/psp
 
 For **all users** (required Administrator):
 ```powershell
-iwr -OutFile "C:\Windows\system32\psp.exe" "https://github.com/MatteoGuadrini/psp/releases/download/v0.5.0/psp_windows"
+iwr -OutFile "C:\Windows\system32\psp.exe" "https://github.com/MatteoGuadrini/psp/releases/download/v0.6.0/psp_windows"
 ```
 
 For **current user**:
 ```powershell
 mkdir "$($Env:USERPROFILE)\bin"
 [System.Environment]::SetEnvironmentVariable("PATH", $Env:PATH + ";$($Env:USERPROFILE)\bin","USER")
-iwr -OutFile "$($Env:USERPROFILE)\bin\psp.exe" "https://github.com/MatteoGuadrini/psp/releases/download/v0.5.0/psp_windows"
+iwr -OutFile "$($Env:USERPROFILE)\bin\psp.exe" "https://github.com/MatteoGuadrini/psp/releases/download/v0.6.0/psp_windows"
 ```
 
 ### Packages
@@ -250,14 +252,14 @@ If you want to install OS package, follow instructions for your Operating System
 For **Debian/Ubuntu**:
 
 ```console
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.5.0/psp.deb -o psp.deb
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.6.0/psp.deb -o psp.deb
 sudo dpkg -i psp.deb
 ```
 
 For **Fedora/Mageia/OpenSuse**:
 
 ```console
-sudo rpm -i https://github.com/MatteoGuadrini/psp/releases/download/v0.5.0/psp.rpm
+sudo rpm -i https://github.com/MatteoGuadrini/psp/releases/download/v0.6.0/psp.rpm
 ```
 
 ### Compile as your own
@@ -312,8 +314,8 @@ docker run -it --rm -v ~/python_projects:/psp:z -e "PSP_GIT=true" -e "PSP_PYVER=
 - [x] Container support for psp program
 - [x] `conda`and `uv` support
 - [x] `hatch`, `maturin` and `poetry` build support
-- [ ] `docker-compose` and `kubernetes` support
-- [ ] updating/merging project
+- [x] updating/merging project
+- [ ] Gitlab CI/CD and Github Actions
 - [ ] templating folder support
 - [ ] command line flags support
 - [ ] YAML configuration file
