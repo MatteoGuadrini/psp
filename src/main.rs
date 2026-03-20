@@ -1219,7 +1219,13 @@ fn prj_ci(name: &str, deps: &Vec<String>, shortcut: &String) {
     if check_log(log_step, LOGFILE) {
         return;
     }
-    let options = vec!["None", "TravisCI", "CircleCI"];
+    let options = vec![
+        "None",
+        "CircleCI",
+        "Github Actions",
+        "Gitlab CI/CD",
+        "TravisCI",
+    ];
     let env_ci = var("PSP_CI").ok();
     let ci = if let Some(env_ci) = env_ci {
         env_ci
