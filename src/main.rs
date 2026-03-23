@@ -1239,7 +1239,7 @@ fn prj_ci(name: &str, deps: &Vec<String>, shortcut: &String) {
     } else {
         deps.join(" ")
     };
-    // Travis or CircleCI
+    // Select Ci configurations
     if ci.as_str().to_lowercase() == "travisci" {
         let travis_file = Path::new(name).join(".travis.yml");
         let travis = make_file(
@@ -1309,11 +1309,47 @@ jobs:
         if let Err(e) = circle {
             eprintln!("error: {}", e);
         }
-        // Write psp log
-        write_log(LOGFILE, format!("{}: {}", log_step, ci).as_str());
+    } else if ci.as_str().to_lowercase().replace(" ", "").replace("/", "") == "githubactions" {
+        let github_dir = Path::new(name).join(".github").join("workflows");
+        let dir_ret = make_dirs(github_dir.display().to_string().as_str());
+        if let Err(e) = dir_ret {
+            eprintln!("error: {}", e);
+        }
+        let github_file = Path::new(github_dir.as_path()).join("python-app.yml");
+        let github = make_file(
+            github_file.display().to_string().as_str(),
+            format!(
+                "# {SIGNATURE}, version {VERSION}
+
+name: Python package {name}
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '{}'
+          architecture: 'x64'
+      - name: Display Python version
+        run: python -c 'import sys; print(sys.version)'
+      - name: Run Python package {name}
+        run: python -m '{name}'
+",
+                env_pyversion(),
+            ),
+        );
+        if let Err(e) = github {
+            eprintln!("error: {}", e);
+        }
+    } else if ci.as_str().to_lowercase().replace(" ", "").replace("/", "") == "gitlabcicd" {
     } else if ci.as_str().to_lowercase() != "none" {
         println!("warning: `{}` is not recognized as remote CI", ci)
     }
+    // Write psp log
+    write_log(LOGFILE, format!("{}: {}", log_step, ci).as_str());
 }
 
 // Project Gitlab/GitHub
