@@ -1345,6 +1345,46 @@ jobs:
             eprintln!("error: {}", e);
         }
     } else if ci.as_str().to_lowercase().replace(" ", "").replace("/", "") == "gitlabcicd" {
+        let gitlab_file = Path::new(name).join(".gitlab-ci.yml");
+        let gitlab = make_file(
+            gitlab_file.display().to_string().as_str(),
+            format!(
+                "# {SIGNATURE}, version {VERSION}
+
+image: python:latest
+variables:
+  PIP_CACHE_DIR: '.cache/pip'
+# https://pip.pypa.io/en/stable/topics/caching/
+cache:
+  paths:
+    - .cache/pip
+before_script:
+  - python --version ; pip --version
+  - pip install virtualenv
+  - virtualenv venv
+  - source venv/bin/activate
+test:
+  script:
+    - pip install ruff tox
+    - pip install --editable '.[test]'
+    - tox -e py,ruff
+run:
+  script:
+    - pip install .
+    - python -m {name}
+  artifacts:
+    paths:
+      - build/*
+deploy:
+  stage: deploy
+  script: echo 'Define your deployment script!'
+  environment: production
+",
+            ),
+        );
+        if let Err(e) = gitlab {
+            eprintln!("error: {}", e);
+        }
     } else if ci.as_str().to_lowercase() != "none" {
         println!("warning: `{}` is not recognized as remote CI", ci)
     }
