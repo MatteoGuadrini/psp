@@ -1250,9 +1250,7 @@ fn prj_ci(name: &str, deps: &Vec<String>, shortcut: &String) {
 language: python
 cache: pip
 python:
-  - 3.12
-  - 3.13
-  - 3.14
+  - {}
 before_install:
   - sudo apt-get update
   - sudo apt-get install python3-pip
@@ -1262,7 +1260,8 @@ install:
   - pipenv install --dev
 script:
   - python -m unittest discover tests
-  - pytest tests"
+  - pytest tests",
+                env_pyversion()
             ),
         );
         if let Err(e) = travis {
