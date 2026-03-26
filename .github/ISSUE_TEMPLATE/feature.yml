@@ -1,0 +1,32 @@
+name: Feature Request
+description: File a feature request.
+title: "[Feature]: "
+labels: ["enhancement"]
+assignees:
+    - MatteoGuadrini
+body:
+    - type: markdown
+      attributes:
+          value: "## Feature Request for `psp`!"
+    - type: textarea
+      attributes:
+          label: Description
+          description: A concise description of what you're experiencing.
+          placeholder: Description of the proposal
+      validations:
+          required: true
+    - type: textarea
+      attributes:
+          label: New proposed
+          description: Proposed names of the new function, class or variables.
+          placeholder: |
+              * function or struct name
+              * possible argument(s)
+      validations:
+          required: true
+    - type: textarea
+      attributes:
+          label: Additional context
+          description: Other considerations
+      validations:
+          required: false

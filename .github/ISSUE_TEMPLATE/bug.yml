@@ -1,0 +1,45 @@
+name: Bug Report
+description: File a bug report.
+title: "[Bug]: "
+labels: ["bug"]
+assignees:
+    - MatteoGuadrini
+body:
+    - type: markdown
+      attributes:
+          value: "## Bug Report for `psp`!"
+    - type: textarea
+      attributes:
+          label: Description of problem
+          description: Provide a concise description of the bug.
+          placeholder: Describe here the problem
+      validations:
+          required: true
+    - type: textarea
+      attributes:
+          label: Steps to Reproduce
+          description: Lines of code.
+          placeholder: Paste here backtrace or lines of code
+      validations:
+          required: false
+    - type: textarea
+      attributes:
+          label: Expected Behaviour
+          description: Description of what is expected.
+      validations:
+          required: true
+    - type: textarea
+      attributes:
+          label: Your Environment
+          description: Description of your environment.
+          placeholder: |
+              * `psp` version used:
+              * Operating System and version:
+      validations:
+          required: false
+    - type: textarea
+      attributes:
+          label: Additional context
+          description: Other considerations
+      validations:
+          required: false
