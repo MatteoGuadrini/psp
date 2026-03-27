@@ -11,7 +11,7 @@
 - 🧪 Create a virtual environment
 - 🔧 Automagically dependencies installation
 - 🪛 Add build and deploy dependencies to distribute the package
-- 📏 [tox](https://tox.wiki/en/stable/) configuration supports and remotes CI like [CircleCI](https://circleci.com/) and [TravisCI](https://www.travis-ci.com/)
+- 📏 [tox](https://tox.wiki/en/stable/) configuration supports and remotes CI like [CircleCI](https://circleci.com/), [TravisCI](https://www.travis-ci.com/), [Github Actions](https://docs.github.com/en/actions) and [Gitlab CI/CD](https://docs.gitlab.com/ci/)
 - ⌨️ [MkDocs](https://www.mkdocs.org/) and [Sphinx](https://www.sphinx-doc.org/) documentation support
 - 🧰 Initialize git repository and `gitignore` file
 - 🌎 GitHub and Gitlab remote repository support
@@ -315,7 +315,7 @@ docker run -it --rm -v ~/python_projects:/psp:z -e "PSP_GIT=true" -e "PSP_PYVER=
 - [x] `conda`and `uv` support
 - [x] `hatch`, `maturin` and `poetry` build support
 - [x] updating/merging project
-- [ ] Gitlab CI/CD and Github Actions
+- [x] Gitlab CI/CD and Github Actions
 - [ ] templating folder support
 - [ ] command line flags support
 - [ ] YAML configuration file

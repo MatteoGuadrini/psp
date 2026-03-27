@@ -370,8 +370,10 @@ The default value is _None_.
 > Do you want to configure tox? Yes
 ? Select remote CI provider:
   None
-  TravisCI
 > CircleCI
+  Github Actions
+  Gitlab CI/CD
+  TravisCI
 [↑↓ to move, enter to select, type to filter]
 ```
 
