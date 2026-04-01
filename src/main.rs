@@ -307,6 +307,21 @@ fn load_env() {
     dotenvy::from_filename(home_env).ok();
 }
 
+// Function that render a template file
+fn render_template(template: &str, file: &str, data: HashMap<&str, &str>) -> bool {
+    // Create .gitignore template file
+    let mut handlebars = Handlebars::new();
+    handlebars.register_template_file("template", template).ok();
+    let mut output_file = File::create(file).unwrap();
+    let file_ret = handlebars.render_to_write("gitignore", &data, &mut output_file);
+    remove_file(template).ok();
+    if file_ret.is_err() {
+        false
+    } else {
+        true
+    }
+}
+
 // Function that makes a command
 fn make_command(
     bin: &str,
@@ -641,6 +656,7 @@ fn prj_git(name: &str, shortcut: &String) -> bool {
     }
     // Check environment variable
     let env_git = var("PSP_GIT").unwrap_or("false".to_string()).parse().ok();
+    let mut ret = false;
     let confirm = if let Some(true) = env_git {
         true
     } else if shortcut == "quick" || shortcut == "full" {
@@ -658,8 +674,6 @@ fn prj_git(name: &str, shortcut: &String) -> bool {
             eprintln!("error: something wrong with `git init`");
             return false;
         }
-        // Create .gitignore template file
-        let mut handlebars = Handlebars::new();
         // Create a data map with variables
         let mut data = HashMap::new();
         data.insert("SIGNATURE", SIGNATURE);
@@ -669,23 +683,22 @@ fn prj_git(name: &str, shortcut: &String) -> bool {
             name,
             ".gitignore.hbs",
         );
-        handlebars
-            .register_template_file("gitignore", format!("{name}/.gitignore.hbs"))
-            .ok();
-        let mut output_file = File::create(format!("{name}/.gitignore")).unwrap();
-        let file_ret = handlebars.render_to_write("gitignore", &data, &mut output_file);
-        remove_file(format!("{name}/.gitignore.hbs")).ok();
-        let ret = if let Err(e) = file_ret {
-            eprintln!("error: {}", e);
+        let gitignore_template = format!("{name}/.gitignore.hbs");
+        let file_ret = render_template(
+            &gitignore_template,
+            &gitignore_template.replace(".hbs", "").as_str(),
+            data,
+        );
+        ret = if file_ret {
+            eprintln!("error: .gitignore creation failed");
             false
         } else {
             true
         };
-        // Write psp log
-        write_log(LOGFILE, format!("{}: {}", log_step, ret).as_str());
-        return ret;
     }
-    false
+    // Write psp log
+    write_log(LOGFILE, format!("{}: {}", log_step, ret).as_str());
+    ret
 }
 
 // Project unit tests
