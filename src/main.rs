@@ -309,11 +309,14 @@ fn load_env() {
 
 // Function that render a template file
 fn render_template(template: &str, file: &str, data: HashMap<&str, &str>) -> bool {
-    // Create .gitignore template file
+    // Create template file
     let mut handlebars = Handlebars::new();
-    handlebars.register_template_file("template", template).ok();
+    handlebars
+        .register_template_file("template", template)
+        .unwrap();
     let mut output_file = File::create(file).unwrap();
-    let file_ret = handlebars.render_to_write("gitignore", &data, &mut output_file);
+    // Replace variables into file
+    let file_ret = handlebars.render_to_write("template", &data, &mut output_file);
     remove_file(template).ok();
     if file_ret.is_err() {
         false
@@ -679,21 +682,21 @@ fn prj_git(name: &str, shortcut: &String) -> bool {
         data.insert("SIGNATURE", SIGNATURE);
         data.insert("VERSION", VERSION);
         get_file_from_url(
-            "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/main/templates",
+            "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/main/templates/.gitignore.hbs",
             name,
             ".gitignore.hbs",
         );
         let gitignore_template = format!("{name}/.gitignore.hbs");
         let file_ret = render_template(
             &gitignore_template,
-            &gitignore_template.replace(".hbs", "").as_str(),
+            &gitignore_template.replace(".hbs", ""),
             data,
         );
         ret = if file_ret {
+            true
+        } else {
             eprintln!("error: .gitignore creation failed");
             false
-        } else {
-            true
         };
     }
     // Write psp log
