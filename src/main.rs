@@ -1008,6 +1008,22 @@ fn prj_toml(
         license = "GNU General Public License v3 (GPLv3)".to_string();
         classifiers.push("License :: OSI Approved :: GNU General Public License v3 (GPLv3)")
     }
+    // Create a data map with variables
+    let mut data = HashMap::new();
+    get_file_from_url(
+        "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/main/templates/pyproject.hbs",
+        name,
+        "pyproject.hbs",
+    );
+    let gitignore_template = format!("{name}/pyproject.hbs");
+    let file_ret = render_template(
+        &gitignore_template,
+        &gitignore_template.replace(".hbs", ".toml"),
+        data,
+    );
+    if !file_ret {
+        eprintln!("error: pyproject.toml render failed");
+    };
     // Check the version of a Python project
     let pyver = env_pyversion();
     let mut content = format!("# {SIGNATURE}, version {VERSION}\n");
