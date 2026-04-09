@@ -1009,65 +1009,46 @@ fn prj_toml(
         classifiers.push("License :: OSI Approved :: GNU General Public License v3 (GPLv3)")
     }
     // Create a data map with variables
-    let mut data = HashMap::new();
+    let builder = make_builder();
+    let project_name = name.to_lowercase();
+    let project_version = env_pyversion();
+    let python_version = get_python_version();
+    let stringed_classifiers = format!("{:?}", classifiers);
+    let mut data = HashMap::from([
+        ("SIGNATURE", SIGNATURE),
+        ("VERSION", VERSION),
+        ("BUILDER", &builder),
+        ("PRJ_NAME", &project_name),
+        ("PRJ_VER", &project_version),
+        ("USERNAME", &username),
+        ("EMAIL", &email),
+        ("DESCRIPTION", &description),
+        ("PYTHON", &python_version),
+        ("CLASSIFIERS", &stringed_classifiers),
+        ("DEPS", &requirements),
+        ("HOMEPAGE", &homepage),
+        ("DOCUMENTATION", &documentation),
+        ("REPOSITORY", &repository),
+        ("CHANGELOG", &changelog),
+    ]);
+    // Check if license is set
+    let stringed_license = format!("license = {{text = '{license}'}}");
+    if license != "None" {
+        data.insert("LICENSE", &stringed_license);
+    }
     get_file_from_url(
         "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/main/templates/pyproject.hbs",
         name,
         "pyproject.hbs",
     );
-    let gitignore_template = format!("{name}/pyproject.hbs");
+    let pyproject_template = format!("{root}/pyproject.hbs");
     let file_ret = render_template(
-        &gitignore_template,
-        &gitignore_template.replace(".hbs", ".toml"),
+        &pyproject_template,
+        &pyproject_template.replace(".hbs", ".toml"),
         data,
     );
     if !file_ret {
         eprintln!("error: pyproject.toml render failed");
-    };
-    // Check the version of a Python project
-    let pyver = env_pyversion();
-    let mut content = format!("# {SIGNATURE}, version {VERSION}\n");
-    content += make_builder().as_str();
-    content += format!(
-        "
-
-[project]
-name = '{}'
-version = '{pyver}'
-readme = {{'file' = 'README.md', 'content-type' = 'text/markdown'}}
-",
-        name.to_lowercase()
-    )
-    .as_str();
-    // Check if license is set
-    if license != "None" {
-        content += format!("license = {{text = '{license}'}}").as_str();
-    }
-    content += format!(
-        "
-authors = [{{name = '{username}', email = '{email}'}}]
-maintainers = [{{name = '{username}', email = '{email}'}}]
-description = '{description}'
-requires-python = '>={}'
-classifiers = {:?}
-dependencies = {}
-
-[project.urls]
-homepage = '{homepage}'
-documentation = '{documentation}'
-repository = '{repository}'
-changelog = '{changelog}'
-",
-        get_python_version(),
-        classifiers,
-        requirements
-    )
-    .as_str();
-    // Write pyproject.toml
-    let pyproject = make_file(format!("{root}/pyproject.toml").as_str(), content);
-    if let Err(e) = pyproject {
-        eprintln!("error: {}", e);
-        return;
     }
 }
 
