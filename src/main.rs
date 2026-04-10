@@ -1037,8 +1037,8 @@ fn prj_toml(
         data.insert("LICENSE", &stringed_license);
     }
     get_file_from_url(
-        "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/main/templates/pyproject.hbs",
-        name,
+        "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/dev/templates/pyproject.hbs",
+        root,
         "pyproject.hbs",
     );
     let pyproject_template = format!("{root}/pyproject.hbs");
