@@ -1033,7 +1033,7 @@ fn prj_toml(
     ]);
     // Check if license is set
     let stringed_license = format!("license = {{text = '{license}'}}");
-    if license != "None" {
+    if !license.is_empty() {
         data.insert("LICENSE", &stringed_license);
     }
     get_file_from_url(
