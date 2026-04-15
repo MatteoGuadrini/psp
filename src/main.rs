@@ -695,7 +695,7 @@ fn prj_git(name: &str, shortcut: &String) -> bool {
         ret = if file_ret {
             true
         } else {
-            eprintln!("error: .gitignore creation failed");
+            eprintln!("error: `.gitignore` creation failed");
             false
         };
     }
@@ -1037,7 +1037,7 @@ fn prj_toml(
         data.insert("LICENSE", &stringed_license);
     }
     get_file_from_url(
-        "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/dev/templates/pyproject.hbs",
+        "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/main/templates/pyproject.hbs",
         root,
         "pyproject.hbs",
     );
@@ -1048,7 +1048,7 @@ fn prj_toml(
         data,
     );
     if !file_ret {
-        eprintln!("error: pyproject.toml render failed");
+        eprintln!("error: `pyproject.toml` render failed");
     }
 }
 
@@ -1081,31 +1081,26 @@ fn prj_ci(name: &str, deps: &Vec<String>, shortcut: &String) {
     };
     // Select Ci configurations
     if ci.as_str().to_lowercase() == "travisci" {
-        let travis_file = Path::new(name).join(".travis.yml");
-        let travis = make_file(
-            travis_file.display().to_string().as_str(),
-            format!(
-                "# {SIGNATURE}, version {VERSION}
-
-language: python
-cache: pip
-python:
-  - {}
-before_install:
-  - sudo apt-get update
-  - sudo apt-get install python3-pip
-  - sudo apt-get install python3-pytest
-install:
-  - pip install {requirements} pipenv
-  - pipenv install --dev
-script:
-  - python -m unittest discover tests
-  - pytest tests",
-                env_pyversion()
-            ),
+        // Create a data map with variables
+        let python_version = get_python_version();
+        let data = HashMap::from([
+            ("SIGNATURE", SIGNATURE),
+            ("VERSION", VERSION),
+            ("PYTHON", &python_version),
+        ]);
+        get_file_from_url(
+            "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/main/templates/.travis.hbs",
+            name,
+            ".travis.hbs",
         );
-        if let Err(e) = travis {
-            eprintln!("error: {}", e);
+        let travis_template = format!("{name}/.travis.hbs");
+        let file_ret = render_template(
+            &travis_template,
+            &travis_template.replace(".hbs", ".yml"),
+            data,
+        );
+        if !file_ret {
+            eprintln!("error: `.travis.yml` render failed");
         }
     } else if ci.as_str().to_lowercase() == "circleci" {
         let circleci_dir = Path::new(name).join(".circleci");
