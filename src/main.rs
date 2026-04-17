@@ -686,7 +686,7 @@ fn prj_git(name: &str, shortcut: &String) -> bool {
             name,
             ".gitignore.hbs",
         );
-        let gitignore_template = format!("{name}/.gitignore.hbs");
+        let gitignore_template = Path::new(name).join(".gitignore.hbs").display().to_string();
         let file_ret = render_template(
             &gitignore_template,
             &gitignore_template.replace(".hbs", ""),
@@ -1041,7 +1041,7 @@ fn prj_toml(
         root,
         "pyproject.hbs",
     );
-    let pyproject_template = format!("{root}/pyproject.hbs");
+    let pyproject_template = Path::new(root).join("pyproject.hbs").display().to_string();
     let file_ret = render_template(
         &pyproject_template,
         &pyproject_template.replace(".hbs", ".toml"),
@@ -1093,7 +1093,7 @@ fn prj_ci(name: &str, deps: &Vec<String>, shortcut: &String) {
             name,
             ".travis.hbs",
         );
-        let travis_template = format!("{name}/.travis.hbs");
+        let travis_template = Path::new(name).join(".travis.hbs").display().to_string();
         let file_ret = render_template(
             &travis_template,
             &travis_template.replace(".hbs", ".yml"),
@@ -1108,40 +1108,28 @@ fn prj_ci(name: &str, deps: &Vec<String>, shortcut: &String) {
         if let Err(e) = dir_ret {
             eprintln!("error: {}", e);
         }
-        let circleci_file = Path::new(circleci_dir.as_path()).join("config.yml");
-        let circle = make_file(
-            circleci_file.display().to_string().as_str(),
-            format!(
-                "# {SIGNATURE}, version {VERSION}
-
-version: 2.1
-jobs:
-  build-and-test:
-    docker:
-      - image: circleci/python
-    steps:
-      - checkout
-      - run:
-          name: Install pytest
-          command: pip install pytest
-      - run:
-          name: Install dependencies
-          command: pip install {requirements}
-      - run:
-          name: Install package
-          command: pip install .
-      - run:
-          name: Run tests
-          command: python -m pytest tests
-  workflows:
-    main:
-      jobs:
-        - build-and-test
-"
-            ),
+        // Create a data map with variables
+        let data = HashMap::from([
+            ("SIGNATURE", SIGNATURE),
+            ("VERSION", VERSION),
+            ("REQUIREMENTS", &requirements),
+        ]);
+        let circleci_template = Path::new(circleci_dir.as_path())
+            .join("circleci.hbs")
+            .display()
+            .to_string();
+        get_file_from_url(
+            "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/dev/templates/circleci.hbs",
+            name,
+            &circleci_template,
         );
-        if let Err(e) = circle {
-            eprintln!("error: {}", e);
+        let file_ret = render_template(
+            &circleci_template,
+            &circleci_template.replace("circleci.hbs", "config.yml"),
+            data,
+        );
+        if !file_ret {
+            eprintln!("error: `.circleci/config.yml` render failed");
         }
     } else if ci.as_str().to_lowercase().replace(" ", "").replace("/", "") == "githubactions" {
         let github_dir = Path::new(name).join(".github").join("workflows");
