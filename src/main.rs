@@ -1079,10 +1079,11 @@ fn prj_ci(name: &str, deps: &Vec<String>, shortcut: &String) {
     } else {
         deps.join(" ")
     };
+    let python_version = get_python_version();
+    let package_name = Path::new(name).file_name().unwrap().to_str().unwrap();
     // Select Ci configurations
     if ci.as_str().to_lowercase() == "travisci" {
         // Create a data map with variables
-        let python_version = get_python_version();
         let data = HashMap::from([
             ("SIGNATURE", SIGNATURE),
             ("VERSION", VERSION),
@@ -1119,7 +1120,7 @@ fn prj_ci(name: &str, deps: &Vec<String>, shortcut: &String) {
             .display()
             .to_string();
         get_file_from_url(
-            "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/dev/templates/circleci.hbs",
+            "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/main/templates/circleci.hbs",
             name,
             &circleci_template,
         );
@@ -1137,34 +1138,29 @@ fn prj_ci(name: &str, deps: &Vec<String>, shortcut: &String) {
         if let Err(e) = dir_ret {
             eprintln!("error: {}", e);
         }
-        let github_file = Path::new(github_dir.as_path()).join("python-app.yml");
-        let github = make_file(
-            github_file.display().to_string().as_str(),
-            format!(
-                "# {SIGNATURE}, version {VERSION}
-
-name: Python package {name}
-on: [push]
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '{}'
-          architecture: 'x64'
-      - name: Display Python version
-        run: python -c 'import sys; print(sys.version)'
-      - name: Run Python package {name}
-        run: python -m '{name}'
-",
-                env_pyversion(),
-            ),
+        // Create a data map with variables
+        let data = HashMap::from([
+            ("SIGNATURE", SIGNATURE),
+            ("VERSION", VERSION),
+            ("PYTHON", &python_version),
+            ("PACKAGE", package_name),
+        ]);
+        let github_template = Path::new(github_dir.as_path())
+            .join("githubactions.hbs")
+            .display()
+            .to_string();
+        get_file_from_url(
+            "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/main/templates/githubactions.hbs",
+            name,
+            &github_template,
         );
-        if let Err(e) = github {
-            eprintln!("error: {}", e);
+        let file_ret = render_template(
+            &github_template,
+            &github_template.replace("githubactions.hbs", "python-app.yml"),
+            data,
+        );
+        if !file_ret {
+            eprintln!("error: `python-app.yml` render failed");
         }
     } else if ci.as_str().to_lowercase().replace(" ", "").replace("/", "") == "gitlabcicd" {
         let gitlab_file = Path::new(name).join(".gitlab-ci.yml");
