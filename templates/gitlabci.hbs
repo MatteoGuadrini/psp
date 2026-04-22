@@ -1,0 +1,30 @@
+# {{SIGNATURE}}, version {{VERSION}}
+
+image: python:latest
+variables:
+  PIP_CACHE_DIR: '.cache/pip'
+# https://pip.pypa.io/en/stable/topics/caching/
+cache:
+  paths:
+    - .cache/pip
+before_script:
+  - python --version ; pip --version
+  - pip install virtualenv
+  - virtualenv venv
+  - source venv/bin/activate
+test:
+  script:
+    - pip install ruff tox
+    - pip install --editable '.[test]'
+    - tox -e py,ruff
+run:
+  script:
+    - pip install .
+    - python -m {{PACKAGE}}
+  artifacts:
+    paths:
+      - build/*
+deploy:
+  stage: deploy
+  script: echo 'Define your deployment script!'
+  environment: production
