@@ -682,14 +682,14 @@ fn prj_git(name: &str, shortcut: &String) -> bool {
         data.insert("SIGNATURE", SIGNATURE);
         data.insert("VERSION", VERSION);
         get_file_from_url(
-            "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/main/templates/.gitignore.hbs",
+            "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/main/templates/gitignore.hbs",
             name,
-            ".gitignore.hbs",
+            "gitignore.hbs",
         );
-        let gitignore_template = Path::new(name).join(".gitignore.hbs").display().to_string();
+        let gitignore_template = Path::new(name).join("gitignore.hbs").display().to_string();
         let file_ret = render_template(
             &gitignore_template,
-            &gitignore_template.replace(".hbs", ""),
+            &gitignore_template.replace("gitignore.hbs", ".gitignore"),
             data,
         );
         ret = if file_ret {
@@ -1090,14 +1090,14 @@ fn prj_ci(name: &str, deps: &Vec<String>, shortcut: &String) {
             ("PYTHON", &python_version),
         ]);
         get_file_from_url(
-            "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/main/templates/.travis.hbs",
+            "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/main/templates/travis.hbs",
             name,
             ".travis.hbs",
         );
         let travis_template = Path::new(name).join(".travis.hbs").display().to_string();
         let file_ret = render_template(
             &travis_template,
-            &travis_template.replace(".hbs", ".yml"),
+            &travis_template.replace("travis.hbs", ".travis.yml"),
             data,
         );
         if !file_ret {
