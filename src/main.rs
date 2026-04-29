@@ -1163,45 +1163,26 @@ fn prj_ci(name: &str, deps: &Vec<String>, shortcut: &String) {
             eprintln!("error: `python-app.yml` render failed");
         }
     } else if ci.as_str().to_lowercase().replace(" ", "").replace("/", "") == "gitlabcicd" {
-        let gitlab_file = Path::new(name).join(".gitlab-ci.yml");
-        let gitlab = make_file(
-            gitlab_file.display().to_string().as_str(),
-            format!(
-                "# {SIGNATURE}, version {VERSION}
-
-image: python:latest
-variables:
-  PIP_CACHE_DIR: '.cache/pip'
-# https://pip.pypa.io/en/stable/topics/caching/
-cache:
-  paths:
-    - .cache/pip
-before_script:
-  - python --version ; pip --version
-  - pip install virtualenv
-  - virtualenv venv
-  - source venv/bin/activate
-test:
-  script:
-    - pip install ruff tox
-    - pip install --editable '.[test]'
-    - tox -e py,ruff
-run:
-  script:
-    - pip install .
-    - python -m {name}
-  artifacts:
-    paths:
-      - build/*
-deploy:
-  stage: deploy
-  script: echo 'Define your deployment script!'
-  environment: production
-",
-            ),
+        // Create a data map with variables
+        let data = HashMap::from([
+            ("SIGNATURE", SIGNATURE),
+            ("VERSION", VERSION),
+            ("PYTHON", &python_version),
+            ("PACKAGE", package_name),
+        ]);
+        let gitlab_template = Path::new(name).join("gitlabcicd.hbs").display().to_string();
+        get_file_from_url(
+            "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/dev/templates/gitlabcicd.hbs",
+            name,
+            &gitlab_template,
         );
-        if let Err(e) = gitlab {
-            eprintln!("error: {}", e);
+        let file_ret = render_template(
+            &gitlab_template,
+            &gitlab_template.replace("gitlabcicd.hbs", ".gitlab-ci.yml"),
+            data,
+        );
+        if !file_ret {
+            eprintln!("error: `.gitlab-ci.yml` render failed");
         }
     } else if ci.as_str().to_lowercase() != "none" {
         println!("warning: `{}` is not recognized as remote CI", ci)
