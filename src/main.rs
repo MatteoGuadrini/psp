@@ -311,9 +311,10 @@ fn load_env() {
 fn render_template(template: &str, file: &str, data: HashMap<&str, &str>) -> bool {
     // Create template file
     let mut handlebars = Handlebars::new();
-    handlebars
-        .register_template_file("template", template)
-        .unwrap();
+    if let Err(e) = handlebars.register_template_file("template", template) {
+        println!("error: {}; {} is not found!", e, template);
+        return false;
+    }
     let mut output_file = File::create(file).unwrap();
     // Replace variables into file
     let file_ret = handlebars.render_to_write("template", &data, &mut output_file);
