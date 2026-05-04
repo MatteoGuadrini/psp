@@ -1246,23 +1246,39 @@ fn prj_remote(root: &str, name: &str, shortcut: &String) -> (String, String) {
             name.to_lowercase()
         );
         // Test if remote has already been set
-        let origin = std::process::Command::new("git")
-            .args(["remote", "-v"])
-            .current_dir(root)
-            .output()
-            .expect("git should be installed");
+        let git_bin = "git";
+        let mut origin_exists = make_command(
+            git_bin,
+            root,
+            root,
+            vec!["remote".to_string(), "-v".to_string()],
+            false,
+        );
+        let output = origin_exists.output().expect("git should be installed");
+        // Check if the command exits successfully
+        if !output.status.success() {
+            eprintln!("error: something wrong with `git remote -v`");
+        }
         let git_verb;
-        if origin.stdout.len() > 0 {
+        if output.stdout.len() > 0 {
             git_verb = "set-url"
         } else {
             git_verb = "add"
         }
         // Set origin remote repository
-        let output = std::process::Command::new("git")
-            .args(["remote", git_verb, "origin", &remote_path])
-            .current_dir(root)
-            .output()
-            .expect("git should be installed");
+        let mut origin = make_command(
+            git_bin,
+            root,
+            root,
+            vec![
+                "remote".to_string(),
+                git_verb.to_string(),
+                "-v".to_string(),
+                remote_path,
+            ],
+            false,
+        );
+        let output = origin.output().expect("git should be installed");
         // Check if the command exits successfully
         if !output.status.success() {
             eprintln!(
