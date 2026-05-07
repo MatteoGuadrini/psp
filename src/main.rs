@@ -1173,7 +1173,7 @@ fn prj_ci(name: &str, deps: &Vec<String>, shortcut: &String) {
         ]);
         let gitlab_template = Path::new(name).join("gitlabcicd.hbs").display().to_string();
         get_file_from_url(
-            "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/dev/templates/gitlabcicd.hbs",
+            "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/main/templates/gitlabcicd.hbs",
             name,
             &gitlab_template,
         );
@@ -1273,7 +1273,7 @@ fn prj_remote(root: &str, name: &str, shortcut: &String) -> (String, String) {
             vec![
                 "remote".to_string(),
                 git_verb.to_string(),
-                "-v".to_string(),
+                "origin".to_string(),
                 remote_path,
             ],
             false,
@@ -1281,6 +1281,7 @@ fn prj_remote(root: &str, name: &str, shortcut: &String) -> (String, String) {
         let output = origin.output().expect("git should be installed");
         // Check if the command exits successfully
         if !output.status.success() {
+            println!("{:?}", output);
             eprintln!(
                 "error: username of remote repository `{}` setting failed",
                 remote.to_lowercase()
@@ -1289,95 +1290,73 @@ fn prj_remote(root: &str, name: &str, shortcut: &String) -> (String, String) {
         // Make remote files and folders
         // Gitlab
         if remote.as_str().to_lowercase() == "gitlab" {
-            let issue_folder = format!("{}/.{}/issue_templates", root, remote.to_lowercase());
-            let merge_folder = format!(
-                "{}/.{}/merge_request_templates",
+            let issue_folder = Path::new(root)
+                .join(remote.to_lowercase())
+                .join("issue_templates");
+            let merge_folder = Path::new(root)
+                .join(remote.to_lowercase())
+                .join("merge_request_templates");
+            let dir_ret = make_dirs(issue_folder.display().to_string().as_str());
+            if let Err(e) = dir_ret {
+                eprintln!("error: {}", e);
+            }
+            let dir_ret = make_dirs(merge_folder.display().to_string().as_str());
+            if let Err(e) = dir_ret {
+                eprintln!("error: {}", e);
+            }
+            // Create a data map with variables
+            let data = HashMap::from([
+                ("SIGNATURE", SIGNATURE),
+                ("VERSION", VERSION),
+                ("PACKAGE", name),
+            ]);
+            // Feature template
+            let gitlab_feature_template = issue_folder
+                .join("gitlab_feature.hbs")
+                .display()
+                .to_string();
+            get_file_from_url(
+                "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/main/templates/gitlab_feature.hbs",
                 root,
-                remote.to_lowercase()
+                &gitlab_feature_template,
             );
-            let dir_ret = make_dirs(issue_folder.as_str());
-            if let Err(e) = dir_ret {
-                eprintln!("error: {}", e);
+            let file_ret = render_template(
+                &gitlab_feature_template,
+                &gitlab_feature_template.replace("gitlab_feature.hbs", "feature.md"),
+                data.clone(),
+            );
+            if !file_ret {
+                eprintln!("error: `feature.md` render failed");
             }
-            let dir_ret = make_dirs(merge_folder.as_str());
-            if let Err(e) = dir_ret {
-                eprintln!("error: {}", e);
+            // Bug template
+            let gitlab_bug_template = issue_folder.join("gitlab_bug.hbs").display().to_string();
+            get_file_from_url(
+                "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/main/templates/gitlab_bug.hbs",
+                root,
+                &gitlab_bug_template,
+            );
+            let file_ret = render_template(
+                &gitlab_bug_template,
+                &gitlab_bug_template.replace("gitlab_bug.hbs", "bug.md"),
+                data.clone(),
+            );
+            if !file_ret {
+                eprintln!("error: `bug.md` render failed");
             }
-            let feature_content = format!(
-                "<!-- {SIGNATURE}, version {VERSION} -->
-
-## Description
-
-Description of the proposal
-
-## Proposed names of the new function, class or variables of {} package
-
-* function or class name
-* possible argument(s)
-
-Additional context
-
-/label ~CR",
-                name.to_lowercase()
+            // Merge template
+            let gitlab_merge_template = merge_folder.join("gitlab_merge.hbs").display().to_string();
+            get_file_from_url(
+                "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/main/templates/gitlab_merge.hbs",
+                root,
+                &gitlab_merge_template,
             );
-            let feature_issue = make_file(
-                format!("{issue_folder}/feature.md").as_str(),
-                feature_content,
+            let file_ret = render_template(
+                &gitlab_merge_template,
+                &gitlab_merge_template.replace("gitlab_merge.hbs", "merge.md"),
+                data.clone(),
             );
-            if let Err(e) = feature_issue {
-                eprintln!("error: {}", e);
-            }
-            let bug_content = format!(
-                "<!-- {SIGNATURE}, version {VERSION} -->
-
-## Description of problem
-
-Provide a concise description of the bug
-
-## Steps to Reproduce
-
-Lines of code
-
-## Expected Behaviour
-
-Description of what is expected
-
-## Your Environment
-
-* {} version used:
-* Operating System and version:
-
-Additional context
-
-/label ~Bug",
-                name.to_lowercase()
-            );
-            let bug_issue = make_file(format!("{issue_folder}/bug.md").as_str(), bug_content);
-            if let Err(e) = bug_issue {
-                eprintln!("error: {}", e);
-            }
-            let merge_content = format!(
-                "<!-- {SIGNATURE}, version {VERSION} -->
-
-## What does this MR do and why?
-
-%{{first_multiline_commit}}
-
-## MR acceptance checklist of {}
-
-**Please evaluate this MR against the [MR acceptance checklist](https://docs.gitlab.com/ee/development/code_review.html#acceptance-checklist).**
-It helps you analyze changes to reduce risks in quality, performance, reliability, security, and maintainability.
-
-## How to set up and validate locally
-
-Numbered steps to set up and validate the change are strongly suggested.
-
-/assign me",
-                name.to_lowercase()
-            );
-            let merge_issue = make_file(format!("{merge_folder}/merge.md").as_str(), merge_content);
-            if let Err(e) = merge_issue {
-                eprintln!("error: {}", e);
+            if !file_ret {
+                eprintln!("error: `merge.md` render failed");
             }
         // Github
         } else if remote.as_str().to_lowercase() == "github" {
