@@ -213,8 +213,8 @@ To install compiled file into your machine, download it:
 For **all users** (required root access):
 ```console
 sudo -i
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.6.0/psp_linux -o /usr/bin/psp
-chmod +x /usr/bin/psp
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.6.0/psp_linux -o /usr/local/bin/psp
+chmod +x /usr/local/bin/psp
 ```
 
 For **current user**:
@@ -227,8 +227,8 @@ chmod +x $HOME/.local/bin/psp
 
 ```console
 sudo su -
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.6.0/psp_macos -o /usr/bin/psp
-chmod +x /usr/bin/psp
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.6.0/psp_macos -o /usr/local/bin/psp
+chmod +x /usr/local/bin/psp
 ```
 
 #### Windows
@@ -268,7 +268,7 @@ Instead, if you compile this project as own, follow this steps:
 
 ```console
 git clone https://github.com/MatteoGuadrini/psp.git
-cd psp && cargo build --release && sudo cp -v target/release/psp /usr/bin/psp && chmod +x /usr/bin/psp
+cd psp && cargo build --release && sudo cp -v target/release/psp /usr/local/bin/psp && chmod +x /usr/local/bin/psp
 ```
 
 or build with script:
@@ -279,7 +279,7 @@ cd psp
 # Build
 ./build_psp.sh
 # Copy binary
-sudo cp -v target/release/psp /usr/bin/psp && chmod +x /usr/bin/psp
+sudo cp -v target/release/psp /usr/local/bin/psp && chmod +x /usr/local/bin/psp
 # Install rpm
 sudo rpm -i /tmp/psp_rpm/psp.rpm
 # Instal deb
