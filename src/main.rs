@@ -1360,158 +1360,72 @@ fn prj_remote(root: &str, name: &str, shortcut: &String) -> (String, String) {
             }
         // Github
         } else if remote.as_str().to_lowercase() == "github" {
-            let issue_folder = format!("{}/.{}/ISSUE_TEMPLATE", root, remote.to_lowercase());
-            let merge_folder = format!("{}/.{}/PULL_REQUEST_TEMPLATE", root, remote.to_lowercase());
-            let dir_ret = make_dirs(issue_folder.as_str());
+            let issue_folder = Path::new(root).join(".github").join("ISSUE_TEMPLATE");
+            let merge_folder = Path::new(root)
+                .join(".github")
+                .join("PULL_REQUEST_TEMPLATE");
+            let dir_ret = make_dirs(issue_folder.display().to_string().as_str());
             if let Err(e) = dir_ret {
                 eprintln!("error: {}", e);
             }
-            let dir_ret = make_dirs(merge_folder.as_str());
+            let dir_ret = make_dirs(merge_folder.display().to_string().as_str());
             if let Err(e) = dir_ret {
                 eprintln!("error: {}", e);
             }
-            let config_content = "blank_issues_enabled: false\n".to_string();
-            let config_file = make_file(
-                format!("{issue_folder}/config.yml").as_str(),
-                config_content,
+            // Create a data map with variables
+            let data = HashMap::from([
+                ("SIGNATURE", SIGNATURE),
+                ("VERSION", VERSION),
+                ("PACKAGE", name),
+                ("USERNAME", username.as_str()),
+            ]);
+            // Feature template
+            let github_feature_template = issue_folder
+                .join("github_feature.hbs")
+                .display()
+                .to_string();
+            get_file_from_url(
+                "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/main/templates/github_feature.hbs",
+                root,
+                &github_feature_template,
             );
-            if let Err(e) = config_file {
-                eprintln!("error: {}", e);
+            let file_ret = render_template(
+                &github_feature_template,
+                &github_feature_template.replace("github_feature.hbs", "feature.yml"),
+                data.clone(),
+            );
+            if !file_ret {
+                eprintln!("error: `feature.yml` render failed");
             }
-            let feature_content = format!(
-                "# {SIGNATURE}, version {VERSION}
-
-name: Feature Request
-description: File a feature request.
-title: '[Feature]: '
-labels: ['enhancement']
-assignees:
-  - {}
-body:
-  - type: markdown
-    attributes:
-      value: '## Feature Request for {}!'
-  - type: textarea
-    attributes:
-      label: Description
-      description: A concise description of what you're experiencing.
-      placeholder: Description of the proposal
-    validations:
-      required: true
-  - type: textarea
-    attributes:
-      label: New proposed
-      description: Proposed names of the new function, class or variables.
-      placeholder: |
-        * function or class name
-        * possible argument(s)
-    validations:
-      required: true
-  - type: textarea
-    attributes:
-      label: Additional context
-      description: Other considerations
-    validations:
-      required: false
-",
-                username,
-                name.to_lowercase()
+            // Bug template
+            let github_bug_template = issue_folder.join("github_bug.hbs").display().to_string();
+            get_file_from_url(
+                "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/main/templates/github_bug.hbs",
+                root,
+                &github_bug_template,
             );
-            let feature_issue = make_file(
-                format!("{issue_folder}/feature.yml").as_str(),
-                feature_content,
+            let file_ret = render_template(
+                &github_bug_template,
+                &github_bug_template.replace("github_bug.hbs", "bug.yml"),
+                data.clone(),
             );
-            if let Err(e) = feature_issue {
-                eprintln!("error: {}", e);
+            if !file_ret {
+                eprintln!("error: `bug.yml` render failed");
             }
-            let bug_content = format!(
-                "# {SIGNATURE}, version {VERSION}
-
-name: Bug Report
-description: File a bug report.
-title: '[Bug]: '
-labels: ['bug']
-assignees:
-  - {}
-body:
-  - type: markdown
-    attributes:
-      value: '## Bug Report for {}!'
-  - type: textarea
-    attributes:
-      label: Description of problem
-      description: Provide a concise description of the bug.
-      placeholder: Describe here the problem
-    validations:
-      required: true
-  - type: textarea
-    attributes:
-      label: Steps to Reproduce
-      description: Lines of code.
-      placeholder: Paste here backtrace or lines of code
-    validations:
-      required: false
-  - type: textarea
-    attributes:
-      label: Expected Behaviour
-      description: Description of what is expected.
-    validations:
-      required: true
-  - type: textarea
-    attributes:
-      label: Your Environment
-      description: Description of your environment.
-      placeholder: |
-        * {} version used:
-        * Operating System and version:
-    validations:
-      required: false
-  - type: textarea
-    attributes:
-      label: Additional context
-      description: Other considerations
-    validations:
-      required: false
-",
-                username,
-                name.to_lowercase(),
-                name.to_lowercase()
+            // Merge template
+            let github_merge_template = merge_folder.join("github_merge.hbs").display().to_string();
+            get_file_from_url(
+                "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/main/templates/github_merge.hbs",
+                root,
+                &github_merge_template,
             );
-            let bug_issue = make_file(format!("{issue_folder}/bug.yml").as_str(), bug_content);
-            if let Err(e) = bug_issue {
-                eprintln!("error: {}", e);
-            }
-            let merge_content = format!(
-                "<!-- {SIGNATURE}, version {VERSION} -->
-
-# Title of Pull Request
-
----
-name: Tracking issue
-about: Use this template for tracking new features.
-title: '[DATE]: [FEATURE NAME]'
-labels: enhancement
-assignees: {}
----
-
-## Describe your changes
-
-## Issue ticket number and link
-
-## Checklist before requesting a review
-- [ ] I have performed a self-review of my code
-- [ ] If it is a core feature, I have added thorough tests.
-- [ ] Do we need to implement analytics?
-- [ ] Will this be part of a product update? If yes, please write one phrase about this update.
-",
-                username
+            let file_ret = render_template(
+                &github_merge_template,
+                &github_merge_template.replace("github_merge.hbs", "pull_request_template.md"),
+                data.clone(),
             );
-            let merge_issue = make_file(
-                format!("{merge_folder}/pull_request_template.md").as_str(),
-                merge_content,
-            );
-            if let Err(e) = merge_issue {
-                eprintln!("error: {}", e);
+            if !file_ret {
+                eprintln!("error: `bug.yml` render failed");
             }
         } else {
             println!(
