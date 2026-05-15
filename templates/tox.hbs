@@ -1,0 +1,12 @@
+# {{SIGNATURE}}, version {{VERSION}}
+
+[tox]
+envlist = {{PACKAGE}}
+isolated_build = True
+
+[testenv]
+labels = test, core
+deps=
+    pytest
+    {{DEPS}}
+commands = pytest tests
