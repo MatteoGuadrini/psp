@@ -1,12 +1,25 @@
 # {{SIGNATURE}}, version {{VERSION}}
 
 [tox]
-envlist = {{PACKAGE}}
+envlist = {{VERSIONS}}, unittest
 isolated_build = True
 
 [testenv]
+description = Run tests using pytest
 labels = test, core
 deps=
     pytest
     {{DEPS}}
-commands = pytest tests
+commands =
+    # {posargs} allows you to pass arguments from the command line
+    # e.g., tox -e py39 -- -v -k "test_specific"
+    pytest {posargs}
+
+[testenv:unittest]
+description = Run tests using standard library unittest
+deps=
+    {{DEPS}}
+commands =
+    # Discovers tests in the current directory ('.')
+    # You can change '.' to 'tests' or 'src' if your tests are located there
+    python -m unittest discover -s . -p "test_*.py" {posargs}
