@@ -1478,34 +1478,39 @@ fn prj_tox(name: &str, venv: bool, deps: &Vec<String>, shortcut: &String) {
             eprintln!("error: `tox` installation failed");
             return;
         }
-        // Write tox.ini
-        let tox_ini_content = format!(
-            "# {SIGNATURE}, version {VERSION}
-
-[tox]
-envlist = {}
-isolated_build = True
-
-[testenv]
-labels = test, core
-deps=
-    pytest
-{}
-commands = pytest tests",
-            format!("py{}", get_python_version().replace(".", "")),
-            deps.iter()
-                .map(|s| if s != "No" {
+        // Create a data map with variables
+        let python_version = format!("py{}", get_python_version().replace(".", ""));
+        let dependencies = deps
+            .iter()
+            .map(|s| {
+                if s != "No" {
                     format!("\t{s}")
                 } else {
                     String::new()
-                })
-                .collect::<Vec<String>>()
-                .join("\n")
+                }
+            })
+            .collect::<Vec<String>>()
+            .join("\n");
+        let data = HashMap::from([
+            ("SIGNATURE", SIGNATURE),
+            ("VERSION", VERSION),
+            ("PYTHON", python_version.as_str()),
+            ("DEPS", dependencies.as_str()),
+        ]);
+        // Tox template
+        let tox_template = Path::new(name).join("tox.hbs").display().to_string();
+        get_file_from_url(
+            "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/dev/templates/tox.hbs",
+            name,
+            &tox_template,
         );
-        let tox_ini_file = Path::new(name).join("tox.ini");
-        let tox_ini = make_file(tox_ini_file.display().to_string().as_str(), tox_ini_content);
-        if let Err(e) = tox_ini {
-            eprintln!("error: {}", e);
+        let file_ret = render_template(
+            &tox_template,
+            &tox_template.replace("tox.hbs", "tox.ini"),
+            data.clone(),
+        );
+        if !file_ret {
+            eprintln!("error: `tox.ini` render failed");
         }
     }
     // Write psp log
