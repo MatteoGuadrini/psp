@@ -20,6 +20,7 @@ import {{PACKAGE}}
 
 ...
 ```
+{{#if CONTAINER}}
 ## Use {{PACKAGE}} with container (Docker/Podman)
 To containerize `{{PACKAGE}}`, follow this:
 
@@ -28,6 +29,7 @@ docker build . -t {{PACKAGE}}:{{PRJVERSION}}
 docker tag {{PACKAGE}}:{{PRJVERSION}} {{PACKAGE}}:latest
 docker run {{PACKAGE}}
 ```
+{{/if}}
 
 ## Acknowledgments
 Thanks Python Community!
