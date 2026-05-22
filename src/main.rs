@@ -1500,7 +1500,7 @@ fn prj_tox(name: &str, venv: bool, deps: &Vec<String>, shortcut: &String) {
         // Tox template
         let tox_template = Path::new(name).join("tox.hbs").display().to_string();
         get_file_from_url(
-            "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/dev/templates/tox.hbs",
+            "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/main/templates/tox.hbs",
             name,
             &tox_template,
         );
@@ -1670,54 +1670,29 @@ fn prj_files(root: &str, name: &str, container: bool, shortcut: &String) {
     if confirm {
         // Check the version of a Python project
         let pyver = env_pyversion();
-        // Create README
-        let mut readme_content = format!(
-            "<!-- {SIGNATURE}, version {VERSION} -->
-
-# Welcome to **`{name}`**
-
-> [!CAUTION]
-> `{name}` is a Work In Progress (WIP)
-
-## Install {name}
-To install `{name}`, follow this:
-
-```console
-pip install .
-```
-
-## Use {name}
-To use `{name}`, follow this:
-
-```python
-import {name}
-
-...
-```
-"
+        let container_enable = if container { "true" } else { "" };
+        // Create a data map with variables
+        let data = HashMap::from([
+            ("SIGNATURE", SIGNATURE),
+            ("VERSION", VERSION),
+            ("PACKAGE", name),
+            ("PRJVERSION", pyver.as_str()),
+            ("CONTAINER", container_enable),
+        ]);
+        // README template
+        let readme_template = Path::new(root).join("readme.hbs").display().to_string();
+        get_file_from_url(
+            "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/dev/templates/readme.hbs",
+            root,
+            &readme_template,
         );
-        if container {
-            readme_content += format!(
-                "
-## Use {name} with container (Docker/Podman)
-To containerize `{name}`, follow this:
-
-```console
-docker build . -t {name}:{pyver}
-docker tag {name}:{pyver} {name}:latest
-docker run {name}
-```
-
-"
-            )
-            .as_str();
-        }
-        readme_content += "## Acknowledgments\n\
-        Thanks Python Community!";
-        let readme_file = Path::new(root).join("README.md");
-        let readme = make_file(readme_file.display().to_string().as_str(), readme_content);
-        if let Err(e) = readme {
-            eprintln!("error: {}", e);
+        let file_ret = render_template(
+            &readme_template,
+            &readme_template.replace("readme.hbs", "README.md"),
+            data.clone(),
+        );
+        if !file_ret {
+            eprintln!("error: `tox.ini` render failed");
         }
         // Create CHANGES
         let changes_content = format!(
