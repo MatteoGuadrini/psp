@@ -1682,7 +1682,7 @@ fn prj_files(root: &str, name: &str, container: bool, shortcut: &String) {
         // README template
         let readme_template = Path::new(root).join("readme.hbs").display().to_string();
         get_file_from_url(
-            "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/dev/templates/readme.hbs",
+            "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/main/templates/readme.hbs",
             root,
             &readme_template,
         );
@@ -1692,40 +1692,22 @@ fn prj_files(root: &str, name: &str, container: bool, shortcut: &String) {
             data.clone(),
         );
         if !file_ret {
-            eprintln!("error: `tox.ini` render failed");
+            eprintln!("error: `README.md` render failed");
         }
-        // Create CHANGES
-        let changes_content = format!(
-            "<!-- {SIGNATURE}, version {VERSION} -->
-
-# Changelog
-
-All notable changes to **{name}** will be documented in this file.
-
-The format is based on [Keep a Changelog](https://keepachangelog.com/),
-and this project adheres to [Semantic Versioning](https://semver.org/).
-
-## [Unreleased]
-
-## [{pyver}] - 1970-01-01
-
-### Added
-- Start **{name}** project
-
-### Changed
-- None
-
-### Removed
-- None
-
-### Fixed
-- None
-"
+        // CHANGES template
+        let changes_template = Path::new(root).join("changes.hbs").display().to_string();
+        get_file_from_url(
+            "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/main/templates/changes.hbs",
+            root,
+            &changes_template,
         );
-        let changes_file = Path::new(root).join("CHANGES.md");
-        let changes = make_file(changes_file.display().to_string().as_str(), changes_content);
-        if let Err(e) = changes {
-            eprintln!("error: {}", e);
+        let file_ret = render_template(
+            &changes_template,
+            &changes_template.replace("changes.hbs", "CHANGES.md"),
+            data.clone(),
+        );
+        if !file_ret {
+            eprintln!("error: `CHANGES.md` render failed");
         }
         // Create CONTRIBUTING
         let contributing_content = format!(
