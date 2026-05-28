@@ -1709,44 +1709,23 @@ fn prj_files(root: &str, name: &str, container: bool, shortcut: &String) {
         if !file_ret {
             eprintln!("error: `CHANGES.md` render failed");
         }
-        // Create CONTRIBUTING
-        let contributing_content = format!(
-            "<!-- {SIGNATURE}, version {VERSION} -->
-
-# Contributing to {name}
-
-Bug fixes, feature additions, tests, documentation and more can be contributed via issues and/or pull requests.
-**All contributions are welcome**.
-
-## Bug fixes, feature additions, etc.
-
-Please send a pull request to the `main` branch.
-Please include documentation and tests for new features.
-Tests or documentation without bug fixes or feature additions are welcome too.
-Feel free to ask questions via issues, discussions, or mail.
-
-- Fork the {name} repository.
-- Create a branch from `main`.
-- Develop bug fixes, features, tests, etc.
-- Run the test suite.
-- Create a pull request to pull the changes from your branch to the {name} `main`.
-
-### Guidelines
-
-- Separate code commits from reformatting commits.
-- Provide tests for any newly added code.
-- Follow PEP 8.
-- Include release notes as needed or appropriate with your bug fixes, feature additions and tests.
-- Do not add to the changelog for proposed changes, as that is updated after changes are merged.
-"
+        // CONTRIBUTING template
+        let contributing_template = Path::new(root)
+            .join("contributing.hbs")
+            .display()
+            .to_string();
+        get_file_from_url(
+            "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/main/templates/contributing.hbs",
+            root,
+            &contributing_template,
         );
-        let contributing_file = Path::new(root).join("CONTRIBUTING.md");
-        let contributing = make_file(
-            contributing_file.display().to_string().as_str(),
-            contributing_content,
+        let file_ret = render_template(
+            &contributing_template,
+            &contributing_template.replace("contributing.hbs", "CONTRIBUTING.md"),
+            data.clone(),
         );
-        if let Err(e) = contributing {
-            eprintln!("error: {}", e);
+        if !file_ret {
+            eprintln!("error: `CONTRIBUTING.md` render failed");
         }
         // Create CODE_OF_CONDUCT
         get_file_from_url(
