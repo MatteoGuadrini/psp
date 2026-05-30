@@ -1733,33 +1733,27 @@ fn prj_files(root: &str, name: &str, container: bool, shortcut: &String) {
             root,
             "CODE_OF_CONDUCT.md",
         );
-    }
-    // Create samples folder
-    let sample_dir = Path::new(root).join("samples");
-    let dir_ret = make_dirs(sample_dir.display().to_string().as_str());
-    if let Err(e) = dir_ret {
-        eprintln!("error: {}", e);
-    }
-    // Create sample files
-    let sample_file = Path::new(&sample_dir).join(format!("{name}_sample.py"));
-    let sample = make_file(
-        sample_file.display().to_string().as_str(),
-        format!(
-            "#! /usr/bin/env python3
-# -*- encoding: utf-8 -*-
-# vim: se ts=4 et syn=python:
-# {SIGNATURE}, version {VERSION}
-
-import sys
-sys.path.append('..')
-from test import __version__
-
-print(f'WARNING: this is a sample file of {name} package, version {{__version__}}')
-"
-        ),
-    );
-    if let Err(e) = sample {
-        eprintln!("error: {}", e);
+        // SAMPLE template
+        let sample_dir = Path::new(root).join("samples");
+        // Check if sample folder exist
+        let dir_ret = make_dirs(sample_dir.display().to_string().as_str());
+        if let Err(e) = dir_ret {
+            eprintln!("error: {}", e);
+        }
+        let contributing_template = sample_dir.join("sample.hbs").display().to_string();
+        get_file_from_url(
+            "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/main/templates/sample.hbs",
+            root,
+            &contributing_template,
+        );
+        let file_ret = render_template(
+            &contributing_template,
+            &contributing_template.replace("sample.hbs", format!("{name}_sample.py").as_str()),
+            data.clone(),
+        );
+        if !file_ret {
+            eprintln!("error: `{name}_sample.py` render failed");
+        }
     }
     // Write psp log
     write_log(LOGFILE, format!("{}: {}", log_step, confirm).as_str());
