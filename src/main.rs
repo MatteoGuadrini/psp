@@ -4,7 +4,7 @@ use inquire::{Confirm, Select, Text};
 use std::{
     collections::HashMap,
     env::{args, var},
-    fs::{create_dir_all, read_to_string, remove_dir_all, remove_file, File, OpenOptions},
+    fs::{create_dir_all, remove_dir_all, remove_file, File, OpenOptions},
     io::{Read, Write},
     path::{absolute, Path},
     process::exit,
@@ -1789,18 +1789,24 @@ fn prj_license(name: &str, shortcut: &String, author: &String) -> String {
         prompt_select("Select license:", options, "None")
     };
     let mut license_url = String::new();
+    let mut license_file = String::new();
     let repo_license =
         "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/main/licenses";
     if license.to_lowercase() == "mit" {
-        license_url.push_str(format!("{repo_license}/mit.md").as_str())
+        license_file.push_str(format!("mit.hbs").as_str());
+        license_url.push_str(format!("{repo_license}/{license_file}").as_str());
     } else if license.to_lowercase() == "apache" {
-        license_url.push_str(format!("{repo_license}/apache.md").as_str())
+        license_file.push_str(format!("apache.hbs").as_str());
+        license_url.push_str(format!("{repo_license}/{license_file}").as_str());
     } else if license.to_lowercase() == "creative commons" || license.to_lowercase() == "cc" {
-        license_url.push_str(format!("{repo_license}/cc.md").as_str())
+        license_file.push_str(format!("cc.hbs").as_str());
+        license_url.push_str(format!("{repo_license}/{license_file}").as_str());
     } else if license.to_lowercase() == "mozilla" {
-        license_url.push_str(format!("{repo_license}/mozilla.md").as_str())
+        license_file.push_str(format!("mozilla.hbs").as_str());
+        license_url.push_str(format!("{repo_license}/{license_file}").as_str());
     } else if license.to_lowercase() == "gnu public license" || license.to_lowercase() == "gpl" {
-        license_url.push_str(format!("{repo_license}/gplv3.md").as_str())
+        license_file.push_str(format!("gplv3.hbs").as_str());
+        license_url.push_str(format!("{repo_license}/{license_file}").as_str());
     } else if license.as_str().to_lowercase() != "none" {
         println!(
             "warning: `{}` is not recognized as a valid license",
@@ -1808,20 +1814,24 @@ fn prj_license(name: &str, shortcut: &String, author: &String) -> String {
         )
     }
     if !license_url.is_empty() {
-        get_file_from_url(license_url.as_str(), name, "LICENSE.md");
+        // Create a data map with variables
+        let package_name = Path::new(name).file_name().unwrap().to_str().unwrap();
+        let data = HashMap::from([
+            ("SIGNATURE", SIGNATURE),
+            ("VERSION", VERSION),
+            ("AUTHOR", author),
+            ("PACKAGE", package_name),
+        ]);
+        get_file_from_url(license_url.as_str(), name, license_file.as_str());
         // Check author
-        if author != &String::from("None") {
-            let license_path = Path::new(name).join("LICENSE.md");
-            let license_string = read_to_string(license_path.as_path())
-                .unwrap()
-                .replace("{author}", author);
-            let license_file = make_file(
-                format!("{}", license_path.display()).as_str(),
-                license_string.to_owned(),
-            );
-            if let Err(e) = license_file {
-                eprintln!("error: {}", e);
-            }
+        let license_template = Path::new(name).join(&license_file).display().to_string();
+        let file_ret = render_template(
+            &license_template,
+            &license_template.replace(&license_file, "LICENSE.md"),
+            data,
+        );
+        if !file_ret {
+            eprintln!("error: `LICENSE.md` render failed");
         }
     }
     // Write psp log
