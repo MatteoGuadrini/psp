@@ -4,7 +4,7 @@ use inquire::{Confirm, Select, Text};
 use std::{
     collections::HashMap,
     env::{args, var},
-    fs::{create_dir_all, remove_dir_all, remove_file, File, OpenOptions},
+    fs::{copy, create_dir_all, remove_dir_all, remove_file, File, OpenOptions},
     io::{Read, Write},
     path::{absolute, Path},
     process::exit,
@@ -1927,51 +1927,34 @@ fn prj_container(root: &str, name: &str, shortcut: &String) -> bool {
         )
     };
     if confirm {
-        // Create Dockerfile/Containerfile
-        let dockerfile_content = format!(
-            "# {SIGNATURE}, version {VERSION}
-
-FROM python:alpine
-
-# Update and upgrade packages
-RUN apk update && apk upgrade --no-cache
-
-# Set environment variables
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
-
-# Copy the Python package
-COPY {name} /{name}/{name}
-COPY pyproject.toml /{name}
-WORKDIR /{name}
-
-# Install dependencies
-RUN pip install . --no-cache-dir
-
-# Safe user
-RUN adduser --disabled-password {name}_user
-USER {name}_user
-
-# Run package
-ENTRYPOINT python
-CMD -m {name}
-"
+        // Create a data map with variables
+        let data = HashMap::from([
+            ("SIGNATURE", SIGNATURE),
+            ("VERSION", VERSION),
+            ("PACKAGE", name),
+        ]);
+        let container_template = Path::new(root)
+            .join("containerfile.hbs")
+            .display()
+            .to_string();
+        get_file_from_url(
+            "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/main/templates/containerfile.hbs",
+            root,
+            &container_template,
         );
-        let dockerfile_file = Path::new(root).join("Dockerfile");
-        let dockerfile = make_file(
-            dockerfile_file.display().to_string().as_str(),
-            dockerfile_content.clone(),
+        let file_ret = render_template(
+            &container_template,
+            &container_template.replace("containerfile.hbs", "Dockerfile"),
+            data,
         );
-        if let Err(e) = dockerfile {
-            eprintln!("error: {}", e);
-        }
-        let containerfile_file = Path::new(root).join("Containerfile");
-        let containerfile = make_file(
-            containerfile_file.display().to_string().as_str(),
-            dockerfile_content,
-        );
-        if let Err(e) = containerfile {
-            eprintln!("error: {}", e);
+        // Copy Dockerfile in Containerfile
+        copy(
+            &container_template.replace("containerfile.hbs", "Dockerfile"),
+            &container_template.replace("containerfile.hbs", "Containerfile"),
+        )
+        .ok();
+        if !file_ret {
+            eprintln!("error: `Dockerfile` render failed");
         }
         // Create .dockerignore/.containerignore
         let docker_ignore_content = format!(
