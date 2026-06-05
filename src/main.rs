@@ -1945,9 +1945,9 @@ fn prj_container(root: &str, name: &str, shortcut: &String) -> bool {
         let file_ret = render_template(
             &container_template,
             &container_template.replace("containerfile.hbs", "Dockerfile"),
-            data,
+            data.clone(),
         );
-        // Copy Dockerfile in Containerfile
+        // Copy Dockerfile to Containerfile
         copy(
             &container_template.replace("containerfile.hbs", "Dockerfile"),
             &container_template.replace("containerfile.hbs", "Containerfile"),
@@ -1957,35 +1957,28 @@ fn prj_container(root: &str, name: &str, shortcut: &String) -> bool {
             eprintln!("error: `Dockerfile` render failed");
         }
         // Create .dockerignore/.containerignore
-        let docker_ignore_content = format!(
-            "# {SIGNATURE}, version {VERSION}
-
-__pycache__
-*.pyc
-.git
-.pytest_cache
-.venv
-.env
-venv
-env
-README.md
-"
+        let container_ignore_template = Path::new(root)
+            .join("container_ignore.hbs")
+            .display()
+            .to_string();
+        get_file_from_url(
+            "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/main/templates/container_ignore.hbs",
+            root,
+            &container_ignore_template,
         );
-        let dockerignore_file = Path::new(root).join(".dockerignore");
-        let dockerignore = make_file(
-            dockerignore_file.display().to_string().as_str(),
-            docker_ignore_content.clone(),
+        let file_ret = render_template(
+            &container_ignore_template,
+            &container_ignore_template.replace("container_ignore.hbs", ".dockerignore"),
+            data.clone(),
         );
-        if let Err(e) = dockerignore {
-            eprintln!("error: {}", e);
-        }
-        let containerignore_file = Path::new(root).join(".containerignore");
-        let containerignore = make_file(
-            containerignore_file.display().to_string().as_str(),
-            docker_ignore_content,
-        );
-        if let Err(e) = containerignore {
-            eprintln!("error: {}", e);
+        // Copy .dockerignore to .containerignore
+        copy(
+            &container_ignore_template.replace("container_ignore.hbs", ".dockerignore"),
+            &container_ignore_template.replace("container_ignore.hbs", ".containerignore"),
+        )
+        .ok();
+        if !file_ret {
+            eprintln!("error: `.dockerignore` render failed");
         }
         ret = true;
     } else {
