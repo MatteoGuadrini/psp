@@ -1,0 +1,53 @@
+# {{SIGNATURE}}, version {{VERSION}}
+
+PYTHON = python
+VENV = .venv
+
+.PHONY: {{OPTIONS}}
+
+help:
+    @echo 'help: make ({{OPTIONS}})
+
+all: {{OPTIONS}}
+
+test:
+ifneq ('$(wildcard ${VENV}/bin/${PYTHON})','')
+    ${VENV}/bin/${PYTHON} -m unittest
+else
+    ${PYTHON} -m unittest
+endif
+
+build:
+ifneq ('$(wildcard ${VENV}/bin/${PYTHON})','')
+    ${VENV}/bin/${PYTHON} -m build
+else
+    ${PYTHON} -m build
+endif
+
+deploy:
+ifneq ('$(wildcard ${VENV}/bin/${PYTHON})','')
+    ${VENV}/bin/${PYTHON} -m twine upload dist/*
+else
+    ${PYTHON} -m twine upload dist/*
+endif
+
+container:
+    podman build . -t {{PACKAGE}}:latest || docker build . -t {{PACKAGE}}:latest
+
+run:
+ifneq ('$(wildcard ${VENV}/bin/${PYTHON})','')
+    ${VENV}/bin/${PYTHON} -m {{PACKAGE}}
+else
+    ${PYTHON} -m {{PACKAGE}}
+endif
+
+clean:
+    rm -fr build/
+    rm -fr dist/
+    rm -fr .eggs/
+    find . -name '*.egg-info' -exec rm -fr {} +
+    find . -name '*.egg' -exec rm -f {} +
+    find . -name '*.pyc' -exec rm -f {} +
+    find . -name '*.pyo' -exec rm -f {} +
+    find . -name '*~' -exec rm -f {} +
+    find . -name '__pycache__' -exec rm -fr {} +
