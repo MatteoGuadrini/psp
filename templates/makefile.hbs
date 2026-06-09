@@ -1,39 +1,17 @@
 # {{SIGNATURE}}, version {{VERSION}}
 
-PYTHON = python
+PYTHON = python3
 VENV = .venv
 
 .PHONY: {{OPTIONS}}
 
 help:
-    @echo 'help: make ({{OPTIONS}})
+    @echo 'help: make ({{ACTIONS}})
 
 all: {{OPTIONS}}
-
-test:
-ifneq ('$(wildcard ${VENV}/bin/${PYTHON})','')
-    ${VENV}/bin/${PYTHON} -m unittest
-else
-    ${PYTHON} -m unittest
-endif
-
-build:
-ifneq ('$(wildcard ${VENV}/bin/${PYTHON})','')
-    ${VENV}/bin/${PYTHON} -m build
-else
-    ${PYTHON} -m build
-endif
-
-deploy:
-ifneq ('$(wildcard ${VENV}/bin/${PYTHON})','')
-    ${VENV}/bin/${PYTHON} -m twine upload dist/*
-else
-    ${PYTHON} -m twine upload dist/*
-endif
-
-container:
-    podman build . -t {{PACKAGE}}:latest || docker build . -t {{PACKAGE}}:latest
-
+{{{TEST}}}
+{{{BUILD}}}
+{{{CONTAINER}}}
 run:
 ifneq ('$(wildcard ${VENV}/bin/${PYTHON})','')
     ${VENV}/bin/${PYTHON} -m {{PACKAGE}}
