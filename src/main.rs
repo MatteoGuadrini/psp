@@ -1993,8 +1993,22 @@ fn prj_container(root: &str, name: &str, shortcut: &String) -> bool {
 fn prj_makefile(root: &str, name: &str, tests: bool, build: bool, container: bool) {
     // Set options for make
     let mut make_options = vec!["help", "all", "run", "clean"];
+    // Create a data map with variables
+    let mut data = HashMap::from([
+        ("SIGNATURE", SIGNATURE),
+        ("VERSION", VERSION),
+        ("PACKAGE", name),
+    ]);
     if tests {
         make_options.push("test");
+        let test_value = "
+test:
+ifneq ('$(wildcard ${VENV}/bin/${PYTHON})','')
+\t${VENV}/bin/${PYTHON} -m unittest
+else
+\t${PYTHON} -m unittest
+endif";
+        data.insert("TEST", test_value);
     }
     if build {
         make_options.push("build");
@@ -2003,109 +2017,23 @@ fn prj_makefile(root: &str, name: &str, tests: bool, build: bool, container: boo
     if container {
         make_options.push("container");
     }
-    let mut makefile_content = format!(
-        "# {SIGNATURE}, version {VERSION}
-
-PYTHON = {}
-VENV = venv
-
-.PHONY: {}
-
-help:
-\t@echo 'help: make ({})'
-",
-        PYTHON_BIN,
-        make_options.join(" "),
-        make_options.join("|")
+    let options = make_options.join(" ");
+    let actions = make_options.join("|");
+    data.insert("OPTIONS", options.as_str());
+    data.insert("ACTIONS", actions.as_str());
+    let makefile_template = Path::new(root).join("makefile.hbs").display().to_string();
+    get_file_from_url(
+        "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/dev/templates/makefile.hbs",
+        root,
+        &makefile_template,
     );
-    // Add all targets
-    make_options.remove(0);
-    make_options.remove(0);
-    if make_options[2] == "test" {
-        let removed_test = make_options.remove(2);
-        make_options.insert(0, removed_test);
-    }
-    makefile_content += format!(
-        "
-all: {}
-",
-        make_options.join(" ")
-    )
-    .as_str();
-    // Check if tests variable has been specified
-    if tests {
-        makefile_content += format!(
-            "
-test:
-ifneq ('$(wildcard ${{VENV}}/bin/${{PYTHON}})','')
-\t${{VENV}}/bin/${{PYTHON}} -m unittest
-else
-\t${{PYTHON}} -m unittest
-endif
-"
-        )
-        .as_str();
-    }
-    // Check if a build variable has been specified
-    if build {
-        makefile_content += format!(
-            "
-build:
-ifneq ('$(wildcard ${{VENV}}/bin/${{PYTHON}})','')
-\t${{VENV}}/bin/${{PYTHON}} -m build
-else
-\t${{PYTHON}} -m build
-endif
-
-deploy:
-ifneq ('$(wildcard ${{VENV}}/bin/${{PYTHON}})','')
-\t${{VENV}}/bin/${{PYTHON}} -m twine upload dist/*
-else
-\t${{PYTHON}} -m twine upload dist/*
-endif
-"
-        )
-        .as_str();
-    }
-    // Check if a container variable has been specified
-    if container {
-        makefile_content += format!(
-            "
-container:
-\tpodman build . -t {name}:latest || docker build . -t {name}:latest
-"
-        )
-        .as_str();
-    }
-    makefile_content += format!(
-        "
-run:
-ifneq ('$(wildcard ${{VENV}}/bin/${{PYTHON}})','')
-\t${{VENV}}/bin/${{PYTHON}} -m {name}
-else
-\t${{PYTHON}} -m {name}
-endif
-
-clean:
-\trm -fr build/
-\trm -fr dist/
-\trm -fr .eggs/
-\tfind . -name '*.egg-info' -exec rm -fr {{}} +
-\tfind . -name '*.egg' -exec rm -f {{}} +
-\tfind . -name '*.pyc' -exec rm -f {{}} +
-\tfind . -name '*.pyo' -exec rm -f {{}} +
-\tfind . -name '*~' -exec rm -f {{}} +
-\tfind . -name '__pycache__' -exec rm -fr {{}} +
-"
-    )
-    .as_str();
-    let makefile_file = Path::new(root).join("Makefile");
-    let makefile = make_file(
-        makefile_file.display().to_string().as_str(),
-        makefile_content,
+    let file_ret = render_template(
+        &makefile_template,
+        &makefile_template.replace("makefile.hbs", "Makefile"),
+        data.clone(),
     );
-    if let Err(e) = makefile {
-        eprintln!("error: {}", e);
+    if !file_ret {
+        eprintln!("error: `Makefile` render failed");
     }
 }
 
