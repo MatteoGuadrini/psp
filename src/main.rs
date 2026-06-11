@@ -1999,6 +1999,11 @@ fn prj_makefile(root: &str, name: &str, tests: bool, build: bool, container: boo
         ("VERSION", VERSION),
         ("PACKAGE", name),
     ]);
+    let container_value = format!(
+        "
+container:
+\tpodman build . -t {name}:latest || docker build . -t {name}:latest"
+    );
     if tests {
         make_options.push("test");
         let test_value = "
@@ -2013,9 +2018,25 @@ endif";
     if build {
         make_options.push("build");
         make_options.push("deploy");
+        let build_value = "
+build:
+ifneq ('$(wildcard ${{VENV}}/bin/${{PYTHON}})','')
+\t${{VENV}}/bin/${{PYTHON}} -m build
+else
+\t${{PYTHON}} -m build
+endif
+
+deploy:
+ifneq ('$(wildcard ${{VENV}}/bin/${{PYTHON}})','')
+\t${{VENV}}/bin/${{PYTHON}} -m twine upload dist/*
+else
+\t${{PYTHON}} -m twine upload dist/*
+endif";
+        data.insert("BUILD", build_value);
     }
     if container {
         make_options.push("container");
+        data.insert("CONTAINER", container_value.as_str());
     }
     let options = make_options.join(" ");
     let actions = make_options.join("|");
@@ -2023,7 +2044,7 @@ endif";
     data.insert("ACTIONS", actions.as_str());
     let makefile_template = Path::new(root).join("makefile.hbs").display().to_string();
     get_file_from_url(
-        "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/dev/templates/makefile.hbs",
+        "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/main/templates/makefile.hbs",
         root,
         &makefile_template,
     );
