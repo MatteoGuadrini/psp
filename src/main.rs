@@ -1793,19 +1793,19 @@ fn prj_license(name: &str, shortcut: &String, author: &String) -> String {
     let repo_license =
         "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/main/licenses";
     if license.to_lowercase() == "mit" {
-        license_file.push_str(format!("mit.hbs").as_str());
+        license_file.push_str("mit.hbs");
         license_url.push_str(format!("{repo_license}/{license_file}").as_str());
     } else if license.to_lowercase() == "apache" {
-        license_file.push_str(format!("apache.hbs").as_str());
+        license_file.push_str("apache.hbs");
         license_url.push_str(format!("{repo_license}/{license_file}").as_str());
     } else if license.to_lowercase() == "creative commons" || license.to_lowercase() == "cc" {
-        license_file.push_str(format!("cc.hbs").as_str());
+        license_file.push_str("cc.hbs");
         license_url.push_str(format!("{repo_license}/{license_file}").as_str());
     } else if license.to_lowercase() == "mozilla" {
-        license_file.push_str(format!("mozilla.hbs").as_str());
+        license_file.push_str("mozilla.hbs");
         license_url.push_str(format!("{repo_license}/{license_file}").as_str());
     } else if license.to_lowercase() == "gnu public license" || license.to_lowercase() == "gpl" {
-        license_file.push_str(format!("gplv3.hbs").as_str());
+        license_file.push_str("gplv3.hbs");
         license_url.push_str(format!("{repo_license}/{license_file}").as_str());
     } else if license.as_str().to_lowercase() != "none" {
         println!(
