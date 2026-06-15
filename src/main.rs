@@ -39,6 +39,11 @@ const SUPPORTED_BUILDER: [&str; 3] = ["hatch.exe", "poetry.exe", "maturin.exe"];
 
 // Utility functions
 
+// Function that print in stdout the information messages
+fn info(msg: String) {
+    println!("info: {msg}");
+}
+
 // Function to split PATH environment variable
 fn split_env_path() -> Vec<String> {
     let env_paths = var("PATH").ok().unwrap();
@@ -581,7 +586,7 @@ fn prj_name() -> (String, String) {
             "Some files will be overwritten",
         );
         if !project_exists {
-            println!("info: the path `{}` unchanged", root.display());
+            info(format!("the path `{}` unchanged", root.display()));
             exit(0)
         }
     }
@@ -2069,7 +2074,7 @@ fn main() {
         print_help(0)
     }
     // Print welcome screen and version
-    println!("info: welcome to psp, version {VERSION}");
+    info(format!("welcome to psp, version {VERSION}"));
     for tool in TOOLS {
         if !check_tool(tool) {
             eprintln!("error: `{}` is required", tool);
@@ -2115,8 +2120,8 @@ fn main() {
     // Delete log if enabled
     delete_log(LOGFILE);
     // Finish a scaffolding process
-    println!(
-        "info: python project `{name}` created at `{}`",
+    info(format!(
+        "python project `{name}` created at `{}`",
         absolute(root).unwrap().display()
-    )
+    ));
 }
