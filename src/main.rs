@@ -70,7 +70,7 @@ fn join_env_path(path: String) -> String {
     paths.join(&separator)
 }
 
-// Function for check if a tool is installed
+// Function to check if a tool is installed
 fn check_tool(tool: &str) -> bool {
     let paths: Vec<String> = split_env_path();
     for path in paths {
@@ -82,7 +82,7 @@ fn check_tool(tool: &str) -> bool {
     false
 }
 
-// Function for creating folders and parents
+// Function to create folders and parents
 fn make_dirs(dir: &str) -> std::io::Result<()> {
     let result = create_dir_all(dir);
     if let Err(e) = result {
@@ -93,7 +93,7 @@ fn make_dirs(dir: &str) -> std::io::Result<()> {
     }
 }
 
-// Function for creating a file with contents
+// Function to create a file with contents
 fn make_file(file: &str, content: String) -> std::io::Result<()> {
     let mut file = File::create(file)?;
     let result = file.write_all(&content.as_bytes());
@@ -105,7 +105,7 @@ fn make_file(file: &str, content: String) -> std::io::Result<()> {
     }
 }
 
-// Function that write te update log
+// Function to write the update log
 fn write_log(log: &str, content: &str) {
     if env_psplog() {
         let mut file = OpenOptions::new()
@@ -117,7 +117,7 @@ fn write_log(log: &str, content: &str) {
     }
 }
 
-// Function that delete log
+// Function to delete the log
 fn delete_log(log: &str) {
     if env_psplog() {
         let log_deletion = remove_file(log);
@@ -127,7 +127,7 @@ fn delete_log(log: &str) {
     }
 }
 
-// Function that read the update log
+// Function to read the update log
 fn read_log(log: &str) -> std::io::Result<String> {
     let mut file = File::open(log)?;
     let mut contents = String::new();
@@ -135,7 +135,7 @@ fn read_log(log: &str) -> std::io::Result<String> {
     Ok(contents)
 }
 
-// Function that check line into log
+// Function to check line into log
 fn check_log(step: &str, log: &str) -> bool {
     let mut result = false;
     if env_psplog() && std::fs::exists(log).ok().unwrap() {
@@ -145,7 +145,7 @@ fn check_log(step: &str, log: &str) -> bool {
     result
 }
 
-// Function that get writed values from log
+// Function to get writed values from log
 fn get_log_value(step: &str, log: &str) -> Option<String> {
     // Find the line that starts with the step name
     log.lines()
@@ -158,7 +158,7 @@ fn get_log_value(step: &str, log: &str) -> Option<String> {
         })
 }
 
-// Function get a Python version <MAJOR.MINOR>
+// Function to get a Python version <MAJOR.MINOR>
 fn get_python_version() -> String {
     let mut python = make_command(PYTHON_BIN, ".", ".", vec!["--version".to_string()], false);
     let output = python
@@ -172,7 +172,7 @@ fn get_python_version() -> String {
     format!("{}", &version[..4])
 }
 
-// Function gets from url
+// Function to get file from url
 fn get_file_from_url(url: &str, start_path: &str, output_file: &str) {
     #[cfg(any(target_os = "linux", target_os = "macos"))]
     let command = "curl";
@@ -182,6 +182,7 @@ fn get_file_from_url(url: &str, start_path: &str, output_file: &str) {
     let command_args = vec![
         format!("-o{output_file}"),
         "-k".to_string(),
+        "--fail".to_string(),
         "--connect-timeout".to_string(),
         "10".to_string(),
         url.to_string(),
@@ -303,7 +304,7 @@ fn get_shortcut() -> String {
     }
 }
 
-// Function that load env files
+// Function to load env files
 fn load_env() {
     // Load first, .env file from the current working directory
     dotenv().ok();
@@ -317,7 +318,7 @@ fn load_env() {
     dotenvy::from_filename(home_env).ok();
 }
 
-// Function that render a template file
+// Function to render a template file
 fn render_template(template: &str, file: &str, data: HashMap<&str, &str>) -> bool {
     // Create template file
     let mut handlebars = Handlebars::new();
@@ -336,7 +337,7 @@ fn render_template(template: &str, file: &str, data: HashMap<&str, &str>) -> boo
     }
 }
 
-// Function that makes a command
+// Function to make a command
 fn make_command(
     bin: &str,
     root: &str,
@@ -378,7 +379,7 @@ fn env_pyversion() -> String {
     version
 }
 
-// Function to get author
+// Function to get the author
 fn env_pyauthor() -> (String, String) {
     // Check the author of a Python project
     let env_pyauthor = var("PSP_PYAUTHOR").ok();
