@@ -557,6 +557,7 @@ fn prj_name() -> (String, String) {
     let folder_separator = "\\";
     let env_name = var("PSP_NAME").ok();
     let mut name = if let Some(env_name) = env_name {
+        info(format!("project name: {env_name}"));
         env_name
     } else {
         prompt_text("Name of Python project:", "None", "Type name or path")
@@ -673,6 +674,7 @@ fn prj_git(name: &str, shortcut: &String) -> bool {
     let env_git = var("PSP_GIT").unwrap_or("false".to_string()).parse().ok();
     let mut ret = false;
     let confirm = if let Some(true) = env_git {
+        info(format!("git enable: {}", env_git.unwrap().to_string()));
         true
     } else if shortcut == "quick" || shortcut == "full" {
         true
@@ -731,6 +733,7 @@ fn prj_test(root: &str, name: &str, shortcut: &String) -> bool {
     // Check environment variable
     let env_test = var("PSP_TEST").unwrap_or("false".to_string()).parse().ok();
     let confirm = if let Some(true) = env_test {
+        info(format!("tests enable: {}", env_test.unwrap().to_string()));
         true
     } else if shortcut != "None" {
         true
@@ -825,6 +828,10 @@ fn prj_venv(name: &str, shortcut: &String) -> bool {
     // Check environment variable
     let env_venv = var("PSP_VENV").unwrap_or("false".to_string()).parse().ok();
     let confirm = if let Some(true) = env_venv {
+        info(format!(
+            "virtual environment enable: {}",
+            env_venv.unwrap().to_string()
+        ));
         true
     } else if shortcut == "quick" || shortcut == "full" {
         true
@@ -876,6 +883,7 @@ fn prj_deps(name: &str, venv: bool, shortcut: &String) -> Vec<String> {
     let env_deps = var("PSP_DEPS").ok();
     let env_pm = var("PSP_PACKAGE_MANAGER").ok();
     let deps = if let Some(env_deps) = env_deps {
+        info(format!("dependencies: {env_deps}"));
         env_deps
     } else if shortcut == "simple" || shortcut == "quick" {
         "No".to_string()
@@ -888,6 +896,7 @@ fn prj_deps(name: &str, venv: bool, shortcut: &String) -> Vec<String> {
     };
     // Check if there are common dependencies
     let common_dependencies = if let Some(env_common_deps) = env_common_deps {
+        info(format!("common dependencies: {env_common_deps}"));
         env_common_deps
             .as_str()
             .split_whitespace()
@@ -1080,6 +1089,7 @@ fn prj_ci(name: &str, deps: &Vec<String>, shortcut: &String) {
     ];
     let env_ci = var("PSP_CI").ok();
     let ci = if let Some(env_ci) = env_ci {
+        info(format!("remote CI provider: {env_ci}"));
         env_ci
     } else if shortcut == "simple" || shortcut == "quick" {
         "None".to_string()
@@ -1221,6 +1231,7 @@ fn prj_remote(root: &str, name: &str, shortcut: &String) -> (String, String) {
     // Check environment variable
     let env_remote = var("PSP_GIT_REMOTE").ok();
     let remote = if let Some(env_remote) = env_remote {
+        info(format!("git remote provider: {env_remote}"));
         env_remote
     } else if shortcut == "quick" {
         "None".to_string()
@@ -1232,6 +1243,7 @@ fn prj_remote(root: &str, name: &str, shortcut: &String) -> (String, String) {
         let env_git_user = var("PSP_GIT_USER").ok();
         // Username of remote git service
         let mut username = if let Some(env_git_user) = env_git_user {
+            info(format!("git username: {env_git_user}"));
             env_git_user
         } else {
             prompt_text(
@@ -1463,6 +1475,7 @@ fn prj_tox(name: &str, venv: bool, deps: &Vec<String>, shortcut: &String) {
     let env_tox = var("PSP_TOX").unwrap_or("false".to_string()).parse().ok();
     let env_pm = var("PSP_PACKAGE_MANAGER").ok();
     let confirm = if let Some(true) = env_tox {
+        info(format!("configure tox: {}", env_tox.unwrap().to_string()));
         true
     } else if shortcut == "quick" || shortcut == "simple" {
         false
@@ -1539,6 +1552,7 @@ fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) {
     let env_docs = var("PSP_DOCS").ok();
     let env_pm = var("PSP_PACKAGE_MANAGER").ok();
     let docs = if let Some(env_docs) = env_docs {
+        info(format!("documentation generator: {env_docs}"));
         env_docs
     } else if shortcut == "simple" {
         "None".to_string()
@@ -1665,6 +1679,10 @@ fn prj_files(root: &str, name: &str, container: bool, shortcut: &String) {
     // Check environment variable
     let env_files = var("PSP_FILES").unwrap_or("false".to_string()).parse().ok();
     let confirm = if let Some(true) = env_files {
+        info(format!(
+            "common files creation: {}",
+            env_files.unwrap().to_string()
+        ));
         true
     } else if shortcut == "quick" || shortcut == "full" {
         true
@@ -1792,6 +1810,7 @@ fn prj_license(name: &str, shortcut: &String, author: &String) -> String {
     // Check environment variable
     let env_license = var("PSP_LICENSE").ok();
     let license = if let Some(env_license) = env_license {
+        info(format!("license: {env_license}"));
         env_license
     } else if shortcut == "simple" {
         "None".to_string()
@@ -1865,6 +1884,10 @@ fn prj_pypi(root: &str, venv: bool, shortcut: &String) -> bool {
     let env_pm = var("PSP_PACKAGE_MANAGER").ok();
     let mut ret = false;
     let confirm = if let Some(true) = env_pypi {
+        info(format!(
+            "install publish packages: {}",
+            env_pypi.unwrap().to_string()
+        ));
         true
     } else if shortcut == "quick" || shortcut == "full" {
         true
@@ -1924,6 +1947,10 @@ fn prj_container(root: &str, name: &str, shortcut: &String) -> bool {
         .parse()
         .ok();
     let confirm = if let Some(true) = env_container {
+        info(format!(
+            "create container files: {}",
+            env_container.unwrap().to_string()
+        ));
         true
     } else if shortcut == "quick" || shortcut == "full" {
         true
