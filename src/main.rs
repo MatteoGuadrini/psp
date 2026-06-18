@@ -150,7 +150,7 @@ fn check_log(step: &str, log: &str) -> bool {
     result
 }
 
-// Function to get writed values from log
+// Function to get wrote values from log
 fn get_log_value(step: &str, log: &str) -> Option<String> {
     // Find the line that starts with the step name
     log.lines()
@@ -693,7 +693,7 @@ fn prj_git(name: &str, shortcut: &String) -> bool {
         let output = git.output().expect("git should be installed");
         // Check if the command exits successfully
         if !output.status.success() {
-            error(format!("something wrong with `git init`"));
+            error("something wrong with `git init`".to_string());
             return false;
         }
         // Create a data map with variables
@@ -714,7 +714,7 @@ fn prj_git(name: &str, shortcut: &String) -> bool {
         ret = if file_ret {
             true
         } else {
-            error(format!("`.gitignore` creation failed"));
+            error("`.gitignore` creation failed".to_string());
             false
         };
     }
@@ -859,7 +859,7 @@ fn prj_venv(name: &str, shortcut: &String) -> bool {
             .expect(format!("{PYTHON_BIN} should be installed").as_str());
         // Check if the command exits successfully
         if !output.status.success() {
-            error(format!("`.venv` creation failed"));
+            error("`.venv` creation failed".to_string());
         } else {
             ret = true;
         }
@@ -1074,7 +1074,7 @@ fn prj_toml(
         data,
     );
     if !file_ret {
-        error(format!("`pyproject.toml` render failed"));
+        error("`pyproject.toml` render failed".to_string());
     }
 }
 
@@ -1128,7 +1128,7 @@ fn prj_ci(name: &str, deps: &Vec<String>, shortcut: &String) {
             data,
         );
         if !file_ret {
-            error(format!("`.travis.yml render failed"));
+            error("`.travis.yml render failed".to_string());
         }
     } else if ci.as_str().to_lowercase() == "circleci" {
         let circleci_dir = Path::new(name).join(".circleci");
@@ -1157,7 +1157,7 @@ fn prj_ci(name: &str, deps: &Vec<String>, shortcut: &String) {
             data,
         );
         if !file_ret {
-            error(format!("`.circleci/config.yml` render failed"));
+            error("`.circleci/config.yml` render failed".to_string());
         }
     } else if ci.as_str().to_lowercase().replace(" ", "").replace("/", "") == "githubactions" {
         let github_dir = Path::new(name).join(".github").join("workflows");
@@ -1187,7 +1187,7 @@ fn prj_ci(name: &str, deps: &Vec<String>, shortcut: &String) {
             data,
         );
         if !file_ret {
-            error(format!("`python-app.yml` render failed"));
+            error("`python-app.yml` render failed".to_string());
         }
     } else if ci.as_str().to_lowercase().replace(" ", "").replace("/", "") == "gitlabcicd" {
         // Create a data map with variables
@@ -1209,7 +1209,7 @@ fn prj_ci(name: &str, deps: &Vec<String>, shortcut: &String) {
             data,
         );
         if !file_ret {
-            error(format!("`.gitlab-ci.yml` render failed"));
+            error("`.gitlab-ci.yml` render failed".to_string());
         }
     } else if ci.as_str().to_lowercase() != "none" {
         warning(format!("`{ci}` is not recognized as remote CI"));
@@ -1285,7 +1285,7 @@ fn prj_remote(root: &str, name: &str, shortcut: &String) -> (String, String) {
         let output = origin_exists.output().expect("git should be installed");
         // Check if the command exits successfully
         if !output.status.success() {
-            error(format!("something wrong with `git remote -v`"));
+            error("something wrong with `git remote -v`".to_string());
         }
         let git_verb;
         if output.stdout.len() > 0 {
@@ -1353,7 +1353,7 @@ fn prj_remote(root: &str, name: &str, shortcut: &String) -> (String, String) {
                 data.clone(),
             );
             if !file_ret {
-                error(format!("`feature.md` render failed"));
+                error("`feature.md` render failed".to_string());
             }
             // Bug template
             let gitlab_bug_template = issue_folder.join("gitlab_bug.hbs").display().to_string();
@@ -1368,7 +1368,7 @@ fn prj_remote(root: &str, name: &str, shortcut: &String) -> (String, String) {
                 data.clone(),
             );
             if !file_ret {
-                error(format!("`bug.md` render failed"));
+                error("`bug.md` render failed".to_string());
             }
             // Merge template
             let gitlab_merge_template = merge_folder.join("gitlab_merge.hbs").display().to_string();
@@ -1383,7 +1383,7 @@ fn prj_remote(root: &str, name: &str, shortcut: &String) -> (String, String) {
                 data.clone(),
             );
             if !file_ret {
-                error(format!("`merge.md` render failed"));
+                error("`merge.md` render failed".to_string());
             }
         // Github
         } else if remote.as_str().to_lowercase() == "github" {
@@ -1422,7 +1422,7 @@ fn prj_remote(root: &str, name: &str, shortcut: &String) -> (String, String) {
                 data.clone(),
             );
             if !file_ret {
-                error(format!("`feature.yml` render failed"));
+                error("`feature.yml` render failed".to_string());
             }
             // Bug template
             let github_bug_template = issue_folder.join("github_bug.hbs").display().to_string();
@@ -1437,7 +1437,7 @@ fn prj_remote(root: &str, name: &str, shortcut: &String) -> (String, String) {
                 data.clone(),
             );
             if !file_ret {
-                error(format!("`bug.yml` render failed"));
+                error("`bug.yml` render failed".to_string());
             }
             // Merge template
             let github_merge_template = merge_folder.join("github_merge.hbs").display().to_string();
@@ -1452,7 +1452,7 @@ fn prj_remote(root: &str, name: &str, shortcut: &String) -> (String, String) {
                 data.clone(),
             );
             if !file_ret {
-                error(format!("`pull_request_template.yml` render failed"));
+                error("`pull_request_template.yml` render failed".to_string());
             }
         } else {
             warning(format!(
@@ -1502,7 +1502,7 @@ fn prj_tox(name: &str, venv: bool, deps: &Vec<String>, shortcut: &String) {
             .expect(format!("{bin} should be installed").as_str());
         // Check if the command exits successfully
         if !output.status.success() {
-            error(format!("`tox` installation failed"));
+            error("`tox` installation failed".to_string());
             return;
         }
         // Create a data map with variables
@@ -1537,7 +1537,7 @@ fn prj_tox(name: &str, venv: bool, deps: &Vec<String>, shortcut: &String) {
             data.clone(),
         );
         if !file_ret {
-            error(format!("`tox.ini` render failed"));
+            error("`tox.ini` render failed".to_string());
         }
     }
     // Write psp log
@@ -1591,7 +1591,7 @@ fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) {
                 .expect(format!("{bin} should be installed").as_str());
             // Check if the command exits successfully
             if !output.status.success() {
-                error(format!("`sphinx` installation failed"));
+                error("`sphinx` installation failed".to_string());
             }
             // Check the version of a Python project
             let pyver = env_pyversion();
@@ -1624,7 +1624,7 @@ fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) {
                 .output()
                 .expect(format!("{sphinx_bin} should be installed").as_str());
             if !output.status.success() {
-                error(format!("`sphinx` documentation creation failed"));
+                error("`sphinx` documentation creation failed".to_string());
             }
         } else if docs.as_str().to_lowercase() == "mkdocs" {
             // Install mkdocs
@@ -1634,7 +1634,7 @@ fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) {
                 .expect(format!("{bin} should be installed").as_str());
             // Check if the command exits successfully
             if !output.status.success() {
-                error(format!("`mkdocs` installation failed"));
+                error("`mkdocs` installation failed".to_string());
             }
             // Start documentation
             #[cfg(any(target_os = "linux", target_os = "macos"))]
@@ -1648,7 +1648,7 @@ fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) {
                 .expect(format!("{mkdocs_bin} should be installed").as_str());
             // Check if the command exits successfully
             if !output.status.success() {
-                error(format!("`mkdocs` documentation creation failed"));
+                error("`mkdocs` documentation creation failed".to_string());
             }
         } else if docs.as_str().to_lowercase() != "none" {
             warning(format!(
@@ -1723,7 +1723,7 @@ fn prj_files(root: &str, name: &str, container: bool, shortcut: &String) {
             data.clone(),
         );
         if !file_ret {
-            error(format!("`README.md` render failed"));
+            error("`README.md` render failed".to_string());
         }
         // CHANGES template
         let changes_template = Path::new(root).join("changes.hbs").display().to_string();
@@ -1738,7 +1738,7 @@ fn prj_files(root: &str, name: &str, container: bool, shortcut: &String) {
             data.clone(),
         );
         if !file_ret {
-            error(format!("`CHANGES.md` render failed"));
+            error("`CHANGES.md` render failed".to_string());
         }
         // CONTRIBUTING template
         let contributing_template = Path::new(root)
@@ -1756,7 +1756,7 @@ fn prj_files(root: &str, name: &str, container: bool, shortcut: &String) {
             data.clone(),
         );
         if !file_ret {
-            error(format!("`CONTRIBUTING.md` render failed"));
+            error("`CONTRIBUTING.md` render failed".to_string());
         }
         // Create CODE_OF_CONDUCT
         get_file_from_url(
@@ -1860,7 +1860,7 @@ fn prj_license(name: &str, shortcut: &String, author: &String) -> String {
             data,
         );
         if !file_ret {
-            error(format!("`LICENSE.md` render failed"));
+            error("`LICENSE.md` render failed".to_string());
         }
     }
     // Write psp log
@@ -1919,7 +1919,7 @@ fn prj_pypi(root: &str, venv: bool, shortcut: &String) -> bool {
             .expect(format!("{bin} should be installed").as_str());
         // Check if the command exits successfully
         if !output.status.success() {
-            error(format!("`twine` and/or `build` installation failed"));
+            error("`twine` and/or `build` installation failed".to_string());
         } else {
             ret = true;
         }
@@ -1991,7 +1991,7 @@ fn prj_container(root: &str, name: &str, shortcut: &String) -> bool {
         )
         .ok();
         if !file_ret {
-            error(format!("`Dockerfile` render failed"));
+            error("`Dockerfile` render failed".to_string());
         }
         // Create .dockerignore/.containerignore
         let container_ignore_template = Path::new(root)
@@ -2015,7 +2015,7 @@ fn prj_container(root: &str, name: &str, shortcut: &String) -> bool {
         )
         .ok();
         if !file_ret {
-            error(format!("`.dockerignore` render failed"));
+            error("`.dockerignore` render failed".to_string());
         }
         ret = true;
     } else {
@@ -2091,7 +2091,7 @@ endif";
         data.clone(),
     );
     if !file_ret {
-        error(format!("`Makefile` render failed"));
+        error("`Makefile` render failed".to_string());
     }
 }
 
