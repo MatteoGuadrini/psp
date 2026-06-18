@@ -39,12 +39,17 @@ const SUPPORTED_BUILDER: [&str; 3] = ["hatch.exe", "poetry.exe", "maturin.exe"];
 
 // Utility functions
 
-// Function that print in stdout the information messages
+// Function to print in stdout the information messages
 fn info(msg: String) {
     println!("info: {msg}");
 }
 
-// Function that print in stderr the error messages
+// Function to print in stdout the warning messages
+fn warning(msg: String) {
+    println!("warning: {msg}");
+}
+
+// Function to print in stderr the error messages
 fn error(msg: String) {
     eprintln!("error: {msg}");
 }
@@ -389,7 +394,7 @@ fn env_pyauthor() -> (String, String) {
         "psp@python.com".to_string()
     };
     if !pyauthor.contains('@') {
-        println!("warning: `PSP_PYAUTHOR` is not a valid email")
+        warning("`PSP_PYAUTHOR` is not a valid email".to_string());
     }
     let email = pyauthor;
     let username = email.split("@").collect::<Vec<&str>>()[0].to_string();
@@ -421,7 +426,7 @@ fn make_builder() -> String {
     let builder = env_pybuild();
     // Check if a builder is supported and installed
     if !check_builder(builder.as_str()) {
-        println!("warning: fallback builder to `setuptools`")
+        warning("fallback builder to `setuptools`".to_string());
     }
     let build_settings: String;
     if builder == "poetry" {
@@ -528,7 +533,7 @@ fn make_pm(
     args.extend(pkgs.clone());
     // Check if a package manager is supported and installed
     if !check_pm(bin) {
-        println!("warning: fallback package manager to `{PIP_BIN}`")
+        warning(format!("fallback package manager to `{PIP_BIN}`"));
     }
     // Make command
     make_command(bin, root, start_path, args, venv)
@@ -567,7 +572,7 @@ fn prj_name() -> (String, String) {
     };
     // Check is path is empty
     while name.is_empty() {
-        println!("warning: write a valid name or path");
+        warning("write a valid name or path".to_string());
         name = prompt_text("Name of Python project:", "None", "Type name or path")
             .trim()
             .trim_end_matches(folder_separator)
@@ -1207,7 +1212,7 @@ fn prj_ci(name: &str, deps: &Vec<String>, shortcut: &String) {
             error(format!("`.gitlab-ci.yml` render failed"));
         }
     } else if ci.as_str().to_lowercase() != "none" {
-        println!("warning: `{}` is not recognized as remote CI", ci)
+        warning(format!("`{ci}` is not recognized as remote CI"));
     }
     // Write psp log
     write_log(LOGFILE, format!("{}: {}", log_step, ci).as_str());
@@ -1450,10 +1455,9 @@ fn prj_remote(root: &str, name: &str, shortcut: &String) -> (String, String) {
                 error(format!("`pull_request_template.yml` render failed"));
             }
         } else {
-            println!(
-                "warning: `{}` is not recognized as remote git provider",
-                remote
-            )
+            warning(format!(
+                "`{remote}` is not recognized as remote git provider"
+            ));
         }
     }
     // Write psp log
@@ -1647,10 +1651,9 @@ fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) {
                 error(format!("`mkdocs` documentation creation failed"));
             }
         } else if docs.as_str().to_lowercase() != "none" {
-            println!(
-                "warning: `{}` is not recognized as documentation generator",
-                docs
-            )
+            warning(format!(
+                "`{docs}` is not recognized as documentation generator"
+            ));
         }
         // Link requirements
         #[cfg(any(target_os = "linux", target_os = "macos"))]
@@ -1837,10 +1840,7 @@ fn prj_license(name: &str, shortcut: &String, author: &String) -> String {
         license_file.push_str("gplv3.hbs");
         license_url.push_str(format!("{repo_license}/{license_file}").as_str());
     } else if license.as_str().to_lowercase() != "none" {
-        println!(
-            "warning: `{}` is not recognized as a valid license",
-            license
-        )
+        warning(format!("`{license}` is not recognized as a valid license"));
     }
     if !license_url.is_empty() {
         // Create a data map with variables
