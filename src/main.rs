@@ -2309,7 +2309,7 @@ help:
     // Add all targets
     make_options.remove(0);
     make_options.remove(0);
-    if make_options[2] == "test" {
+    if make_options.get(2) == Some(&"test") {
         let removed_test = make_options.remove(2);
         make_options.insert(0, removed_test);
     }
@@ -2458,4 +2458,20 @@ fn main() {
         "info: python project `{name}` created at `{}`",
         absolute(root).unwrap().display()
     )
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::fs::create_dir_all;
+
+    #[test]
+    fn makefile_without_optional_targets() {
+        let dir = std::env::temp_dir().join("psp_makefile_test_minimal");
+        create_dir_all(&dir).unwrap();
+        prj_makefile(dir.to_str().unwrap(), "demo", false, false, false);
+        let makefile = read_to_string(dir.join("Makefile")).unwrap();
+        assert!(makefile.contains("all: run clean"));
+        remove_dir_all(&dir).ok();
+    }
 }
