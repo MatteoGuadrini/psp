@@ -14,6 +14,9 @@ requires-python = ">={{PYTHON}}"
 classifiers = {{{CLASSIFIERS}}}
 dependencies = {{{DEPS}}}
 
+[tool.setuptools.packages.find]
+where = ["{{PRJ_NAME}}"]
+
 [project.urls]
 homepage = "{{HOMEPAGE}}"
 documentation = "{{DOCUMENTATION}}"
