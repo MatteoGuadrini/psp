@@ -1,0 +1,18 @@
+# {{SIGNATURE}}, version {{VERSION}}
+
+name: Python package {{PACKAGE}}
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '{{PYTHON}}'
+          architecture: 'x64'
+      - name: Display Python version
+        run: python -c 'import sys; print(sys.version)'
+      - name: Run Python package {{PACKAGE}}
+        run: python -m '{{PACKAGE}}'

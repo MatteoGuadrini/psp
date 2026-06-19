@@ -1,0 +1,26 @@
+# {{SIGNATURE}}, version {{VERSION}}
+
+FROM python:alpine
+
+# Update and upgrade packages
+RUN apk update && apk upgrade --no-cache
+
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+# Copy the Python package
+COPY {{PACKAGE}} /{{PACKAGE}}/{{PACKAGE}}
+COPY pyproject.toml /{{PACKAGE}}
+WORKDIR /{{PACKAGE}}
+
+# Install dependencies
+RUN pip install . --no-cache-dir
+
+# Safe user
+RUN adduser --disabled-password {{PACKAGE}}_user
+USER {{PACKAGE}}_user
+
+# Run package
+ENTRYPOINT python
+CMD -m {{PACKAGE}}

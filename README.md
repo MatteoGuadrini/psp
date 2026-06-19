@@ -1,4 +1,4 @@
-<img src="img/psp_logo.svg" alt="Logo" align="right" width="150"/> **psp** (Python Scaffolding Projects)
+<img src="https://raw.githubusercontent.com/MatteoGuadrini/psp/main/img/psp_logo.svg" alt="Logo" align="right" width="150"/> **psp** (Python Scaffolding Projects)
 ======
 
 `psp` is a blazing fast command line utility to scaffold your _Python_ project, written in Rust.
@@ -11,7 +11,7 @@
 - 🧪 Create a virtual environment
 - 🔧 Automagically dependencies installation
 - 🪛 Add build and deploy dependencies to distribute the package
-- 📏 [tox](https://tox.wiki/en/stable/) configuration supports and remotes CI like [CircleCI](https://circleci.com/) and [TravisCI](https://www.travis-ci.com/)
+- 📏 [tox](https://tox.wiki/en/stable/) configuration supports and remotes CI like [CircleCI](https://circleci.com/), [TravisCI](https://www.travis-ci.com/), [GitHub Actions](https://docs.github.com/en/actions) and [Gitlab CI/CD](https://docs.gitlab.com/ci/)
 - ⌨️ [MkDocs](https://www.mkdocs.org/) and [Sphinx](https://www.sphinx-doc.org/) documentation support
 - 🧰 Initialize git repository and `gitignore` file
 - 🌎 GitHub and Gitlab remote repository support
@@ -22,13 +22,11 @@
 - 🎛️ Can use some [`PSP_`](https://psp.readthedocs.io/en/latest/env/) variables to control your defaults
 - 📦 Support `pip`, `conda` and `uv` package manager
 - 🧮 Support `hatch`, `maturin` and `poetry` builder
-- 🍿 Stop, pause and resume project creation when you want; see [Update](https://psp.readthedocs.io/en/latest/simple/#update)
+- 🍿 Stop, pause and resume project creation when you want; see [Resume](https://psp.readthedocs.io/en/latest/simple/#resume)
 
 ## 🚀 Get Started in 30 Seconds
 
-[![asciicast](https://asciinema.org/a/852156.svg)](https://asciinema.org/a/852156)
-
-<img src="https://i.ibb.co/fGQC5bJY/psp060.png" alt="psp" width="790"/>
+![Made with VHS](https://vhs.charm.sh/vhs-6iL5mTtR6CVF53AZiS3NFO.gif)
 
 The result is:
 
@@ -120,7 +118,7 @@ For help message, type:
 
 ```console
 $> psp help
-psp (Python Scaffolding Projects), version 0.6.0
+psp (Python Scaffolding Projects), version 0.7.0
 usage: psp [shortcut]
 ie: psp [help|quick|simple|full]
 
@@ -163,7 +161,7 @@ environments:
 - `pip`
 - `curl` (Linux/MacOS only)
 
-### MacOS prerequisites installation
+### macOS prerequisites installation
 
 ```console
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -213,13 +211,13 @@ To install compiled file into your machine, download it:
 For **all users** (required root access):
 ```console
 sudo -i
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.6.0/psp_linux -o /usr/bin/psp
-chmod +x /usr/bin/psp
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.7.0/psp_linux -o /usr/local/bin/psp
+chmod +x /usr/local/bin/psp
 ```
 
 For **current user**:
 ```console
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.6.0/psp_linux -o $HOME/.local/bin/psp
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.7.0/psp_linux -o $HOME/.local/bin/psp
 chmod +x $HOME/.local/bin/psp
 ```
 
@@ -227,22 +225,22 @@ chmod +x $HOME/.local/bin/psp
 
 ```console
 sudo su -
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.6.0/psp_macos -o /usr/bin/psp
-chmod +x /usr/bin/psp
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.7.0/psp_macos -o /usr/local/bin/psp
+chmod +x /usr/local/bin/psp
 ```
 
 #### Windows
 
 For **all users** (required Administrator):
 ```powershell
-iwr -OutFile "C:\Windows\system32\psp.exe" "https://github.com/MatteoGuadrini/psp/releases/download/v0.6.0/psp_windows"
+iwr -OutFile "C:\Windows\system32\psp.exe" "https://github.com/MatteoGuadrini/psp/releases/download/v0.7.0/psp_windows"
 ```
 
 For **current user**:
 ```powershell
 mkdir "$($Env:USERPROFILE)\bin"
 [System.Environment]::SetEnvironmentVariable("PATH", $Env:PATH + ";$($Env:USERPROFILE)\bin","USER")
-iwr -OutFile "$($Env:USERPROFILE)\bin\psp.exe" "https://github.com/MatteoGuadrini/psp/releases/download/v0.6.0/psp_windows"
+iwr -OutFile "$($Env:USERPROFILE)\bin\psp.exe" "https://github.com/MatteoGuadrini/psp/releases/download/v0.7.0/psp_windows"
 ```
 
 ### Packages
@@ -252,14 +250,14 @@ If you want to install OS package, follow instructions for your Operating System
 For **Debian/Ubuntu**:
 
 ```console
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.6.0/psp.deb -o psp.deb
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.7.0/psp.deb -o psp.deb
 sudo dpkg -i psp.deb
 ```
 
 For **Fedora/Mageia/OpenSuse**:
 
 ```console
-sudo rpm -i https://github.com/MatteoGuadrini/psp/releases/download/v0.6.0/psp.rpm
+sudo rpm -i https://github.com/MatteoGuadrini/psp/releases/download/v0.7.0/psp.rpm
 ```
 
 ### Compile as your own
@@ -268,7 +266,7 @@ Instead, if you compile this project as own, follow this steps:
 
 ```console
 git clone https://github.com/MatteoGuadrini/psp.git
-cd psp && cargo build --release && sudo cp -v target/release/psp /usr/bin/psp && chmod +x /usr/bin/psp
+cd psp && cargo build --release && sudo cp -v target/release/psp /usr/local/bin/psp && chmod +x /usr/local/bin/psp
 ```
 
 or build with script:
@@ -279,7 +277,7 @@ cd psp
 # Build
 ./build_psp.sh
 # Copy binary
-sudo cp -v target/release/psp /usr/bin/psp && chmod +x /usr/bin/psp
+sudo cp -v target/release/psp /usr/local/bin/psp && chmod +x /usr/local/bin/psp
 # Install rpm
 sudo rpm -i /tmp/psp_rpm/psp.rpm
 # Instal deb
@@ -315,8 +313,10 @@ docker run -it --rm -v ~/python_projects:/psp:z -e "PSP_GIT=true" -e "PSP_PYVER=
 - [x] `conda`and `uv` support
 - [x] `hatch`, `maturin` and `poetry` build support
 - [x] updating/merging project
-- [ ] Gitlab CI/CD and Github Actions
-- [ ] templating folder support
+- [x] Gitlab CI/CD and GitHub Actions
+- [x] templating files support
+- [ ] templating custom files support
+- [ ] universal installation script
 - [ ] command line flags support
 - [ ] YAML configuration file
 
@@ -354,7 +354,7 @@ Thanks to Jim Blandy, Jason Orendorff and Nora Tindall for writing the  _Program
 
 Thanks to Tim McNamara for writing the _Rust in Action_ book.
 
-Thanks to [Zed IDE](https://zed.dev/) and for license of [RustRover](https://www.jetbrains.com/rust/) offered by Jetbrains.
+Thanks to [Zed IDE](https://zed.dev/) and for license of [RustRover](https://www.jetbrains.com/rust/) offered by JetBrains.
 
 Special thanks go to my wife, who understood the hours of absence for this development.
 Thanks to my children, for the daily inspiration they give me and to make me realize, that life must be simple.

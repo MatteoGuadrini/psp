@@ -1,0 +1,31 @@
+# {{SIGNATURE}}, version {{VERSION}}
+
+PYTHON = python3
+VENV = .venv
+
+.PHONY: {{OPTIONS}}
+
+help:
+	@echo 'help: make ({{ACTIONS}})'
+
+all: {{OPTIONS}}
+{{{TEST}}}
+{{{BUILD}}}
+{{{CONTAINER}}}
+run:
+ifneq ('$(wildcard ${VENV}/bin/${PYTHON})','')
+	${VENV}/bin/${PYTHON} -m {{PACKAGE}}
+else
+	${PYTHON} -m {{PACKAGE}}
+endif
+
+clean:
+	rm -fr build/
+	rm -fr dist/
+	rm -fr .eggs/
+	find . -name '*.egg-info' -exec rm -fr {} +
+	find . -name '*.egg' -exec rm -f {} +
+	find . -name '*.pyc' -exec rm -f {} +
+	find . -name '*.pyo' -exec rm -f {} +
+	find . -name '*~' -exec rm -f {} +
+	find . -name '__pycache__' -exec rm -fr {} +

@@ -1,0 +1,16 @@
+# {{SIGNATURE}}, version {{VERSION}}
+
+language: python
+cache: pip
+python:
+  - {{PYTHON}}
+before_install:
+  - sudo apt-get update
+  - sudo apt-get install python3-pip
+  - sudo apt-get install python3-pytest
+install:
+  - pip install {requirements} pipenv
+  - pipenv install --dev
+script:
+  - python -m unittest discover tests
+  - pytest tests

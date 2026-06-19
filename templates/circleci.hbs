@@ -1,0 +1,25 @@
+# {{SIGNATURE}}, version {{VERSION}}
+
+version: 2.1
+jobs:
+  build-and-test:
+    docker:
+      - image: circleci/python
+    steps:
+      - checkout
+      - run:
+          name: Install pytest
+          command: pip install pytest
+      - run:
+          name: Install dependencies
+          command: pip install {{REQUIREMENTS}}
+      - run:
+          name: Install package
+          command: pip install .
+      - run:
+          name: Run tests
+          command: python -m pytest tests
+  workflows:
+    main:
+      jobs:
+        - build-and-test

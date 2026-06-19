@@ -7,11 +7,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.7.0] - 2026-06-19
+
+### Added
+- Add GitHub and Gitlab to **prj_ci** options
+- Add _handlebars_ crate
+- Add handlebars templates folder and files
+- Add **render_template** function
+- Add **info** function
+- Add **warning** function
+- Add **error** function
+- Add _info_ messages if you use `PSP_` variables
+
+### Changed
+- Change Rust minimum version to 1.85
+- Add python version into travis file
+- Change check if license is empty
+
+### Fixed
+- Add all part of Makefile; fix bug refs #5
+- Add `--fail` option into **get_file_from_url** function
+
 ## [0.6.0] - 2026-03-19
 
 ### Added
 - Add new `PSP_UPDATE` variables for stop/pause/resume project creation
-- Adopt dotenvy crate
+- Adopt _dotenvy_ crate
 - Add **read_log** function
 - Add **check_log** function
 - Add **write_log** function

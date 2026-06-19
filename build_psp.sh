@@ -1,6 +1,7 @@
 #! /usr/bin/env bash
 
-export VERSION=$(grep ^version Cargo.toml | awk '{print $3}' | tr -d '"')
+VERSION=$(grep ^version Cargo.toml | awk '{print $3}' | tr -d '"')
+export VERSION
 DIST="dist"
 
 if [ -n "$(which podman)" ]; then
@@ -20,7 +21,7 @@ mkdir -p $DIST/psp_deb
 mkdir -p $DIST/psp_release
 
 # Windows compile
-$ccli run -it --rm -v $PWD:/tmp/psp "rust:1.82.0-slim" bash -c "
+$ccli run -it --rm -v $PWD:/tmp/psp "rust:1.85.0-slim" bash -c "
 cd /tmp/psp
 apt update -q
 apt install -yq g++-mingw-w64-x86-64
@@ -29,7 +30,7 @@ rustup target add x86_64-pc-windows-gnu
 cargo build --release --target x86_64-pc-windows-gnu"
 
 # Linux compile
-$ccli run -it --rm -v $PWD:/tmp/psp "rust:1.82.0-slim" bash -c "
+$ccli run -it --rm -v $PWD:/tmp/psp "rust:1.85.0-slim" bash -c "
 cd /tmp/psp
 cargo build --release"
 
