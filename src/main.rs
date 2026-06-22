@@ -420,6 +420,13 @@ fn env_psplog() -> bool {
     env_psplog.unwrap()
 }
 
+// Function to get template path
+fn env_psptemplatepath() -> String {
+    // Check the template path variable
+    let env_psptemplatepath = var("PSP_TEMPLATES").ok();
+    env_psptemplatepath.unwrap()
+}
+
 // Function to make build system settings
 fn make_builder() -> String {
     // Check environment variable for build
