@@ -424,7 +424,23 @@ fn env_psplog() -> bool {
 fn env_psptemplatepath() -> String {
     // Check the template path variable
     let env_psptemplatepath = var("PSP_TEMPLATES").ok();
-    env_psptemplatepath.unwrap()
+    let templates = if let Some(t) = env_psptemplatepath {
+        t
+    } else {
+        "".to_string()
+    };
+    templates
+}
+
+// Function to check if template repository is remote url or local folder
+fn check_templates_env_is_url() -> bool {
+    let templates = env_psptemplatepath();
+    if !templates.is_empty() {
+        if templates.starts_with("http") {
+            return true;
+        }
+    }
+    false
 }
 
 // Function to make build system settings
