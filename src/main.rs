@@ -433,14 +433,31 @@ fn env_psptemplatepath() -> String {
 }
 
 // Function to check if template repository is remote url or local folder
-fn check_templates_env_is_url() -> bool {
-    let templates = env_psptemplatepath();
-    if !templates.is_empty() {
-        if templates.starts_with("http") {
-            return true;
-        }
+fn check_templates_is_url(templates: &str) -> bool {
+    if templates.starts_with("http") {
+        return true;
     }
     false
+}
+
+// Function to download/copy template
+fn create_template(template: &str, destination: &str) {
+    let templates = env_psptemplatepath();
+    if !templates.is_empty() {
+        let custom_template = format!("{templates}/{template}");
+        if check_templates_is_url(&custom_template) {
+            // Download custom template
+            get_file_from_url(&custom_template, destination, template);
+        } else {
+            // Copy custom template
+            let destination_template = Path::new(destination).join(template);
+            copy(&custom_template, destination_template).ok();
+        }
+    } else {
+        // Fallback
+        let fallback_template = format!("https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/main/template/{template}");
+        get_file_from_url(fallback_template.as_str(), destination, template);
+    }
 }
 
 // Function to make build system settings
