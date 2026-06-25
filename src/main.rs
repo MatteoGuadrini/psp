@@ -449,9 +449,11 @@ fn create_template(template: &str, destination: &str) {
             // Download custom template
             get_file_from_url(&custom_template, destination, template);
         } else {
-            // Copy custom template
+            // Copy custom local template
             let destination_template = Path::new(destination).join(template);
-            copy(&custom_template, destination_template).ok();
+            if let Err(err) = copy(&custom_template, destination_template) {
+                error(format!("copy template {template} error ({err})"));
+            }
         }
     } else {
         // Fallback
