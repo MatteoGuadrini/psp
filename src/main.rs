@@ -444,6 +444,7 @@ fn check_templates_is_url(templates: &str) -> bool {
 
 // Function to download/copy template
 fn create_template(template: &str, destination: &str) {
+    let mut fallback: bool = true;
     let templates = env_psptemplatepath();
     let fallback_template = format!(
         "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/main/template/{template}"
@@ -453,18 +454,20 @@ fn create_template(template: &str, destination: &str) {
         if check_templates_is_url(&custom_template) {
             // Download custom template
             if !get_file_from_url(&custom_template, destination, template) {
-                // Fallback
-                get_file_from_url(fallback_template.as_str(), destination, template);
+                fallback = true;
             }
         } else {
             // Copy custom local template
             let destination_template = Path::new(destination).join(template);
             if let Err(err) = copy(&custom_template, destination_template) {
                 error(format!("copy template {template} error ({err})"));
-                get_file_from_url(fallback_template.as_str(), destination, template);
+                fallback = true;
             }
         }
     } else {
+        fallback = true;
+    }
+    if fallback {
         // Fallback
         get_file_from_url(fallback_template.as_str(), destination, template);
     }
