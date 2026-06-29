@@ -447,7 +447,7 @@ fn create_template(template: &str, destination: &str) {
     let mut fallback: bool = true;
     let templates = env_psptemplatepath();
     let fallback_template = format!(
-        "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/main/template/{template}"
+        "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/main/templates/{template}"
     );
     if !templates.is_empty() {
         let custom_template = format!("{templates}/{template}");
@@ -753,11 +753,7 @@ fn prj_git(name: &str, shortcut: &String) -> bool {
         let mut data = HashMap::new();
         data.insert("SIGNATURE", SIGNATURE);
         data.insert("VERSION", VERSION);
-        get_file_from_url(
-            "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/main/templates/gitignore.hbs",
-            name,
-            "gitignore.hbs",
-        );
+        create_template("gitignore.hbs", name);
         let gitignore_template = Path::new(name).join("gitignore.hbs").display().to_string();
         let file_ret = render_template(
             &gitignore_template,
