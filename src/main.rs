@@ -1111,11 +1111,7 @@ fn prj_toml(
     if !license.is_empty() {
         data.insert("LICENSE", &stringed_license);
     }
-    get_file_from_url(
-        "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/main/templates/pyproject.hbs",
-        root,
-        "pyproject.hbs",
-    );
+    create_template("pyproject.hbs", root);
     let pyproject_template = Path::new(root).join("pyproject.hbs").display().to_string();
     let file_ret = render_template(
         &pyproject_template,
@@ -1165,11 +1161,7 @@ fn prj_ci(name: &str, deps: &Vec<String>, shortcut: &String) {
             ("VERSION", VERSION),
             ("PYTHON", &python_version),
         ]);
-        get_file_from_url(
-            "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/main/templates/travis.hbs",
-                name,
-            "travis.hbs",
-        );
+        create_template("travis.hbs", name);
         let travis_template = Path::new(name).join("travis.hbs").display().to_string();
         let file_ret = render_template(
             &travis_template,
@@ -1195,13 +1187,9 @@ fn prj_ci(name: &str, deps: &Vec<String>, shortcut: &String) {
             .join("circleci.hbs")
             .display()
             .to_string();
-        get_file_from_url(
-            "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/main/templates/circleci.hbs",
-            ".",
-            &circleci_template,
-        );
+        create_template("circleci.hbs", ".");
         let file_ret = render_template(
-            &circleci_template,
+            "circleci.hbs",
             &circleci_template.replace("circleci.hbs", "config.yml"),
             data,
         );
@@ -1225,13 +1213,9 @@ fn prj_ci(name: &str, deps: &Vec<String>, shortcut: &String) {
             .join("githubactions.hbs")
             .display()
             .to_string();
-        get_file_from_url(
-            "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/main/templates/githubactions.hbs",
-            ".",
-            &github_template,
-        );
+        create_template("githubactions.hbs", ".");
         let file_ret = render_template(
-            &github_template,
+            "githubactions.hbs",
             &github_template.replace("githubactions.hbs", "python-app.yml"),
             data,
         );
@@ -1247,13 +1231,9 @@ fn prj_ci(name: &str, deps: &Vec<String>, shortcut: &String) {
             ("PACKAGE", package_name),
         ]);
         let gitlab_template = Path::new(name).join("gitlabcicd.hbs").display().to_string();
-        get_file_from_url(
-            "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/main/templates/gitlabcicd.hbs",
-            ".",
-            &gitlab_template,
-        );
+        create_template("gitlabcicd.hbs", ".");
         let file_ret = render_template(
-            &gitlab_template,
+            "gitlabcicd.hbs",
             &gitlab_template.replace("gitlabcicd.hbs", ".gitlab-ci.yml"),
             data,
         );
@@ -1391,13 +1371,9 @@ fn prj_remote(root: &str, name: &str, shortcut: &String) -> (String, String) {
                 .join("gitlab_feature.hbs")
                 .display()
                 .to_string();
-            get_file_from_url(
-                "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/main/templates/gitlab_feature.hbs",
-                ".",
-                &gitlab_feature_template,
-            );
+            create_template("gitlab_feature.hbs", ".");
             let file_ret = render_template(
-                &gitlab_feature_template,
+                "gitlab_feature.hbs",
                 &gitlab_feature_template.replace("gitlab_feature.hbs", "feature.md"),
                 data.clone(),
             );
@@ -1406,13 +1382,9 @@ fn prj_remote(root: &str, name: &str, shortcut: &String) -> (String, String) {
             }
             // Bug template
             let gitlab_bug_template = issue_folder.join("gitlab_bug.hbs").display().to_string();
-            get_file_from_url(
-                "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/main/templates/gitlab_bug.hbs",
-                ".",
-                &gitlab_bug_template,
-            );
+            create_template("gitlab_bug.hbs", ".");
             let file_ret = render_template(
-                &gitlab_bug_template,
+                "gitlab_bug.hbs",
                 &gitlab_bug_template.replace("gitlab_bug.hbs", "bug.md"),
                 data.clone(),
             );
@@ -1421,13 +1393,9 @@ fn prj_remote(root: &str, name: &str, shortcut: &String) -> (String, String) {
             }
             // Merge template
             let gitlab_merge_template = merge_folder.join("gitlab_merge.hbs").display().to_string();
-            get_file_from_url(
-                "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/main/templates/gitlab_merge.hbs",
-                ".",
-                &gitlab_merge_template,
-            );
+            create_template("gitlab_merge.hbs", ".");
             let file_ret = render_template(
-                &gitlab_merge_template,
+                "gitlab_merge.hbs",
                 &gitlab_merge_template.replace("gitlab_merge.hbs", "merge.md"),
                 data.clone(),
             );
@@ -1460,13 +1428,9 @@ fn prj_remote(root: &str, name: &str, shortcut: &String) -> (String, String) {
                 .join("github_feature.hbs")
                 .display()
                 .to_string();
-            get_file_from_url(
-                "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/main/templates/github_feature.hbs",
-                ".",
-                &github_feature_template,
-            );
+            create_template("github_feature.hbs", ".");
             let file_ret = render_template(
-                &github_feature_template,
+                "github_feature.hbs",
                 &github_feature_template.replace("github_feature.hbs", "feature.yml"),
                 data.clone(),
             );
@@ -1475,13 +1439,9 @@ fn prj_remote(root: &str, name: &str, shortcut: &String) -> (String, String) {
             }
             // Bug template
             let github_bug_template = issue_folder.join("github_bug.hbs").display().to_string();
-            get_file_from_url(
-                "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/main/templates/github_bug.hbs",
-                ".",
-                &github_bug_template,
-            );
+            create_template("github_bug.hbs", ".");
             let file_ret = render_template(
-                &github_bug_template,
+                "github_bug.hbs",
                 &github_bug_template.replace("github_bug.hbs", "bug.yml"),
                 data.clone(),
             );
@@ -1490,13 +1450,9 @@ fn prj_remote(root: &str, name: &str, shortcut: &String) -> (String, String) {
             }
             // Merge template
             let github_merge_template = merge_folder.join("github_merge.hbs").display().to_string();
-            get_file_from_url(
-                "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/main/templates/github_merge.hbs",
-                ".",
-                &github_merge_template,
-            );
+            create_template("github_merge.hbs", ".");
             let file_ret = render_template(
-                &github_merge_template,
+                "github_merge.hbs",
                 &github_merge_template.replace("github_merge.hbs", "pull_request_template.md"),
                 data.clone(),
             );
@@ -1575,13 +1531,9 @@ fn prj_tox(name: &str, venv: bool, deps: &Vec<String>, shortcut: &String) {
         ]);
         // Tox template
         let tox_template = Path::new(name).join("tox.hbs").display().to_string();
-        get_file_from_url(
-            "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/main/templates/tox.hbs",
-            ".",
-            &tox_template,
-        );
+        create_template("tox.hbs", ".");
         let file_ret = render_template(
-            &tox_template,
+            "tox.hbs",
             &tox_template.replace("tox.hbs", "tox.ini"),
             data.clone(),
         );
@@ -1761,13 +1713,9 @@ fn prj_files(root: &str, name: &str, container: bool, shortcut: &String) {
         ]);
         // README template
         let readme_template = Path::new(root).join("readme.hbs").display().to_string();
-        get_file_from_url(
-            "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/main/templates/readme.hbs",
-            ".",
-            &readme_template,
-        );
+        create_template("readme.hbs", ".");
         let file_ret = render_template(
-            &readme_template,
+            "readme.hbs",
             &readme_template.replace("readme.hbs", "README.md"),
             data.clone(),
         );
@@ -1776,13 +1724,9 @@ fn prj_files(root: &str, name: &str, container: bool, shortcut: &String) {
         }
         // CHANGES template
         let changes_template = Path::new(root).join("changes.hbs").display().to_string();
-        get_file_from_url(
-            "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/main/templates/changes.hbs",
-            ".",
-            &changes_template,
-        );
+        create_template("changes.hbs", ".");
         let file_ret = render_template(
-            &changes_template,
+            "changes.hbs",
             &changes_template.replace("changes.hbs", "CHANGES.md"),
             data.clone(),
         );
@@ -1794,13 +1738,9 @@ fn prj_files(root: &str, name: &str, container: bool, shortcut: &String) {
             .join("contributing.hbs")
             .display()
             .to_string();
-        get_file_from_url(
-            "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/main/templates/contributing.hbs",
-            ".",
-            &contributing_template,
-        );
+        create_template("contributing.hbs", ".");
         let file_ret = render_template(
-            &contributing_template,
+            "contributing.hbs",
             &contributing_template.replace("contributing.hbs", "CONTRIBUTING.md"),
             data.clone(),
         );
@@ -1821,13 +1761,9 @@ fn prj_files(root: &str, name: &str, container: bool, shortcut: &String) {
             error(format!("{e}"));
         }
         let contributing_template = sample_dir.join("sample.hbs").display().to_string();
-        get_file_from_url(
-            "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/main/templates/sample.hbs",
-            ".",
-            &contributing_template,
-        );
+        create_template("sample.hbs", ".");
         let file_ret = render_template(
-            &contributing_template,
+            "sample.hbs",
             &contributing_template.replace("sample.hbs", format!("{name}_sample.py").as_str()),
             data.clone(),
         );
@@ -2023,13 +1959,9 @@ fn prj_container(root: &str, name: &str, shortcut: &String) -> bool {
             .join("containerfile.hbs")
             .display()
             .to_string();
-        get_file_from_url(
-            "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/main/templates/containerfile.hbs",
-            ".",
-            &container_template,
-        );
+        create_template("containerfile.hbs", ".");
         let file_ret = render_template(
-            &container_template,
+            "containerfile.hbs",
             &container_template.replace("containerfile.hbs", "Dockerfile"),
             data.clone(),
         );
@@ -2047,13 +1979,9 @@ fn prj_container(root: &str, name: &str, shortcut: &String) -> bool {
             .join("container_ignore.hbs")
             .display()
             .to_string();
-        get_file_from_url(
-            "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/main/templates/container_ignore.hbs",
-            ".",
-            &container_ignore_template,
-        );
+        create_template("container_ignore.hbs", ".");
         let file_ret = render_template(
-            &container_ignore_template,
+            "container_ignore.hbs",
             &container_ignore_template.replace("container_ignore.hbs", ".dockerignore"),
             data.clone(),
         );
@@ -2129,13 +2057,9 @@ endif";
     data.insert("OPTIONS", options.as_str());
     data.insert("ACTIONS", actions.as_str());
     let makefile_template = Path::new(root).join("makefile.hbs").display().to_string();
-    get_file_from_url(
-        "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/main/templates/makefile.hbs",
-        ".",
-        &makefile_template,
-    );
+    create_template("makefile.hbs", ".");
     let file_ret = render_template(
-        &makefile_template,
+        "makefile.hbs",
         &makefile_template.replace("makefile.hbs", "Makefile"),
         data.clone(),
     );
