@@ -1015,7 +1015,7 @@ fn prj_toml(
     name: &str,
     deps: &Vec<String>,
     git_info: (String, String),
-    mut license: String,
+    license: String,
 ) {
     // Check git information
     let mut documentation = "https://docs.python.org/3/".to_string();
@@ -1057,32 +1057,13 @@ fn prj_toml(
         }
         documentation = format!("{}/docs", repository);
     }
-    let mut classifiers = vec!["Programming Language :: Python :: 3"];
+    let classifiers = vec!["Programming Language :: Python :: 3"];
     // Check dependencies
     let requirements = if deps.contains(&"No".to_string()) {
         "[]".to_string()
     } else {
         format!("{deps:?}")
     };
-    // Check license
-    if license == "None" {
-        license = String::new();
-    } else if license == "MIT" {
-        license = "MIT License".to_string();
-        classifiers.push("License :: OSI Approved :: MIT License")
-    } else if license == "Apache" {
-        license = "Apache Software License".to_string();
-        classifiers.push("License :: OSI Approved :: Apache Software License")
-    } else if license == "Creative Commons" {
-        license = "Common Public License".to_string();
-        classifiers.push("License :: OSI Approved :: Common Public License")
-    } else if license == "Mozilla" {
-        license = "Mozilla Public License 2.0 (MPL 2.0)".to_string();
-        classifiers.push("License :: OSI Approved :: Mozilla Public License 2.0 (MPL 2.0)")
-    } else if license == "Gnu Public License" {
-        license = "GNU General Public License v3 (GPLv3)".to_string();
-        classifiers.push("License :: OSI Approved :: GNU General Public License v3 (GPLv3)")
-    }
     // Create a data map with variables
     let builder = make_builder();
     let project_name = name.to_lowercase();
@@ -1107,9 +1088,8 @@ fn prj_toml(
         ("CHANGELOG", &changelog),
     ]);
     // Check if license is set
-    let stringed_license = format!("license = {{text = '{license}'}}");
-    if !license.is_empty() {
-        data.insert("LICENSE", &stringed_license);
+    if license != "None" {
+        data.insert("LICENSE", "true");
     }
     create_template("pyproject.hbs", root);
     let pyproject_template = Path::new(root).join("pyproject.hbs").display().to_string();
