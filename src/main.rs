@@ -447,7 +447,7 @@ fn create_template(template: &str, destination: &str) {
     let mut fallback: bool = true;
     let templates = env_psptemplatepath();
     let fallback_template = format!(
-        "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/main/templates/{template}"
+        "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/dev/templates/{template}"
     );
     if !templates.is_empty() {
         let custom_template = format!("{templates}/{template}");
@@ -795,9 +795,6 @@ fn prj_test(root: &str, name: &str, shortcut: &String) -> bool {
         prompt_confirm("Do you want unit test files?", true, "None")
     };
     if confirm {
-        // Check the version of a Python project
-        let pyver = env_pyversion();
-        let project_name = name.to_lowercase();
         // Make directories structure
         let tests_dir = Path::new(root).join("tests");
         let dir_ret = make_dirs(tests_dir.display().to_string().as_str());
@@ -823,39 +820,19 @@ fn prj_test(root: &str, name: &str, shortcut: &String) -> bool {
             error(format!("{e}"));
             return false;
         }
-        let all_module = tests_dir.join(format!("test_{project_name}.py").as_str());
-        let all_module_ret = make_file(
-            all_module.display().to_string().as_str(),
-            format!(
-                "#! /usr/bin/env python3
-# -*- encoding: utf-8 -*-
-# vim: se ts=4 et syn=python:
-# {SIGNATURE}, version {VERSION}
-
-
-import unittest
-from {project_name} import __version__
-
-
-class TestAll(unittest.TestCase):
-
-    def test_all(self):
-        self.assertEqual(__version__, '{pyver}')
-        print('Test all {project_name} successfully!')
-
-
-# Test functions for pytest
-def test_all():
-    assert __version__ == '{pyver}'
-
-
-if __name__ == '__main__':
-    unittest.main()"
-            )
-            .to_string(),
-        );
-        if let Err(e) = all_module_ret {
-            error(format!("{e}"));
+        let project_name = name.to_lowercase();
+        let project_version = env_pyversion();
+        let data = HashMap::from([
+            ("SIGNATURE", SIGNATURE),
+            ("VERSION", VERSION),
+            ("PRJ_NAME", &project_name),
+            ("PRJ_VER", &project_version),
+        ]);
+        let test_module = tests_dir.join(format!("test_{project_name}.py").as_str());
+        create_template("test_module.hbs", ".");
+        let file_ret = render_template("test_module.hbs", &test_module.to_str().unwrap(), data);
+        if !file_ret {
+            error(format!("`test_{project_name}.py` render failed"));
             return false;
         }
         ret = true;
