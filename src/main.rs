@@ -140,6 +140,30 @@ fn read_log(log: &str) -> std::io::Result<String> {
     Ok(contents)
 }
 
+// Function to create Python package folder
+fn create_python_package(path: &Path) {
+    let dir_ret = make_dirs(path.display().to_string().as_str());
+    if let Err(e) = dir_ret {
+        error(format!("{e}"));
+    }
+    // Make file structures
+    let init_file = path.join("__init__.py");
+    let init_file_ret = make_file(
+        init_file.display().to_string().as_str(),
+        format!(
+            "#! /usr/bin/env python3
+# -*- encoding: utf-8 -*-
+# vim: se ts=4 et syn=python:
+# {SIGNATURE}, version {VERSION}
+
+"
+        ),
+    );
+    if let Err(e) = init_file_ret {
+        error(format!("{e}"));
+    }
+}
+
 // Function to check line into log
 fn check_log(step: &str, log: &str) -> bool {
     let mut result = false;
