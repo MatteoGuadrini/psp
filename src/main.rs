@@ -141,10 +141,11 @@ fn read_log(log: &str) -> std::io::Result<String> {
 }
 
 // Function to create Python package folder
-fn create_python_package(path: &Path) {
+fn create_python_package(path: &Path, content: &str) -> bool {
     let dir_ret = make_dirs(path.display().to_string().as_str());
     if let Err(e) = dir_ret {
         error(format!("{e}"));
+        return false;
     }
     // Make file structures
     let init_file = path.join("__init__.py");
@@ -156,12 +157,14 @@ fn create_python_package(path: &Path) {
 # vim: se ts=4 et syn=python:
 # {SIGNATURE}, version {VERSION}
 
-"
+{content}"
         ),
     );
     if let Err(e) = init_file_ret {
         error(format!("{e}"));
+        return false;
     }
+    true
 }
 
 // Function to check line into log
@@ -685,23 +688,11 @@ fn prj_name() -> (String, String) {
     }
     // Check the version of a Python project
     let pyver = env_pyversion();
-    // Make file structures
-    let init_file = package.join("__init__.py");
-    let file_ret = make_file(
-        format!("{}", init_file.display()).as_str(),
-        format!(
-            "#! /usr/bin/env python3
-# -*- encoding: utf-8 -*-
-# vim: se ts=4 et syn=python:
-# {SIGNATURE}, version {VERSION}
-
-__version__ = '{pyver}'
-"
-        ),
-    );
-    if let Err(e) = file_ret {
-        error(format!("{e}"));
-        exit(4);
+    let content = format!("__version__ = {pyver}");
+    let package_path = package.display();
+    if !create_python_package(package.as_path(), content.as_str()) {
+        error(format!("package {package_path} creation failed."));
+        exit(1);
     }
     let main_file = package.join("__main__.py");
     let main_file_ret = make_file(
@@ -821,27 +812,9 @@ fn prj_test(root: &str, name: &str, shortcut: &String) -> bool {
     if confirm {
         // Make directories structure
         let tests_dir = Path::new(root).join("tests");
-        let dir_ret = make_dirs(tests_dir.display().to_string().as_str());
-        if let Err(e) = dir_ret {
-            error(format!("{e}"));
-            return false;
-        }
-        // Make file structures
-        let init_file = tests_dir.join("__init__.py");
-        let init_file_ret = make_file(
-            init_file.display().to_string().as_str(),
-            format!(
-                "#! /usr/bin/env python3
-# -*- encoding: utf-8 -*-
-# vim: se ts=4 et syn=python:
-# {SIGNATURE}, version {VERSION}
-
-
-"
-            ),
-        );
-        if let Err(e) = init_file_ret {
-            error(format!("{e}"));
+        let tests_path = tests_dir.display();
+        if !create_python_package(tests_dir.as_path(), "") {
+            error(format!("tests package {tests_path} creation failed."));
             return false;
         }
         let project_name = name.to_lowercase();
