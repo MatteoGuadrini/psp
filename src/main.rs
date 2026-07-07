@@ -934,7 +934,7 @@ fn prj_deps(name: &str, venv: bool, shortcut: &String) -> Vec<String> {
         vec![]
     };
     // Split String into Vector
-    let mut dependencies: Vec<String> = if deps != "No" {
+    let mut dependencies: Vec<String> = if deps.to_lowercase() != "no" {
         deps.as_str()
             .split_whitespace()
             .map(|s| s.to_string())
