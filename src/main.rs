@@ -350,16 +350,21 @@ fn get_shortcut() -> String {
     }
 }
 
+// Function to get home directory
+fn home_dir() -> String {
+    #[cfg(any(target_os = "linux", target_os = "macos"))]
+    let home_var_name = "HOME";
+    #[cfg(target_os = "windows")]
+    let home_var_name = "USERPROFILE";
+    var(home_var_name).unwrap()
+}
+
 // Function to load env files
 fn load_env() {
     // Load first, .env file from the current working directory
     dotenv().ok();
     // Load the second, .psp.env file from home
-    #[cfg(any(target_os = "linux", target_os = "macos"))]
-    let home_var_name = "HOME";
-    #[cfg(target_os = "windows")]
-    let home_var_name = "USERPROFILE";
-    let home_var = var(home_var_name).unwrap();
+    let home_var = home_dir();
     let home_env = Path::new(home_var.as_str()).join(".psp.env");
     dotenvy::from_filename(home_env).ok();
 }
@@ -473,6 +478,17 @@ fn env_psptemplatepath() -> String {
     templates
 }
 
+// Function to cache templates on local disk
+fn env_pspcache() -> bool {
+    // Check the cache variable
+    let env_cache = var("PSP_CACHE").unwrap_or("false".to_string()).parse().ok();
+    if env_cache.unwrap() {
+        true
+    } else {
+        false
+    }
+}
+
 // Function to check if template repository is remote url or local folder
 fn check_templates_is_url(templates: &str) -> bool {
     if templates.starts_with("http") {
@@ -485,6 +501,7 @@ fn check_templates_is_url(templates: &str) -> bool {
 fn create_template(template: &str, destination: &str) {
     let mut fallback: bool = true;
     let templates = env_psptemplatepath();
+    let cache_template = env_pspcache();
     let fallback_template = format!("{TEMPLATES}/{template}");
     if !templates.is_empty() {
         let custom_template = format!("{templates}/{template}");
@@ -508,6 +525,8 @@ fn create_template(template: &str, destination: &str) {
         // Fallback
         get_file_from_url(fallback_template.as_str(), destination, template);
     }
+    // Check cache
+    if cache_template {}
 }
 
 // Function to make build system settings
