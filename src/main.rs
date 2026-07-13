@@ -503,6 +503,10 @@ fn create_template(template: &str, destination: &str) {
     let templates = env_psptemplatepath();
     let cache_template = env_pspcache();
     let fallback_template = format!("{TEMPLATES}/{template}");
+    let destination_template = Path::new(destination).join(template);
+    let home_var = home_dir();
+    let cache_dir = Path::new(home_var.as_str()).join(".psp_cache");
+    let cached_template = cache_dir.join(template);
     if !templates.is_empty() {
         let custom_template = format!("{templates}/{template}");
         if check_templates_is_url(&custom_template) {
@@ -512,9 +516,15 @@ fn create_template(template: &str, destination: &str) {
             }
         } else {
             // Copy custom local template
-            let destination_template = Path::new(destination).join(template);
-            if let Err(err) = copy(&custom_template, destination_template) {
+            if let Err(err) = copy(&custom_template, &destination_template) {
                 error(format!("copy template {template} error ({err})"));
+                fallback = true;
+            }
+        }
+    } else if cache_template {
+        if cached_template.exists() {
+            if let Err(err) = copy(&cached_template, &destination_template) {
+                error(format!("copy cache template {template} error ({err})"));
                 fallback = true;
             }
         }
@@ -525,8 +535,20 @@ fn create_template(template: &str, destination: &str) {
         // Fallback
         get_file_from_url(fallback_template.as_str(), destination, template);
     }
-    // Check cache
-    if cache_template {}
+    // Check cache (copy to cache)
+    if cache_template {
+        if !cache_dir.exists() {
+            let dir_ret = make_dirs(&cache_dir.display().to_string());
+            if let Err(e) = dir_ret {
+                error(format!("cache template folder error: {e}"));
+            }
+        }
+        if !cached_template.exists() {
+            if let Err(err) = copy(&destination_template, &cached_template) {
+                error(format!("create cache template {template} error ({err})"));
+            }
+        }
+    }
 }
 
 // Function to make build system settings
@@ -717,7 +739,7 @@ fn prj_name() -> (String, String) {
     }
     // Check the version of a Python project
     let pyver = env_pyversion();
-    let content = format!("__version__ = {pyver}");
+    let content = format!("__version__ = \"{pyver}\"");
     let package_path = package.display();
     if !create_python_package(package.as_path(), content.as_str()) {
         error(format!("package {package_path} creation failed."));
