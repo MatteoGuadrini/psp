@@ -503,6 +503,18 @@ fn check_templates_is_url(templates: &str) -> bool {
     false
 }
 
+// Function to create cache folder
+fn create_cache_dir() {
+    let home_var = home_dir();
+    let cache_dir = Path::new(home_var.as_str()).join(".psp_cache");
+    if !cache_dir.exists() {
+        let dir_ret = make_dirs(&cache_dir.display().to_string());
+        if let Err(e) = dir_ret {
+            error(format!("cache template folder creation error: {e}"));
+        }
+    }
+}
+
 // Function to download/copy template
 fn create_template(template: &str, destination: &str) {
     let mut fallback: bool = true;
@@ -542,12 +554,7 @@ fn create_template(template: &str, destination: &str) {
     }
     // Check cache (copy to cache)
     if cache_template {
-        if !cache_dir.exists() {
-            let dir_ret = make_dirs(&cache_dir.display().to_string());
-            if let Err(e) = dir_ret {
-                error(format!("cache template folder error: {e}"));
-            }
-        }
+        create_cache_dir();
         if !cached_template.exists() {
             if let Err(err) = copy(&destination_template, &cached_template) {
                 error(format!("create cache template {template} error ({err})"));
