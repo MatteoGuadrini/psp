@@ -504,7 +504,7 @@ fn check_templates_is_url(templates: &str) -> bool {
 }
 
 // Function to create cache folder
-fn create_cache_dir() {
+fn create_cache_dir() -> String {
     let home_var = home_dir();
     let cache_dir = Path::new(home_var.as_str()).join(".psp_cache");
     if !cache_dir.exists() {
@@ -513,6 +513,7 @@ fn create_cache_dir() {
             error(format!("cache template folder creation error: {e}"));
         }
     }
+    cache_dir.display().to_string()
 }
 
 // Function to download/copy template
@@ -522,9 +523,6 @@ fn create_template(template: &str, destination: &str) {
     let cache_template = env_pspcache();
     let template_repo = format!("{templates}/{template}");
     let destination_template = Path::new(destination).join(template);
-    let home_var = home_dir();
-    let cache_dir = Path::new(home_var.as_str()).join(".psp_cache");
-    let cached_template = cache_dir.join(template);
     if templates != TEMPLATES {
         if check_templates_is_url(&template_repo) {
             // Download custom template
@@ -539,6 +537,8 @@ fn create_template(template: &str, destination: &str) {
             }
         }
     } else if cache_template {
+        let cache_dir = create_cache_dir();
+        let cached_template = Path::new(cache_dir.as_str()).join(template);
         if cached_template.exists() {
             if let Err(err) = copy(&cached_template, &destination_template) {
                 error(format!("copy cache template {template} error ({err})"));
@@ -554,7 +554,8 @@ fn create_template(template: &str, destination: &str) {
     }
     // Check cache (copy to cache)
     if cache_template {
-        create_cache_dir();
+        let cache_dir = create_cache_dir();
+        let cached_template = Path::new(cache_dir.as_str()).join(template);
         if !cached_template.exists() {
             if let Err(err) = copy(&destination_template, &cached_template) {
                 error(format!("create cache template {template} error ({err})"));
@@ -1796,6 +1797,7 @@ fn prj_files(root: &str, name: &str, container: bool, shortcut: &String) {
 fn prj_license(name: &str, shortcut: &String, author: &String) -> String {
     // Check psp log for update
     let log_step = "prj_license";
+    let cache_license = env_pspcache();
     if check_log(log_step, LOGFILE) {
         let log_content = read_log(LOGFILE);
         let value = get_log_value(log_step, log_content.unwrap().as_str());
@@ -1844,7 +1846,14 @@ fn prj_license(name: &str, shortcut: &String, author: &String) -> String {
     } else if license.as_str().to_lowercase() != "none" {
         warning(format!("`{license}` is not recognized as a valid license"));
     }
-    if !license_url.is_empty() {
+    let cache_dir = create_cache_dir();
+    let cached_license = Path::new(cache_dir.as_str()).join(&license_file);
+    let license_template = Path::new(name).join(&license_file).display().to_string();
+    if cached_license.exists() {
+        if let Err(err) = copy(&cached_license, &license_template) {
+            error(format!("copy cache template {license_file} error ({err})"));
+        }
+    } else if !license_url.is_empty() {
         // Create a data map with variables
         let package_name = Path::new(name).file_name().unwrap().to_str().unwrap();
         let data = HashMap::from([
@@ -1855,7 +1864,6 @@ fn prj_license(name: &str, shortcut: &String, author: &String) -> String {
         ]);
         get_file_from_url(license_url.as_str(), name, license_file.as_str());
         // Check author
-        let license_template = Path::new(name).join(&license_file).display().to_string();
         let file_ret = render_template(
             &license_template,
             &license_template.replace(&license_file, "LICENSE.md"),
@@ -1863,6 +1871,16 @@ fn prj_license(name: &str, shortcut: &String, author: &String) -> String {
         );
         if !file_ret {
             error("`LICENSE.md` render failed".to_string());
+        }
+        // Check cache (copy to cache)
+        if cache_license {
+            let cache_dir = create_cache_dir();
+            let cached_license = Path::new(cache_dir.as_str()).join(&license_file);
+            if !cached_license.exists() {
+                if let Err(err) = copy(&license_template, &cached_license) {
+                    error(format!("create cache license {license_file} error ({err})"));
+                }
+            }
         }
     }
     // Write psp log
