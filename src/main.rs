@@ -1798,6 +1798,7 @@ fn prj_license(name: &str, shortcut: &String, author: &String) -> String {
     // Check psp log for update
     let log_step = "prj_license";
     let cache_license = env_pspcache();
+    let mut cached = false;
     if check_log(log_step, LOGFILE) {
         let log_content = read_log(LOGFILE);
         let value = get_log_value(log_step, log_content.unwrap().as_str());
@@ -1849,11 +1850,16 @@ fn prj_license(name: &str, shortcut: &String, author: &String) -> String {
     let cache_dir = create_cache_dir();
     let cached_license = Path::new(cache_dir.as_str()).join(&license_file);
     let license_template = Path::new(name).join(&license_file).display().to_string();
-    if cached_license.exists() {
-        if let Err(err) = copy(&cached_license, &license_template) {
-            error(format!("copy cache template {license_file} error ({err})"));
+    if cache_license {
+        if cached_license.exists() {
+            if let Err(err) = copy(&cached_license, &license_template) {
+                error(format!("copy cache template {license_file} error ({err})"));
+            } else {
+                cached = true;
+            }
         }
-    } else if !license_url.is_empty() {
+    }
+    if !license_url.is_empty() && !cached {
         // Create a data map with variables
         let package_name = Path::new(name).file_name().unwrap().to_str().unwrap();
         let data = HashMap::from([
@@ -1863,15 +1869,6 @@ fn prj_license(name: &str, shortcut: &String, author: &String) -> String {
             ("PACKAGE", package_name),
         ]);
         get_file_from_url(license_url.as_str(), name, license_file.as_str());
-        // Check author
-        let file_ret = render_template(
-            &license_template,
-            &license_template.replace(&license_file, "LICENSE.md"),
-            data,
-        );
-        if !file_ret {
-            error("`LICENSE.md` render failed".to_string());
-        }
         // Check cache (copy to cache)
         if cache_license {
             let cache_dir = create_cache_dir();
@@ -1881,6 +1878,15 @@ fn prj_license(name: &str, shortcut: &String, author: &String) -> String {
                     error(format!("create cache license {license_file} error ({err})"));
                 }
             }
+        }
+        // Check author
+        let file_ret = render_template(
+            &license_template,
+            &license_template.replace(&license_file, "LICENSE.md"),
+            data,
+        );
+        if !file_ret {
+            error("`LICENSE.md` render failed".to_string());
         }
     }
     // Write psp log
