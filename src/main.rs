@@ -1278,8 +1278,8 @@ fn prj_remote(root: &str, name: &str, shortcut: &String) -> (String, String) {
         }
     }
     let mut git_user = "None".to_string();
-    let mut git_remote = "None".to_string();
-    let options = vec!["None", "Github", "Gitlab"];
+    let git_remote;
+    let options = vec!["None", "Github", "Gitlab", "Custom"];
     // Check environment variable
     let env_remote = var("PSP_GIT_REMOTE").ok();
     let remote = if let Some(env_remote) = env_remote {
@@ -1291,6 +1291,23 @@ fn prj_remote(root: &str, name: &str, shortcut: &String) -> (String, String) {
         prompt_select("Select git remote provider:", options, "None")
     };
     if remote.as_str().to_lowercase() != "none" {
+        // Custom
+        if remote.as_str().to_lowercase() == "custom" {
+            let env_git_server = var("PSP_GIT_CUSTOM").ok();
+            let git_custom = if let Some(env_git_server) = env_git_server {
+                info(format!("git server: {env_git_server}"));
+                env_git_server
+            } else {
+                prompt_text(
+                    "FQDN of custom git server:",
+                    "None",
+                    "Type FQDN of custom git server",
+                )
+            };
+            git_remote = git_custom.to_lowercase();
+        } else {
+            git_remote = remote.to_owned().to_lowercase() + ".com";
+        }
         // Check environment variable
         let env_git_user = var("PSP_GIT_USER").ok();
         // Username of remote git service
@@ -1299,24 +1316,23 @@ fn prj_remote(root: &str, name: &str, shortcut: &String) -> (String, String) {
             env_git_user
         } else {
             prompt_text(
-                format!("Username of {remote}:").as_str(),
+                format!("Username of `{git_remote}`:").as_str(),
                 "None",
                 "The username must not be empty",
             )
         };
         while username.is_empty() {
             username = prompt_text(
-                format!("Username of {remote}:").as_str(),
+                format!("Username of `{git_remote}`:").as_str(),
                 "None",
                 "The username must not be empty",
             );
         }
-        git_remote = remote.to_owned();
         git_user = username.to_owned();
         // Add a git remote path
         let remote_path = format!(
-            "git@{}.com:{}/{}.git",
-            remote.to_lowercase(),
+            "git@{}:{}/{}.git",
+            git_remote,
             username,
             name.to_lowercase()
         );
@@ -1478,17 +1494,19 @@ fn prj_remote(root: &str, name: &str, shortcut: &String) -> (String, String) {
                 error("`pull_request_template.yml` render failed".to_string());
             }
         } else {
-            warning(format!(
-                "`{remote}` is not recognized as remote git provider"
-            ));
+            if remote.to_lowercase() != "custom" {
+                warning(format!(
+                    "`{remote}` is not recognized as remote git provider"
+                ));
+            }
         }
     }
     // Write psp log
     write_log(
         LOGFILE,
-        format!("{}: {} {}", log_step, git_remote, git_user).as_str(),
+        format!("{}: {} {}", log_step, remote, git_user).as_str(),
     );
-    (git_remote, git_user)
+    (remote, git_user)
 }
 
 // Project tox
@@ -1879,7 +1897,6 @@ fn prj_license(name: &str, shortcut: &String, author: &String) -> String {
                 }
             }
         }
-        // Check author
         let file_ret = render_template(
             &license_template,
             &license_template.replace(&license_file, "LICENSE.md"),
