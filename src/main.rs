@@ -709,18 +709,17 @@ fn prj_name() -> (String, String) {
         info(format!("project name: {env_name}"));
         env_name
     } else {
-        prompt_text("Name of Python project:", "None", "Type name or path")
-            .trim()
-            .trim_end_matches(folder_separator)
-            .to_string()
+        String::new()
     };
     // Check is path is empty
     while name.is_empty() {
-        warning("write a valid name or path".to_string());
         name = prompt_text("Name of Python project:", "None", "Type name or path")
             .trim()
             .trim_end_matches(folder_separator)
-            .to_string()
+            .to_string();
+        if name.is_empty() {
+            warning("write a valid name or path".to_string());
+        }
     }
     // Make package path parts
     let project_name = name.replace(" ", "_");
@@ -1294,16 +1293,22 @@ fn prj_remote(root: &str, name: &str, shortcut: &String) -> (String, String) {
         // Custom
         if remote.as_str().to_lowercase() == "custom" {
             let env_git_server = var("PSP_GIT_CUSTOM").ok();
-            let git_custom = if let Some(env_git_server) = env_git_server {
+            let mut git_custom = if let Some(env_git_server) = env_git_server {
                 info(format!("git server: {env_git_server}"));
                 env_git_server
             } else {
-                prompt_text(
+                String::new()
+            };
+            while git_custom.is_empty() {
+                git_custom = prompt_text(
                     "FQDN of custom git server:",
                     "None",
                     "Type FQDN of custom git server",
-                )
-            };
+                );
+                if git_custom.is_empty() {
+                    warning("The FQDN server must not be empty".to_string());
+                }
+            }
             git_remote = git_custom.to_lowercase();
         } else {
             git_remote = remote.to_owned().to_lowercase() + ".com";
@@ -1315,18 +1320,17 @@ fn prj_remote(root: &str, name: &str, shortcut: &String) -> (String, String) {
             info(format!("git username: {env_git_user}"));
             env_git_user
         } else {
-            prompt_text(
-                format!("Username of `{git_remote}`:").as_str(),
-                "None",
-                "The username must not be empty",
-            )
+            String::new()
         };
         while username.is_empty() {
             username = prompt_text(
                 format!("Username of `{git_remote}`:").as_str(),
                 "None",
-                "The username must not be empty",
+                "Type username without spaces",
             );
+            if username.is_empty() {
+                warning("The username must not be empty".to_string());
+            }
         }
         git_user = username.to_owned();
         // Add a git remote path
