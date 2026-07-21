@@ -23,6 +23,7 @@
 - 📦 Support `pip`, `conda` and `uv` package manager
 - 🧮 Support `hatch`, `maturin` and `poetry` builder
 - 🍿 Stop, pause and resume project creation when you want; see [Resume](https://psp.readthedocs.io/en/latest/simple/#resume)
+- 🖇️ [Handlebars] custom templates engine (with local cache) to customize project; see [Template](https://psp.readthedocs.io/en/latest/template)
 
 ## 🚀 Get Started in 30 Seconds
 
@@ -307,7 +308,7 @@ docker run -it --rm -v ~/python_projects:/psp:z -e "PSP_GIT=true" -e "PSP_PYVER=
 ```
 
 
-## 🧰 Next features
+## Next features
 - [x] `windows` operating system support
 - [x] Container support for psp program
 - [x] `conda`and `uv` support
@@ -315,7 +316,7 @@ docker run -it --rm -v ~/python_projects:/psp:z -e "PSP_GIT=true" -e "PSP_PYVER=
 - [x] updating/merging project
 - [x] Gitlab CI/CD and GitHub Actions
 - [x] templating files support
-- [ ] templating custom files support
+- [x] templating custom files support
 - [ ] universal installation script
 - [ ] command line flags support
 - [ ] YAML configuration file
