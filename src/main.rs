@@ -1176,6 +1176,7 @@ fn prj_ci(name: &str, deps: &Vec<String>, shortcut: &String) {
         let data = HashMap::from([
             ("SIGNATURE", SIGNATURE),
             ("VERSION", VERSION),
+            ("REQUIREMENTS", &requirements),
             ("PYTHON", &python_version),
         ]);
         create_template("travis.hbs", name);
