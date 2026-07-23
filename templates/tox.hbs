@@ -8,8 +8,8 @@ isolated_build = True
 description = Run tests using pytest
 labels = test, core
 deps=
-    pytest
-    {{DEPS}}
+        pytest
+{{DEPS}}
 commands =
     # {posargs} allows you to pass arguments from the command line
     # e.g., tox -e py39 -- -v -k "test_specific"
@@ -18,7 +18,7 @@ commands =
 [testenv:unittest]
 description = Run tests using standard library unittest
 deps=
-    {{DEPS}}
+{{DEPS}}
 commands =
     # Discovers tests in the current directory ('.')
     # You can change '.' to 'tests' or 'src' if your tests are located there
