@@ -67,3 +67,85 @@ Each variables in each files correspond to a specific value, used by `psp` to su
 | `DOCUMENTATION`   | pyproject documentation URL option                           |
 | `REPOSITORY`      | pyproject repository URL option                              |
 | `CHANGELOG`       | pyproject changelog URL option                               |
+
+## Create own templates repository
+
+You can create your own repository, remote or local, of the templates used by `psp`.
+
+!!! note
+    If a template is missing, the default `psp` templates repository is used for that template.
+
+### Remote repository
+
+Remote repository may a git remote repository or website with raw file access. 
+All templates must be in the root folder of the repository. 
+The default repository of `psp`, is a template Github repository that can you use to create your own. 
+Follow this [guide](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template)
+
+```console
+[gu]# git clone https://github.com/<your_user>/<your_templates>
+[gu]# ls <your_templates>   # I selected only few templates
+changes.hbs readme.hbs contributing.hbs
+[gu]# cat <your_templates>/changes.hbs
+<!-- {{SIGNATURE}}, version {{VERSION}} -->
+
+# Changelog
+
+All notable changes to **{{PACKAGE}}** will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/),
+and this project adheres to [Semantic Versioning](https://semver.org/).
+
+## [Unreleased]
+
+## [{{PRJVERSION}}] - today
+
+### Added
+- Start **{{PACKAGE}}** project
+
+### Changed
+- None
+
+### Removed
+- None
+
+### Fixed
+- None
+[gu]# export PSP_TEMPLATES="https://github.com/<your_user>/<your_templates>"
+```
+
+## Local repository
+
+You can create a local repository like the procedure of remote repository.
+
+```console
+[gu]# git clone https://github.com/<your_user>/<your_templates>
+[gu]# ls <your_templates>   # I selected only few templates
+changes.hbs readme.hbs contributing.hbs
+[gu]# cat <your_templates>/changes.hbs
+<!-- {{SIGNATURE}}, version {{VERSION}} -->
+
+# Changelog
+
+All notable changes to **{{PACKAGE}}** will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/),
+and this project adheres to [Semantic Versioning](https://semver.org/).
+
+## [Unreleased]
+
+## [{{PRJVERSION}}] - today
+
+### Added
+- Start **{{PACKAGE}}** project
+
+### Changed
+- None
+
+### Removed
+- None
+
+### Fixed
+- None
+[gu]# export PSP_TEMPLATES="<your_templates>"
+```
