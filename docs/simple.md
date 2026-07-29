@@ -151,6 +151,7 @@ This option creates a git remote repository configuration files.
   None
 > Github
   Gitlab
+  Custom
 [↑↓ to move, enter to select, type to filter]
 ```
 
@@ -175,6 +176,18 @@ mypyprj
         └── pull_request_template.md   ┘
 ```
 
+### Git custom server
+
+This option permits to specify a custom FQDN git server name:
+
+```console
+...
+> Do you want to start git repository? Yes
+> Select git remote provider: Custom
+? FQDN of custom git server: git.gu.com
+[Type FQDN of custom git server]
+```
+
 ### Git remote username
 
 This option creates a git remote repository configuration files.
@@ -187,7 +200,8 @@ This option creates a git remote repository configuration files.
 > Do you want to create a virtual environment? Yes
 > Do you want to start git repository? Yes
 > Select git remote provider: Github
-? Username of Github: MatteoGuadrini
+? Username of `github.com`: MatteoGuadrini
+[Type username without spaces]
 ```
 
 Now the git repository has remote endpoint:
