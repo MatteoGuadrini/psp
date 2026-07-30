@@ -18,10 +18,9 @@ const TEMPLATES: &str =
     "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/main/templates";
 const LOGFILE: &str = ".psp.log";
 const LOGO: &str = "
-┏━┃┏━┛┏━┃
-┏━┛━━┃┏━┛
-┛  ━━┛┛";
-
+┏━┃┏━━━━┛┏━┃
+┏━┛━━━━━┃┏━┛
+┛  ━━━━━┛┛";
 #[cfg(any(target_os = "linux", target_os = "macos"))]
 const PYTHON_BIN: &str = "python3";
 #[cfg(any(target_os = "linux", target_os = "macos"))]
@@ -1829,6 +1828,13 @@ fn prj_license(name: &str, shortcut: &String, author: &String) -> String {
             return v;
         }
     }
+    // Check author
+    let author = if author == "None" {
+        "<maintainers>"
+    } else {
+        author
+    };
+
     // Select license
     let options = vec![
         "None",
