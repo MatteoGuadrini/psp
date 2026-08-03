@@ -574,11 +574,11 @@ fn create_template(template: &str, destination: &str) {
 }
 
 // Function to make build system settings
-fn make_builder() -> String {
+fn make_builder(root: &str, venv: bool) -> String {
     // Check environment variable for build
     let builder = env_pybuild();
     // Check if a builder is supported and installed
-    if !check_builder(builder.as_str()) {
+    if !check_builder(builder.as_str(), root, venv) {
         warning("fallback builder to `setuptools`".to_string());
     }
     let build_settings: String;
@@ -631,7 +631,7 @@ fn check_pm(pm: &str) -> bool {
 }
 
 // Function check another builder
-fn check_builder(builder: &str) -> bool {
+fn check_builder(builder: &str, root: &str, venv: bool) -> bool {
     // Check if a builder is supported
     if builder != "setuptools" && !SUPPORTED_BUILDER.contains(&builder) {
         error(format!("builder `{builder}` is not supported"));
@@ -639,8 +639,18 @@ fn check_builder(builder: &str) -> bool {
     }
     // Check if builder is avalaible
     if builder != "setuptools" && !check_tool(builder) {
-        error(format!("builder `{builder}` is not installed"));
-        return false;
+        warning(format!("builder `{builder}` is not installed"));
+        // Install builder
+        let mut pip = make_pm(PIP_BIN, root, root, vec![builder.to_string()], venv);
+        let output = pip
+            .output()
+            .expect(format!("{PIP_BIN} should be installed").as_str());
+        if !output.status.success() {
+            error(format!(
+                "builder `{builder}` installatioon failed; use fallback"
+            ));
+            return false;
+        }
     }
     true
 }
@@ -1056,6 +1066,7 @@ fn prj_toml(
     deps: &Vec<String>,
     git_info: (String, String),
     license: String,
+    venv: bool,
 ) {
     // Check git information
     let mut documentation = "https://docs.python.org/3/".to_string();
@@ -1105,7 +1116,7 @@ fn prj_toml(
         format!("{deps:?}")
     };
     // Create a data map with variables
-    let builder = make_builder();
+    let builder = make_builder(root, venv);
     let project_name = name.to_lowercase();
     let project_version = env_pyversion();
     let python_version = get_python_version();
@@ -2096,7 +2107,7 @@ fn main() {
     // Build dependencies
     let build = prj_pypi(&root, venv, &shortcut);
     // Write pyproject.toml
-    prj_toml(&root, &name, &deps, git_info, license);
+    prj_toml(&root, &name, &deps, git_info, license, venv);
     // Dockerfile
     let container = prj_container(&root, &name, &shortcut);
     // Common files
