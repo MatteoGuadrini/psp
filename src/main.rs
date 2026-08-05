@@ -1294,8 +1294,8 @@ fn prj_container(root: &str, name: &str, shortcut: &String) -> bool {
         let file_ret = render_template("containerfile.hbs", &container_template, data.clone());
         // Copy Dockerfile to Containerfile
         copy(
-            &container_template.replace("containerfile.hbs", "Dockerfile"),
-            &container_template.replace("containerfile.hbs", "Containerfile"),
+            &container_template,
+            &container_template.replace("Dockerfile", "Containerfile"),
         )
         .ok();
         if !file_ret {
@@ -1310,8 +1310,8 @@ fn prj_container(root: &str, name: &str, shortcut: &String) -> bool {
         );
         // Copy .dockerignore to .containerignore
         copy(
-            &container_ignore_template.replace("container_ignore.hbs", ".dockerignore"),
-            &container_ignore_template.replace("container_ignore.hbs", ".containerignore"),
+            &container_ignore_template,
+            &container_ignore_template.replace(".dockerignore", ".containerignore"),
         )
         .ok();
         if !file_ret {
