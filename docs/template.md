@@ -1,13 +1,15 @@
 # Template
 
-**psp** uses [Handlebars](https://handlebarsjs.com/) template engine to render a template files to build the structure of your Python project.
+**psp** uses [Handlebars](https://handlebarsjs.com/) template engine to render a template files to build the structure
+of your Python project.
 
 The default repository of templates is [psp_templates](https://github.com/MatteoGuadrini/psp_templates).
 
 ## Files
 
-The table below lists the files you can customize in your template repository. 
-In the _variables_ column you can find the names of the variables that can be used via the handlebars syntax; for example `{{PACKAGE}}` or `{{{DEPS}}}` (to avoid replacing some [special characters](https://handlebarsjs.com/guide/#html-escaping))
+The table below lists the files you can customize in your template repository. In the _variables_ column you can find
+the names of the variables that can be used via the handlebars syntax; for example `{{PACKAGE}}` or `{{{DEPS}}}` (to
+avoid replacing some [special characters](https://handlebarsjs.com/guide/#html-escaping))
 
 | **FILENAME**           | **REFERENCE**                                           | **VARIABLES**                                                                                                                                                                                   |
 |------------------------|---------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -40,7 +42,8 @@ In the _variables_ column you can find the names of the variables that can be us
 
 ## Variables
 
-Each variable in each file correspond to a specific value, used by `psp` to substitute into handlebars template. These variables are listed below.
+Each variable in each file correspond to a specific value, used by `psp` to substitute into handlebars template. These
+variables are listed below.
 
 | **VARIABLES**   | **VALUE**                                                    |
 |-----------------|--------------------------------------------------------------|
@@ -72,15 +75,15 @@ Each variable in each file correspond to a specific value, used by `psp` to subs
 
 You can create your own repository, remote or local, of the templates used by `psp`.
 
-!!! note
+!!! note 
     If a template is missing, the default `psp` templates repository is used for that template.
 
 ### Remote repository
 
-Remote repository may a git remote repository or website with raw file access. 
-All templates must be in the root folder of the repository. 
-The default repository of `psp`, is a template Github repository that can you use to create your own. 
-Follow this [guide](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template)
+Remote repository may a git remote repository or website with raw file access. All templates must be in the root folder
+of the repository. The default repository of `psp`, is a template GitHub repository that can you use to create your own.
+Follow
+this [Creating a repository from a template](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template).
 
 ```console
 [gu]# git clone https://github.com/<your_user>/<your_templates>
@@ -111,7 +114,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 - None
-[gu]# export PSP_TEMPLATES="https://github.com/<your_user>/<your_templates>"
+[gu]# export PSP_TEMPLATES="https://raw.githubusercontent.com/<your_user>/<your_templates>/refs/heads/main"
 ```
 
 ## Local repository
