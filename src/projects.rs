@@ -1,7 +1,7 @@
 // Core functions
 
 use crate::utils::*;
-use crate::{VERSION, SIGNATURE, LOGFILE};
+use crate::{LOGFILE, SIGNATURE, VERSION};
 use std::{
     collections::HashMap,
     env::var,
@@ -1078,8 +1078,6 @@ pub fn prj_files(root: &str, name: &str, container: bool, shortcut: &String) {
 pub fn prj_license(name: &str, shortcut: &String, author: &String) -> String {
     // Check psp log for update
     let log_step = "prj_license";
-    let cache_license = env_pspcache();
-    let mut cached = false;
     if check_log(log_step, LOGFILE) {
         let log_content = read_log(LOGFILE);
         let value = get_log_value(log_step, log_content.unwrap().as_str());
@@ -1113,41 +1111,23 @@ pub fn prj_license(name: &str, shortcut: &String, author: &String) -> String {
     } else {
         prompt_select("Select license:", options, "None")
     };
-    let mut license_url = String::new();
-    let mut license_file = String::new();
-    let repo_license =
-        "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/main/licenses";
-    if license.to_lowercase() == "mit" {
-        license_file.push_str("mit.hbs");
-        license_url.push_str(format!("{repo_license}/{license_file}").as_str());
-    } else if license.to_lowercase() == "apache" {
-        license_file.push_str("apache.hbs");
-        license_url.push_str(format!("{repo_license}/{license_file}").as_str());
-    } else if license.to_lowercase() == "creative commons" || license.to_lowercase() == "cc" {
-        license_file.push_str("cc.hbs");
-        license_url.push_str(format!("{repo_license}/{license_file}").as_str());
-    } else if license.to_lowercase() == "mozilla" {
-        license_file.push_str("mozilla.hbs");
-        license_url.push_str(format!("{repo_license}/{license_file}").as_str());
-    } else if license.to_lowercase() == "gnu public license" || license.to_lowercase() == "gpl" {
-        license_file.push_str("gplv3.hbs");
-        license_url.push_str(format!("{repo_license}/{license_file}").as_str());
-    } else if license.as_str().to_lowercase() != "none" {
-        warning(format!("`{license}` is not recognized as a valid license"));
-    }
-    let cache_dir = create_cache_dir();
-    let cached_license = Path::new(cache_dir.as_str()).join(&license_file);
-    let license_template = Path::new(name).join(&license_file).display().to_string();
-    if cache_license {
-        if cached_license.exists() {
-            if let Err(err) = copy(&cached_license, &license_template) {
-                error(format!("copy cache template {license_file} error ({err})"));
-            } else {
-                cached = true;
-            }
+    if license != "None" {
+        let mut license_file = String::new();
+        if license.to_lowercase() == "mit" {
+            license_file.push_str("mit.hbs");
+        } else if license.to_lowercase() == "apache" {
+            license_file.push_str("apache.hbs");
+        } else if license.to_lowercase() == "creative commons" || license.to_lowercase() == "cc" {
+            license_file.push_str("cc.hbs");
+        } else if license.to_lowercase() == "mozilla" {
+            license_file.push_str("mozilla.hbs");
+        } else if license.to_lowercase() == "gnu public license" || license.to_lowercase() == "gpl"
+        {
+            license_file.push_str("gplv3.hbs");
+        } else if license.as_str().to_lowercase() != "none" {
+            warning(format!("`{license}` is not recognized as a valid license"));
         }
-    }
-    if !license_url.is_empty() && !cached {
+        let license_template = Path::new(name).join(&license_file).display().to_string();
         // Create a data map with variables
         let package_name = Path::new(name).file_name().unwrap().to_str().unwrap();
         let data = HashMap::from([
@@ -1156,17 +1136,6 @@ pub fn prj_license(name: &str, shortcut: &String, author: &String) -> String {
             ("AUTHOR", author),
             ("PACKAGE", package_name),
         ]);
-        get_file_from_url(license_url.as_str(), name, license_file.as_str());
-        // Check cache (copy to cache)
-        if cache_license {
-            let cache_dir = create_cache_dir();
-            let cached_license = Path::new(cache_dir.as_str()).join(&license_file);
-            if !cached_license.exists() {
-                if let Err(err) = copy(&license_template, &cached_license) {
-                    error(format!("create cache license {license_file} error ({err})"));
-                }
-            }
-        }
         let file_ret = render_template(
             &license_file,
             &license_template.replace(&license_file, "LICENSE.md"),
@@ -1290,7 +1259,7 @@ pub fn prj_container(root: &str, name: &str, shortcut: &String) -> bool {
             &container_template,
             &container_template.replace("Dockerfile", "Containerfile"),
         )
-            .ok();
+        .ok();
         if !file_ret {
             error("`Dockerfile` render failed".to_string());
         }
@@ -1306,7 +1275,7 @@ pub fn prj_container(root: &str, name: &str, shortcut: &String) -> bool {
             &container_ignore_template,
             &container_ignore_template.replace(".dockerignore", ".containerignore"),
         )
-            .ok();
+        .ok();
         if !file_ret {
             error("`.dockerignore` render failed".to_string());
         }

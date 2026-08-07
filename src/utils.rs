@@ -1,3 +1,4 @@
+use crate::{SIGNATURE, VERSION};
 use dotenvy::dotenv;
 use handlebars::Handlebars;
 use inquire::{Confirm, Select, Text};
@@ -9,12 +10,11 @@ use std::{
     path::{absolute, Path},
     process::exit,
 };
-use crate::{VERSION, SIGNATURE};
 
 // Constants
 const ARGS: [&str; 4] = ["help", "quick", "simple", "full"];
 const TEMPLATES: &str =
-    "https://raw.githubusercontent.com/MatteoGuadrini/psp/refs/heads/main/templates";
+    "https://raw.githubusercontent.com/MatteoGuadrini/psp_templates/refs/heads/main";
 const LOGO: &str = "
 ┏━┃┏━━━━┛┏━┃
 ┏━┛━━━━━┃┏━┛
