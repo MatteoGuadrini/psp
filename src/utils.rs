@@ -141,17 +141,11 @@ pub fn read_log(log: &str) -> std::io::Result<String> {
     Ok(contents)
 }
 
-// Function to create Python package folder
-pub fn create_python_package(path: &Path, content: &str) -> bool {
-    let dir_ret = make_dirs(path.display().to_string().as_str());
-    if let Err(e) = dir_ret {
-        error(format!("{e}"));
-        return false;
-    }
+// Function to create Python file
+fn create_python_file(file: &str, content: &str) -> bool {
     // Make file structures
-    let init_file = path.join("__init__.py");
-    let init_file_ret = make_file(
-        init_file.display().to_string().as_str(),
+    let py_file_ret = make_file(
+        file,
         format!(
             "#! /usr/bin/env python3
 # -*- encoding: utf-8 -*-
@@ -161,8 +155,24 @@ pub fn create_python_package(path: &Path, content: &str) -> bool {
 {content}"
         ),
     );
-    if let Err(e) = init_file_ret {
+    if let Err(e) = py_file_ret {
         error(format!("{e}"));
+        return false;
+    }
+    true
+}
+
+// Function to create Python package folder
+pub fn create_python_package(path: &Path, content: &str) -> bool {
+    let dir_ret = make_dirs(path.display().to_string().as_str());
+    if let Err(e) = dir_ret {
+        error(format!("{e}"));
+        return false;
+    }
+    // Make file structures
+    let init_file = path.join("__init__.py");
+    if !create_python_file(init_file.display().to_string().as_str(), content) {
+        error(format!("Python package creation failed"));
         return false;
     }
     true
