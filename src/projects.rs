@@ -96,30 +96,26 @@ pub fn prj_name() -> (String, String) {
         error(format!("package {package_path} creation failed."));
         exit(1);
     }
-    let main_file = package.join("__main__.py");
-    let main_file_ret = make_file(
-        format!("{}", main_file.display()).as_str(),
-        format!(
-            "#! /usr/bin/env python3
-# -*- encoding: utf-8 -*-
-# vim: se ts=4 et syn=python:
-# {SIGNATURE}, version {VERSION}
-
-from .__init__ import __version__
+    // Make file structures
+    let main_content = format!(
+        "from .__init__ import __version__
 
 print('name: {}')
 print(f'version: {{__version__}}')
 ",
-            package
-                .file_name()
-                .unwrap()
-                .to_string_lossy()
-                .to_string()
-                .to_lowercase()
-        ),
+        package
+            .file_name()
+            .unwrap()
+            .to_string_lossy()
+            .to_string()
+            .to_lowercase()
     );
-    if let Err(e) = main_file_ret {
-        error(format!("{e}"));
+    let main_file = package.join("__main__.py");
+    if !create_python_file(
+        main_file.display().to_string().as_str(),
+        main_content.as_str(),
+    ) {
+        error(format!("`__main__.py` creation failed"));
         exit(4);
     }
     let values = (

@@ -142,7 +142,7 @@ pub fn read_log(log: &str) -> std::io::Result<String> {
 }
 
 // Function to create Python file
-fn create_python_file(file: &str, content: &str) -> bool {
+pub fn create_python_file(file: &str, content: &str) -> bool {
     // Make file structures
     let py_file_ret = make_file(
         file,
@@ -172,7 +172,7 @@ pub fn create_python_package(path: &Path, content: &str) -> bool {
     // Make file structures
     let init_file = path.join("__init__.py");
     if !create_python_file(init_file.display().to_string().as_str(), content) {
-        error(format!("Python package creation failed"));
+        error("`__init__.py` creation failed".to_string());
         return false;
     }
     true
