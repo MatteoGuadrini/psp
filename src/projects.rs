@@ -1,7 +1,6 @@
 // Core functions
 
 use crate::utils::*;
-use crate::{LOGFILE, SIGNATURE, VERSION};
 use std::{
     collections::HashMap,
     env::var,
@@ -9,20 +8,6 @@ use std::{
     path::Path,
     process::exit,
 };
-
-// Constants
-#[cfg(any(target_os = "linux", target_os = "macos"))]
-const PYTHON_BIN: &str = "python3";
-#[cfg(any(target_os = "linux", target_os = "macos"))]
-const PIP_BIN: &str = "pip3";
-#[cfg(target_family = "windows")]
-const PYTHON_BIN: &str = "python.exe";
-#[cfg(target_family = "windows")]
-const PIP_BIN: &str = "pip.exe";
-#[cfg(target_os = "windows")]
-const SUPPORTED_PM: [&str; 2] = ["conda.exe", "uv.exe"];
-#[cfg(target_os = "windows")]
-const SUPPORTED_BUILDER: [&str; 3] = ["hatch.exe", "poetry.exe", "maturin.exe"];
 
 // Project name
 pub fn prj_name() -> (String, String) {
