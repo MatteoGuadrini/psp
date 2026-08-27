@@ -10,7 +10,7 @@ use std::{
 };
 
 // Project name
-pub fn prj_name() -> (String, String) {
+pub fn prj_name() -> (String, String, ExitStatus) {
     // Check psp log for update
     let log_step = "prj_name";
     if check_log(log_step, LOGFILE) {
@@ -19,7 +19,7 @@ pub fn prj_name() -> (String, String) {
         if let Some(v) = value {
             let values: Vec<&str> = v.split(" ").collect();
             if std::fs::exists(values[0]).unwrap() {
-                return (values[0].to_string(), values[1].to_string());
+                return (values[0].to_string(), values[1].to_string(), 0);
             }
         }
     }
@@ -106,6 +106,7 @@ print(f'version: {{__version__}}')
     let values = (
         root.to_string_lossy().to_string(),
         package.file_name().unwrap().to_string_lossy().to_string(),
+        0,
     );
     // Write psp log
     write_log(
@@ -219,15 +220,16 @@ pub fn prj_test(root: &str, name: &str, shortcut: &String) -> bool {
 }
 
 // Project venv
-pub fn prj_venv(name: &str, shortcut: &String) -> bool {
+pub fn prj_venv(name: &str, shortcut: &String) -> (bool, ExitStatus) {
     // Check psp log for update
     let mut ret: bool;
+    let mut exit_status: ExitStatus = 0;
     let log_step = "prj_venv";
     if check_log(log_step, LOGFILE) {
         let log_content = read_log(LOGFILE);
         let value = get_log_value(log_step, log_content.unwrap().as_str());
         if let Some(v) = value {
-            return v.parse::<bool>().unwrap();
+            return (v.parse::<bool>().unwrap(), 0);
         }
     }
     // Check environment variable
@@ -260,13 +262,14 @@ pub fn prj_venv(name: &str, shortcut: &String) -> bool {
         // Check if the command exits successfully
         if !output.status.success() {
             error("`.venv` creation failed".to_string());
+            exit_status = 1;
         } else {
             ret = true;
         }
     }
     // Write psp log
     write_log(LOGFILE, format!("{}: {}", log_step, ret).as_str());
-    ret
+    (ret, exit_status)
 }
 
 // Project dependencies

@@ -7,6 +7,8 @@ mod utils;
 
 // Main program
 fn main() {
+    // Exit status
+    let mut exit_status: ExitStatus;
     // Load env files
     load_env();
     // Check if an argument is specified
@@ -21,13 +23,20 @@ fn main() {
     for tool in TOOLS {
         if !check_tool(tool) {
             error(format!("`{tool}` is required"));
-            exit(1);
+            exit_status = 1;
+            exit(exit_status);
         }
     }
     // Create a project structure by name or path
-    let (root, name) = prj_name();
+    let ret_prj_name = prj_name();
+    let (root, name) = (ret_prj_name.0, ret_prj_name.1);
+    exit_status = ret_prj_name.2;
     // Virtual Environment
-    let venv = prj_venv(&root, &shortcut);
+    let ret_prj_venv = prj_venv(&root, &shortcut);
+    let venv = ret_prj_venv.0;
+    if exit_status != 0 {
+        exit_status = ret_prj_venv.1;
+    }
     // Start git
     let git = prj_git(&root, &shortcut);
     // Git remote
@@ -67,4 +76,6 @@ fn main() {
         "python project `{name}` created at `{}`",
         absolute(root).unwrap().display()
     ));
+    // Exit with status
+    exit(exit_status);
 }

@@ -10,6 +10,9 @@ use std::{
     process::exit,
 };
 
+// Custom types
+pub type ExitStatus = i32;
+
 // Constants
 pub const ARGS: [&str; 4] = ["help", "quick", "simple", "full"];
 pub const TEMPLATES: &str =
