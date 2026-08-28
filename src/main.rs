@@ -38,7 +38,11 @@ fn main() {
         exit_status = ret_prj_venv.1;
     }
     // Start git
-    let git = prj_git(&root, &shortcut);
+    let ret_prj_git = prj_git(&root, &shortcut);
+    let git = ret_prj_git.0;
+    if exit_status != 0 {
+        exit_status = ret_prj_git.1;
+    }
     // Git remote
     let git_info = if git {
         prj_remote(&root, &name, &shortcut)

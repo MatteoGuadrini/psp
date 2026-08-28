@@ -100,7 +100,7 @@ print(f'version: {{__version__}}')
         main_file.display().to_string().as_str(),
         main_content.as_str(),
     ) {
-        error(format!("`__main__.py` creation failed"));
+        error("`__main__.py` creation failed".to_string());
         exit(4);
     }
     let values = (
@@ -117,14 +117,15 @@ print(f'version: {{__version__}}')
 }
 
 // Project git
-pub fn prj_git(name: &str, shortcut: &String) -> bool {
+pub fn prj_git(name: &str, shortcut: &String) -> (bool, ExitStatus) {
     // Check psp log for update
+    let mut exit_status: ExitStatus = 0;
     let log_step = "prj_git";
     if check_log(log_step, LOGFILE) {
         let log_content = read_log(LOGFILE);
         let value = get_log_value(log_step, log_content.unwrap().as_str());
         if let Some(v) = value {
-            return v.parse::<bool>().unwrap();
+            return (v.parse::<bool>().unwrap(), exit_status);
         }
     }
     // Check environment variable
@@ -145,8 +146,9 @@ pub fn prj_git(name: &str, shortcut: &String) -> bool {
         let output = git.output().expect("git should be installed");
         // Check if the command exits successfully
         if !output.status.success() {
+            exit_status = 1;
             error("something wrong with `git init`".to_string());
-            return false;
+            return (false, exit_status);
         }
         // Create a data map with variables
         let mut data = HashMap::new();
@@ -158,12 +160,13 @@ pub fn prj_git(name: &str, shortcut: &String) -> bool {
             true
         } else {
             error("`.gitignore` creation failed".to_string());
+            exit_status = 1;
             false
         };
     }
     // Write psp log
     write_log(LOGFILE, format!("{}: {}", log_step, ret).as_str());
-    ret
+    (ret, exit_status)
 }
 
 // Project unit tests
