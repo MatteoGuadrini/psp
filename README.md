@@ -110,7 +110,7 @@ On branch main
 No commits yet
 ...
 $> git remote get-url origin
-git@github.com:MatteoGuadrini/test.git
+git@github.com:MatteoGuadrini/dream.git
 ```
 
 ## Help
@@ -142,6 +142,9 @@ environments:
 
 > [!NOTE]
 > More details for shortcuts, variables and other things, available in official documentation: [psp docs](https://psp.readthedocs.io/)
+
+> [!ATTENTION]
+> Licenses and templates folder in this repository is deprecated; please update `psp` to point of the new templates repository: [psp templates](https://github.com/MatteoGuadrini/psp_templates)
 
 ## Why choose psp?
 
@@ -202,6 +205,9 @@ To install with `pip`:
 ```console
 pip install psp-scaffold
 ```
+
+> [!WARNING]
+> If you're using Windows, make sure you have the _Visual Studio Build Tools_ installed, otherwise install them with a command line: `winget install -e --id Microsoft.VisualStudio.BuildTools`
 
 ### Binary file
 
@@ -339,14 +345,6 @@ They were born in 1990 to respond to the appeal of patients suffering from rare 
 Come today, we are organized to dare to listen to them and answers, every day of the year.
 
 [Adopt the future](https://www.ioadottoilfuturo.it/)
-
-
-## Licence
-This package is [Treeware](https://treeware.earth).
-If you use it in production, then we ask that you [**buy the world a tree**](https://plant.treeware.earth/MatteoGuadrini/psp) to thank us for our work.
-By contributing to the Treeware forest you’ll be creating employment for local families and restoring wildlife habitats.
-
-[![Buy us a tree](https://img.shields.io/badge/Treeware-%F0%9F%8C%B3-lightgreen?style=for-the-badge)](https://plant.treeware.earth/MatteoGuadrini/psp)
 
 
 ## Acknowledgments
