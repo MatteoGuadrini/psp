@@ -62,6 +62,15 @@ pub fn error(msg: String) {
     eprintln!("error: {msg}");
 }
 
+// Function to set exit status
+pub fn set_exit_status(old: ExitStatus, new: ExitStatus) -> ExitStatus {
+    if old != new {
+        new
+    } else {
+        old
+    }
+}
+
 // Function to split PATH environment variable
 fn split_env_path() -> Vec<String> {
     let env_paths = var("PATH").ok().unwrap();

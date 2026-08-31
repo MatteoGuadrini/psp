@@ -9,6 +9,7 @@ mod utils;
 fn main() {
     // Exit status
     let mut exit_status: ExitStatus;
+    let start_exit_status = 0;
     // Load env files
     load_env();
     // Check if an argument is specified
@@ -23,26 +24,21 @@ fn main() {
     for tool in TOOLS {
         if !check_tool(tool) {
             error(format!("`{tool}` is required"));
-            exit_status = 1;
-            exit(exit_status);
+            exit(1);
         }
     }
     // Create a project structure by name or path
     let ret_prj_name = prj_name();
     let (root, name) = (ret_prj_name.0, ret_prj_name.1);
-    exit_status = ret_prj_name.2;
+    exit_status = set_exit_status(start_exit_status, ret_prj_name.2);
     // Virtual Environment
     let ret_prj_venv = prj_venv(&root, &shortcut);
     let venv = ret_prj_venv.0;
-    if exit_status != 0 {
-        exit_status = ret_prj_venv.1;
-    }
+    exit_status = set_exit_status(exit_status, ret_prj_venv.1);
     // Start git
     let ret_prj_git = prj_git(&root, &shortcut);
     let git = ret_prj_git.0;
-    if exit_status != 0 {
-        exit_status = ret_prj_git.1;
-    }
+    exit_status = set_exit_status(exit_status, ret_prj_git.1);
     // Git remote
     let git_info = if git {
         prj_remote(&root, &name, &shortcut)
