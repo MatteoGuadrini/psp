@@ -43,8 +43,9 @@ fn main() {
     let git_info = if git {
         prj_remote(&root, &name, &shortcut)
     } else {
-        ("None".to_string(), "None".to_string())
+        ("None".to_string(), "None".to_string(), 0)
     };
+    exit_status = set_exit_status(exit_status, git_info.2);
     // Unit tests
     let tests = prj_test(&root, &name, &shortcut);
     // Install dependencies

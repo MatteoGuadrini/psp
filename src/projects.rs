@@ -146,7 +146,7 @@ pub fn prj_git(name: &str, shortcut: &String) -> (bool, ExitStatus) {
         let output = git.output().expect("git should be installed");
         // Check if the command exits successfully
         if !output.status.success() {
-            exit_status = 1;
+            exit_status = 2;
             error("something wrong with `git init`".to_string());
             return (false, exit_status);
         }
@@ -160,7 +160,7 @@ pub fn prj_git(name: &str, shortcut: &String) -> (bool, ExitStatus) {
             true
         } else {
             error("`.gitignore` creation failed".to_string());
-            exit_status = 1;
+            exit_status = 2;
             false
         };
     }
@@ -265,7 +265,7 @@ pub fn prj_venv(name: &str, shortcut: &String) -> (bool, ExitStatus) {
         // Check if the command exits successfully
         if !output.status.success() {
             error("`.venv` creation failed".to_string());
-            exit_status = 1;
+            exit_status = 3;
         } else {
             ret = true;
         }
@@ -371,7 +371,7 @@ pub fn prj_toml(
     root: &str,
     name: &str,
     deps: &Vec<String>,
-    git_info: (String, String),
+    git_info: (String, String, ExitStatus),
     license: String,
     venv: bool,
 ) {
@@ -562,15 +562,16 @@ pub fn prj_ci(name: &str, deps: &Vec<String>, shortcut: &String) {
 }
 
 // Project Gitlab/GitHub
-pub fn prj_remote(root: &str, name: &str, shortcut: &String) -> (String, String) {
+pub fn prj_remote(root: &str, name: &str, shortcut: &String) -> (String, String, ExitStatus) {
     // Check psp log for update
     let log_step = "prj_remote";
+    let mut exit_status: ExitStatus = 0;
     if check_log(log_step, LOGFILE) {
         let log_content = read_log(LOGFILE);
         let value = get_log_value(log_step, log_content.unwrap().as_str());
         if let Some(v) = value {
             let values: Vec<&str> = v.split(" ").collect();
-            return (values[0].to_string(), values[1].to_string());
+            return (values[0].to_string(), values[1].to_string(), 0);
         }
     }
     let mut git_user = "None".to_string();
@@ -650,6 +651,7 @@ pub fn prj_remote(root: &str, name: &str, shortcut: &String) -> (String, String)
         // Check if the command exits successfully
         if !output.status.success() {
             error("something wrong with `git remote -v`".to_string());
+            exit_status = 4;
         }
         let git_verb;
         if output.stdout.len() > 0 {
@@ -677,6 +679,7 @@ pub fn prj_remote(root: &str, name: &str, shortcut: &String) -> (String, String)
                 "username of remote repository `{}` setting failed",
                 remote.to_lowercase()
             ));
+            exit_status = 4;
         }
         // Make remote files and folders
         // Gitlab
@@ -690,10 +693,12 @@ pub fn prj_remote(root: &str, name: &str, shortcut: &String) -> (String, String)
             let dir_ret = make_dirs(issue_folder.display().to_string().as_str());
             if let Err(e) = dir_ret {
                 error(format!("{e}"));
+                exit_status = 4;
             }
             let dir_ret = make_dirs(merge_folder.display().to_string().as_str());
             if let Err(e) = dir_ret {
                 error(format!("{e}"));
+                exit_status = 4;
             }
             // Create a data map with variables
             let data = HashMap::from([
@@ -707,12 +712,14 @@ pub fn prj_remote(root: &str, name: &str, shortcut: &String) -> (String, String)
                 render_template("gitlab_feature.hbs", &gitlab_feature_template, data.clone());
             if !file_ret {
                 error("`feature.md` render failed".to_string());
+                exit_status = 4;
             }
             // Bug template
             let gitlab_bug_template = issue_folder.join("bug.md").display().to_string();
             let file_ret = render_template("gitlab_bug.hbs", &gitlab_bug_template, data.clone());
             if !file_ret {
                 error("`bug.md` render failed".to_string());
+                exit_status = 4;
             }
             // Merge template
             let gitlab_merge_template = merge_folder.join("merge.md").display().to_string();
@@ -720,6 +727,7 @@ pub fn prj_remote(root: &str, name: &str, shortcut: &String) -> (String, String)
                 render_template("gitlab_merge.hbs", &gitlab_merge_template, data.clone());
             if !file_ret {
                 error("`merge.md` render failed".to_string());
+                exit_status = 4;
             }
         // Github
         } else if remote.as_str().to_lowercase() == "github" {
@@ -730,10 +738,12 @@ pub fn prj_remote(root: &str, name: &str, shortcut: &String) -> (String, String)
             let dir_ret = make_dirs(issue_folder.display().to_string().as_str());
             if let Err(e) = dir_ret {
                 error(format!("{e}"));
+                exit_status = 4;
             }
             let dir_ret = make_dirs(merge_folder.display().to_string().as_str());
             if let Err(e) = dir_ret {
                 error(format!("{e}"));
+                exit_status = 4;
             }
             // Create a data map with variables
             let data = HashMap::from([
@@ -748,12 +758,14 @@ pub fn prj_remote(root: &str, name: &str, shortcut: &String) -> (String, String)
                 render_template("github_feature.hbs", &github_feature_template, data.clone());
             if !file_ret {
                 error("`feature.yml` render failed".to_string());
+                exit_status = 4;
             }
             // Bug template
             let github_bug_template = issue_folder.join("bug.yml").display().to_string();
             let file_ret = render_template("github_bug.hbs", &github_bug_template, data.clone());
             if !file_ret {
                 error("`bug.yml` render failed".to_string());
+                exit_status = 4;
             }
             // Merge template
             let github_merge_template = merge_folder
@@ -764,6 +776,7 @@ pub fn prj_remote(root: &str, name: &str, shortcut: &String) -> (String, String)
                 render_template("github_merge.hbs", &github_merge_template, data.clone());
             if !file_ret {
                 error("`pull_request_template.yml` render failed".to_string());
+                exit_status = 4;
             }
         } else {
             if remote.to_lowercase() != "custom" {
@@ -778,7 +791,7 @@ pub fn prj_remote(root: &str, name: &str, shortcut: &String) -> (String, String)
         LOGFILE,
         format!("{}: {} {}", log_step, remote, git_user).as_str(),
     );
-    (remote, git_user)
+    (remote, git_user, exit_status)
 }
 
 // Project tox
