@@ -170,15 +170,16 @@ pub fn prj_git(name: &str, shortcut: &String) -> (bool, ExitStatus) {
 }
 
 // Project unit tests
-pub fn prj_test(root: &str, name: &str, shortcut: &String) -> bool {
+pub fn prj_test(root: &str, name: &str, shortcut: &String) -> (bool, ExitStatus) {
     // Check psp log for update
     let ret: bool;
+    let mut exit_status: ExitStatus = 0;
     let log_step = "prj_test";
     if check_log(log_step, LOGFILE) {
         let log_content = read_log(LOGFILE);
         let value = get_log_value(log_step, log_content.unwrap().as_str());
         if let Some(v) = value {
-            return v.parse::<bool>().unwrap();
+            return (v.parse::<bool>().unwrap(), 0);
         }
     }
     // Check environment variable
@@ -197,7 +198,7 @@ pub fn prj_test(root: &str, name: &str, shortcut: &String) -> bool {
         let tests_path = tests_dir.display();
         if !create_python_package(tests_dir.as_path(), "") {
             error(format!("tests package {tests_path} creation failed."));
-            return false;
+            exit_status = 5;
         }
         let project_name = name.to_lowercase();
         let project_version = env_pyversion();
@@ -211,15 +212,16 @@ pub fn prj_test(root: &str, name: &str, shortcut: &String) -> bool {
         let file_ret = render_template("test_module.hbs", test_module.to_str().unwrap(), data);
         if !file_ret {
             error(format!("`test_{project_name}.py` render failed"));
-            return false;
+            exit_status = 5;
         }
         ret = true;
     } else {
         ret = false;
+        exit_status = 5;
     }
     // Write psp log
     write_log(LOGFILE, format!("{}: {}", log_step, ret).as_str());
-    ret
+    (ret, exit_status)
 }
 
 // Project venv

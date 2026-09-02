@@ -47,7 +47,9 @@ fn main() {
     };
     exit_status = set_exit_status(exit_status, git_info.2);
     // Unit tests
-    let tests = prj_test(&root, &name, &shortcut);
+    let ret_prj_venv = prj_test(&root, &name, &shortcut);
+    let tests = ret_prj_venv.0;
+    exit_status = set_exit_status(exit_status, ret_prj_venv.1);
     // Install dependencies
     let deps = prj_deps(&root, venv, &shortcut);
     // Documentation
