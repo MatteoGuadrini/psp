@@ -278,8 +278,9 @@ pub fn prj_venv(name: &str, shortcut: &String) -> (bool, ExitStatus) {
 }
 
 // Project dependencies
-pub fn prj_deps(name: &str, venv: bool, shortcut: &String) -> Vec<String> {
+pub fn prj_deps(name: &str, venv: bool, shortcut: &String) -> (Vec<String>, ExitStatus) {
     // Check psp log for update
+    let mut exit_status: ExitStatus = 0;
     let log_step = "prj_deps";
     if check_log(log_step, LOGFILE) {
         let log_content = read_log(LOGFILE);
@@ -287,7 +288,7 @@ pub fn prj_deps(name: &str, venv: bool, shortcut: &String) -> Vec<String> {
         if let Some(v) = value {
             let values: Vec<&str> = v.split(" ").collect();
             if values[0] != "No" {
-                return values.iter().map(|s| s.to_string()).collect();
+                return (values.iter().map(|s| s.to_string()).collect(), 0);
             }
         }
     }
@@ -344,6 +345,7 @@ pub fn prj_deps(name: &str, venv: bool, shortcut: &String) -> Vec<String> {
         // Check if the command exits successfully
         if !output.status.success() {
             error(format!("dependencies ({deps}) installation failed"));
+            exit_status = 6;
         }
         // Build a requirements.txt file
         let content = format!(
@@ -361,11 +363,12 @@ pub fn prj_deps(name: &str, venv: bool, shortcut: &String) -> Vec<String> {
         );
         if let Err(e) = requirements {
             error(format!("{e}"));
+            exit_status = 6;
         }
     }
     // Write psp log
     write_log(LOGFILE, format!("{}: {}", log_step, deps).as_str());
-    dependencies
+    (dependencies, exit_status)
 }
 
 // Project pyproject.toml

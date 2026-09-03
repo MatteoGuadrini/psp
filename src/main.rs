@@ -47,11 +47,13 @@ fn main() {
     };
     exit_status = set_exit_status(exit_status, git_info.2);
     // Unit tests
-    let ret_prj_venv = prj_test(&root, &name, &shortcut);
-    let tests = ret_prj_venv.0;
-    exit_status = set_exit_status(exit_status, ret_prj_venv.1);
+    let ret_prj_test = prj_test(&root, &name, &shortcut);
+    let tests = ret_prj_test.0;
+    exit_status = set_exit_status(exit_status, ret_prj_test.1);
     // Install dependencies
-    let deps = prj_deps(&root, venv, &shortcut);
+    let ret_prj_deps = prj_deps(&root, venv, &shortcut);
+    let deps = ret_prj_deps.0;
+    exit_status = set_exit_status(exit_status, ret_prj_deps.1);
     // Documentation
     prj_docs(&root, &name, venv, &shortcut);
     if tests {
