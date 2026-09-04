@@ -867,11 +867,12 @@ pub fn prj_tox(name: &str, venv: bool, deps: &Vec<String>, shortcut: &String) {
 }
 
 // Project documentation site generator
-pub fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) {
+pub fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) -> (ExitStatus,) {
     // Check psp log for update
+    let mut exit_status: ExitStatus = 0;
     let log_step = "prj_docs";
     if check_log(log_step, LOGFILE) {
-        return;
+        return (0,);
     }
     let options = vec!["None", "Sphinx", "MKDocs"];
     // Check environment variable
@@ -893,12 +894,14 @@ pub fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) {
             let folder_result = remove_dir_all(docs_folder);
             if let Err(e) = folder_result {
                 error(format!("{e}"));
+                exit_status = 7;
             }
         }
         // Create a docs folder
         let docs_folder = make_dirs(docs_folder.display().to_string().as_str());
         if let Err(e) = docs_folder {
             error(format!("{e}"));
+            exit_status = 7;
         }
         let bin = if let Some(env_pm) = &env_pm {
             env_pm.as_str()
@@ -914,6 +917,7 @@ pub fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) {
             // Check if the command exits successfully
             if !output.status.success() {
                 error("`sphinx` installation failed".to_string());
+                exit_status = 7;
             }
             // Check the version of a Python project
             let pyver = env_pyversion();
@@ -947,6 +951,7 @@ pub fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) {
                 .expect(format!("{sphinx_bin} should be installed").as_str());
             if !output.status.success() {
                 error("`sphinx` documentation creation failed".to_string());
+                exit_status = 7;
             }
         } else if docs.as_str().to_lowercase() == "mkdocs" {
             // Install mkdocs
@@ -957,6 +962,7 @@ pub fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) {
             // Check if the command exits successfully
             if !output.status.success() {
                 error("`mkdocs` installation failed".to_string());
+                exit_status = 7;
             }
             // Start documentation
             #[cfg(any(target_os = "linux", target_os = "macos"))]
@@ -971,6 +977,7 @@ pub fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) {
             // Check if the command exits successfully
             if !output.status.success() {
                 error("`mkdocs` documentation creation failed".to_string());
+                exit_status = 7;
             }
         } else if docs.as_str().to_lowercase() != "none" {
             warning(format!(
@@ -992,6 +999,7 @@ pub fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) {
     }
     // Write psp log
     write_log(LOGFILE, format!("{}: {}", log_step, docs).as_str());
+    (exit_status,)
 }
 
 // Project common files

@@ -55,7 +55,8 @@ fn main() {
     let deps = ret_prj_deps.0;
     exit_status = set_exit_status(exit_status, ret_prj_deps.1);
     // Documentation
-    prj_docs(&root, &name, venv, &shortcut);
+    let ret_prj_docs = prj_docs(&root, &name, venv, &shortcut);
+    exit_status = set_exit_status(exit_status, ret_prj_docs.0);
     if tests {
         // Tox
         prj_tox(&root, venv, &deps, &shortcut);
