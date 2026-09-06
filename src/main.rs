@@ -56,25 +56,37 @@ fn main() {
     exit_status = set_exit_status(exit_status, ret_prj_deps.1);
     // Documentation
     let ret_prj_docs = prj_docs(&root, &name, venv, &shortcut);
-    exit_status = set_exit_status(exit_status, ret_prj_docs.0);
+    exit_status = set_exit_status(exit_status, ret_prj_docs.1);
+    // Test factory
     if tests {
         // Tox
-        prj_tox(&root, venv, &deps, &shortcut);
+        let ret_prj_tox = prj_tox(&root, venv, &deps, &shortcut);
+        exit_status = set_exit_status(exit_status, ret_prj_tox.1);
         // CI configuration
-        prj_ci(&root, &deps, &shortcut);
+        let ret_prj_ci = prj_ci(&root, &deps, &shortcut);
+        exit_status = set_exit_status(exit_status, ret_prj_ci.1);
     }
     // License
-    let license = prj_license(&root, &shortcut, &git_info.1);
+    let ret_prj_license = prj_license(&root, &shortcut, &git_info.1);
+    let license = ret_prj_license.0;
+    exit_status = set_exit_status(exit_status, ret_prj_license.1);
     // Build dependencies
-    let build = prj_pypi(&root, venv, &shortcut);
+    let ret_prj_pypi = prj_pypi(&root, venv, &shortcut);
+    let build = ret_prj_pypi.0;
+    exit_status = set_exit_status(exit_status, ret_prj_pypi.1);
     // Write pyproject.toml
-    prj_toml(&root, &name, &deps, git_info, license, venv);
+    let ret_prj_toml = prj_toml(&root, &name, &deps, git_info, license, venv);
+    exit_status = set_exit_status(exit_status, ret_prj_toml.1);
     // Dockerfile
-    let container = prj_container(&root, &name, &shortcut);
+    let ret_prj_container = prj_container(&root, &name, &shortcut);
+    let container = ret_prj_container.0;
+    exit_status = set_exit_status(exit_status, ret_prj_container.1);
     // Common files
-    prj_files(&root, &name, container, &shortcut);
+    let ret_prj_files = prj_files(&root, &name, container, &shortcut);
+    exit_status = set_exit_status(exit_status, ret_prj_files.1);
     // Makefile
-    prj_makefile(&root, &name, tests, build, container);
+    let ret_prj_makefile = prj_makefile(&root, &name, tests, build, container);
+    exit_status = set_exit_status(exit_status, ret_prj_makefile.1);
     // Delete log if enabled
     delete_log(LOGFILE);
     // Finish a scaffolding process
