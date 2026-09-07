@@ -459,7 +459,7 @@ pub fn prj_toml(
     let file_ret = render_template("pyproject.hbs", &pyproject_template, data);
     if !file_ret {
         error("`pyproject.toml` render failed".to_string());
-        exit_status = 8;
+        exit_status = 12;
     }
     ((), exit_status)
 }
@@ -508,7 +508,7 @@ pub fn prj_ci(name: &str, deps: &Vec<String>, shortcut: &String) -> ((), ExitSta
         let file_ret = render_template("travis.hbs", &travis_template, data);
         if !file_ret {
             error("`.travis.yml render failed".to_string());
-            exit_status = 8;
+            exit_status = 9;
         }
     } else if ci.as_str().to_lowercase() == "circleci" {
         let circleci_dir = Path::new(name).join(".circleci");
@@ -529,7 +529,7 @@ pub fn prj_ci(name: &str, deps: &Vec<String>, shortcut: &String) -> ((), ExitSta
         let file_ret = render_template("circleci.hbs", &circleci_template, data);
         if !file_ret {
             error("`.circleci/config.yml` render failed".to_string());
-            exit_status = 8;
+            exit_status = 9;
         }
     } else if ci.as_str().to_lowercase().replace(" ", "").replace("/", "") == "githubactions" {
         let github_dir = Path::new(name).join(".github").join("workflows");
@@ -551,7 +551,7 @@ pub fn prj_ci(name: &str, deps: &Vec<String>, shortcut: &String) -> ((), ExitSta
         let file_ret = render_template("githubactions.hbs", &github_template, data);
         if !file_ret {
             error("`python-app.yml` render failed".to_string());
-            exit_status = 8;
+            exit_status = 9;
         }
     } else if ci.as_str().to_lowercase().replace(" ", "").replace("/", "") == "gitlabcicd" {
         // Create a data map with variables
@@ -565,7 +565,7 @@ pub fn prj_ci(name: &str, deps: &Vec<String>, shortcut: &String) -> ((), ExitSta
         let file_ret = render_template("gitlabcicd.hbs", &gitlab_template, data);
         if !file_ret {
             error("`.gitlab-ci.yml` render failed".to_string());
-            exit_status = 8;
+            exit_status = 9;
         }
     } else if ci.as_str().to_lowercase() != "none" {
         warning(format!("`{ci}` is not recognized as remote CI"));
@@ -1058,14 +1058,14 @@ pub fn prj_files(root: &str, name: &str, container: bool, shortcut: &String) -> 
         let file_ret = render_template("readme.hbs", &readme_template, data.clone());
         if !file_ret {
             error("`README.md` render failed".to_string());
-            exit_status = 8;
+            exit_status = 14;
         }
         // CHANGES template
         let changes_template = Path::new(root).join("CHANGES.md").display().to_string();
         let file_ret = render_template("changes.hbs", &changes_template, data.clone());
         if !file_ret {
             error("`CHANGES.md` render failed".to_string());
-            exit_status = 8;
+            exit_status = 14;
         }
         // CONTRIBUTING template
         let contributing_template = Path::new(root)
@@ -1075,7 +1075,7 @@ pub fn prj_files(root: &str, name: &str, container: bool, shortcut: &String) -> 
         let file_ret = render_template("contributing.hbs", &contributing_template, data.clone());
         if !file_ret {
             error("`CONTRIBUTING.md` render failed".to_string());
-            exit_status = 8;
+            exit_status = 14;
         }
         // Create CODE_OF_CONDUCT
         get_file_from_url(
@@ -1097,7 +1097,7 @@ pub fn prj_files(root: &str, name: &str, container: bool, shortcut: &String) -> 
         let file_ret = render_template("sample.hbs", &contributing_template, data.clone());
         if !file_ret {
             error(format!("`{name}_sample.py` render failed"));
-            exit_status = 8;
+            exit_status = 14;
         }
     }
     // Write psp log
@@ -1175,7 +1175,7 @@ pub fn prj_license(name: &str, shortcut: &String, author: &String) -> (String, E
         );
         if !file_ret {
             error("`LICENSE.md` render failed".to_string());
-            exit_status = 8;
+            exit_status = 10;
         }
     }
     // Write psp log
@@ -1236,7 +1236,7 @@ pub fn prj_pypi(root: &str, venv: bool, shortcut: &String) -> (bool, ExitStatus)
         // Check if the command exits successfully
         if !output.status.success() {
             error("`twine` and/or `build` installation failed".to_string());
-            exit_status = 8;
+            exit_status = 11;
         } else {
             ret = true;
         }
@@ -1298,7 +1298,7 @@ pub fn prj_container(root: &str, name: &str, shortcut: &String) -> (bool, ExitSt
         .ok();
         if !file_ret {
             error("`Dockerfile` render failed".to_string());
-            exit_status = 8;
+            exit_status = 13;
         }
         // Create .dockerignore/.containerignore
         let container_ignore_template = Path::new(root).join(".dockerignore").display().to_string();
@@ -1315,7 +1315,7 @@ pub fn prj_container(root: &str, name: &str, shortcut: &String) -> (bool, ExitSt
         .ok();
         if !file_ret {
             error("`.dockerignore` render failed".to_string());
-            exit_status = 8;
+            exit_status = 13;
         }
         ret = true;
     } else {
@@ -1390,7 +1390,7 @@ endif";
     let file_ret = render_template("makefile.hbs", &makefile_template, data.clone());
     if !file_ret {
         error("`Makefile` render failed".to_string());
-        exit_status = 8;
+        exit_status = 15;
     }
     ((), exit_status)
 }
