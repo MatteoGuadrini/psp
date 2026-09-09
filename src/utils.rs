@@ -548,7 +548,7 @@ pub fn create_cache_dir() -> String {
 
 // Function to download/copy template
 fn create_template(template: &str, destination: &str) {
-    let mut fallback: bool = true;
+    let mut fallback: bool = false;
     let templates = env_psptemplatepath();
     let cache_template = env_pspcache();
     let template_repo = format!("{templates}/{template}");
@@ -561,9 +561,9 @@ fn create_template(template: &str, destination: &str) {
             }
         } else {
             // Copy custom local template
-            let template_repo = Path::new(template).join(template);
+            let template_repo = Path::new(&templates).join(template);
             if let Err(err) = copy(&template_repo, &destination_template) {
-                error(format!("copy template {template} error ({err})"));
+                error(format!("copy template `{template}` error ({err})"));
                 fallback = true;
             }
         }
@@ -572,7 +572,7 @@ fn create_template(template: &str, destination: &str) {
         let cached_template = Path::new(cache_dir.as_str()).join(template);
         if cached_template.exists() {
             if let Err(err) = copy(&cached_template, &destination_template) {
-                error(format!("copy cache template {template} error ({err})"));
+                error(format!("copy cache template `{template}` error ({err})"));
                 fallback = true;
             }
         }
@@ -581,7 +581,7 @@ fn create_template(template: &str, destination: &str) {
     }
     if fallback {
         // Fallback
-        get_file_from_url(template_repo.as_str(), destination, template);
+        get_file_from_url(TEMPLATES, destination, template);
     }
     // Check cache (copy to cache)
     if cache_template {
