@@ -75,7 +75,7 @@ variables are listed below.
 
 You can create your own repository, remote or local, of the templates used by `psp`.
 
-!!! note 
+!!! note
     If a template is missing, the default `psp` templates repository is used for that template.
 
 ### Remote repository
@@ -152,3 +152,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - None
 [gu]# export PSP_TEMPLATES="<your_templates>"
 ```
+
+## Enable custom templates
+
+To enable custom templates, set the `PSP_TEMPLATES` environment variable to the path of your templates' repository.
+
+### Enable cache
+
+To enable caching of templates, set the `PSP_CACHE` environment variable to the path where you want to store the cached
+templates.
+
+!!! note
+    To clear cache, you can delete the cache folder (`$HOME/.psp_cache`) or set `PSP_CACHE` to `false`.

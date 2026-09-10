@@ -1,4 +1,5 @@
-<img src="https://raw.githubusercontent.com/MatteoGuadrini/psp/main/img/psp_logo.svg" alt="Logo" align="right" width="150"/> **psp** (Python Scaffolding Projects)
+<img src="https://raw.githubusercontent.com/MatteoGuadrini/psp/main/img/psp_logo.svg" alt="Logo" align="right" width="150"/>
+**psp** (Python Scaffolding Projects)
 ======
 
 `psp` is a blazing fast command line utility to scaffold your _Python_ project, written in Rust.
@@ -11,7 +12,9 @@
 - 🧪 Create a virtual environment
 - 🔧 Automagically dependencies installation
 - 🪛 Add build and deploy dependencies to distribute the package
-- 📏 [tox](https://tox.wiki/en/stable/) configuration supports and remotes CI like [CircleCI](https://circleci.com/), [TravisCI](https://www.travis-ci.com/), [GitHub Actions](https://docs.github.com/en/actions) and [Gitlab CI/CD](https://docs.gitlab.com/ci/)
+- 📏 [tox](https://tox.wiki/en/stable/) configuration supports and remotes CI
+  like [CircleCI](https://circleci.com/), [TravisCI](https://www.travis-ci.com/), [GitHub Actions](https://docs.github.com/en/actions)
+  and [Gitlab CI/CD](https://docs.gitlab.com/ci/)
 - ⌨️ [MkDocs](https://www.mkdocs.org/) and [Sphinx](https://www.sphinx-doc.org/) documentation support
 - 🧰 Initialize git repository and `gitignore` file
 - 🌎 GitHub and Gitlab remote repository support
@@ -22,8 +25,10 @@
 - 🎛️ Can use some [`PSP_`](https://psp.readthedocs.io/en/latest/env/) variables to control your defaults
 - 📦 Support `pip`, `conda` and `uv` package manager
 - 🧮 Support `hatch`, `maturin` and `poetry` builder
-- 🍿 Stop, pause and resume project creation when you want; see [Resume](https://psp.readthedocs.io/en/latest/simple/#resume)
-- 🖇️ [Handlebars] custom templates engine (with local cache) to customize project; see [Template](https://psp.readthedocs.io/en/latest/template)
+- 🍿 Stop, pause and resume project creation when you want;
+  see [Resume](https://psp.readthedocs.io/en/latest/simple/#resume)
+- 🖇️ [Handlebars] custom templates engine (with local cache) to customize project;
+  see [Template](https://psp.readthedocs.io/en/latest/template)
 
 ## 🚀 Get Started in 30 Seconds
 
@@ -133,33 +138,49 @@ links:
     repository:     https://github.com/MatteoGuadrini/psp
     documentation:  https://psp.readthedocs.io/
 
+templates:
+    cache:      true
+    repository: https://raw.githubusercontent.com/MatteoGuadrini/psp_templates/refs/heads/main
+
 variables:
-    ["PSP_GIT","PSP_GIT_REMOTE","PSP_GIT_USER"]
+    ["PSP_GIT","PSP_GIT_REMOTE","PSP_GIT_USER","PSP_CACHE"]
     
 environments:
     Python version: 3.14
 ```
 
 > [!NOTE]
-> More details for shortcuts, variables and other things, available in official documentation: [psp docs](https://psp.readthedocs.io/)
+> More details for shortcuts, variables and other things, available in official
+documentation: [psp docs](https://psp.readthedocs.io/)
 
 > [!ATTENTION]
-> Licenses and templates folder in this repository is deprecated; please update `psp` to point of the new templates repository: [psp templates](https://github.com/MatteoGuadrini/psp_templates)
+> Licenses and templates folder in this repository is deprecated; please update `psp` to point of the new templates
+> repository: [psp templates](https://github.com/MatteoGuadrini/psp_templates)
 
 ## Why choose psp?
 
-`psp` is simple, fast, effective, declarative, and supports Python and the entire ecosystem of tools written for it. Rather than replacing it, `psp` seeks to integrate and provide a useful scaffold for the end user.
+`psp` is simple, fast, effective, declarative, and supports Python and the entire ecosystem of tools written for it.
+Rather than replacing it, `psp` seeks to integrate and provide a useful scaffold for the end user.
 
 ### Differences with other tools
 
-- [cookiecutter](https://github.com/cookiecutter/cookiecutter): Templates are prescriptive by design. Cookiecutter enforces a particular project structure and conventions, which may not align with your or your organization's preferences. **If a template's opinions don't match your needs, you're forced to either choose a different template or heavily modify an existing one**. This can become tedious when you need something slightly different from what's available. `psp` is dynamic; scaffold what you need.
-- [PyScaffold](https://github.com/pyscaffold/pyscaffold): **PyScaffold doesn't manage virtual environments directly**. You have to manually create and activate a virtualenv or use external tools like `pipenv`, `poetry`, `conda`, or `pyenv`. While PyScaffold documents integrations with these tools, it doesn't provide a unified interface for environment management like `psp` do.
+- [cookiecutter](https://github.com/cookiecutter/cookiecutter): Templates are prescriptive by design. Cookiecutter
+  enforces a particular project structure and conventions, which may not align with your or your organization's
+  preferences. **If a template's opinions don't match your needs, you're forced to either choose a different template or
+  heavily modify an existing one**. This can become tedious when you need something slightly different from what's
+  available. `psp` is dynamic; scaffold what you need.
+- [PyScaffold](https://github.com/pyscaffold/pyscaffold): **PyScaffold doesn't manage virtual environments directly**.
+  You have to manually create and activate a virtualenv or use external tools like `pipenv`, `poetry`, `conda`, or
+  `pyenv`. While PyScaffold documents integrations with these tools, it doesn't provide a unified interface for
+  environment management like `psp` do.
 
-`psp` asks only what you need. By configuring a few environment variables, you can automate any project; in seconds, not hours.
+`psp` asks only what you need. By configuring a few environment variables, you can automate any project; in seconds, not
+hours.
 
 ## 🔌 Prerequisites
 
 `psp` has four mandatory prerequisetes installed on own machine:
+
 - `git`
 - `python3`
 - `pip`
@@ -202,12 +223,14 @@ sudo pacman -Qi python3 python3-pip git curl
 ### 🐍 Python
 
 To install with `pip`:
+
 ```console
 pip install psp-scaffold
 ```
 
 > [!WARNING]
-> If you're using Windows, make sure you have the _Visual Studio Build Tools_ installed, otherwise install them with a command line: `winget install -e --id Microsoft.VisualStudio.BuildTools`
+> If you're using Windows, make sure you have the _Visual Studio Build Tools_ installed, otherwise install them with a
+command line: `winget install -e --id Microsoft.VisualStudio.BuildTools`
 
 ### Binary file
 
@@ -216,6 +239,7 @@ To install compiled file into your machine, download it:
 #### Linux
 
 For **all users** (required root access):
+
 ```console
 sudo -i
 curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.7.0/psp_linux -o /usr/local/bin/psp
@@ -223,6 +247,7 @@ chmod +x /usr/local/bin/psp
 ```
 
 For **current user**:
+
 ```console
 curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.7.0/psp_linux -o $HOME/.local/bin/psp
 chmod +x $HOME/.local/bin/psp
@@ -239,11 +264,13 @@ chmod +x /usr/local/bin/psp
 #### Windows
 
 For **all users** (required Administrator):
+
 ```powershell
 iwr -OutFile "C:\Windows\system32\psp.exe" "https://github.com/MatteoGuadrini/psp/releases/download/v0.7.0/psp_windows"
 ```
 
 For **current user**:
+
 ```powershell
 mkdir "$($Env:USERPROFILE)\bin"
 [System.Environment]::SetEnvironmentVariable("PATH", $Env:PATH + ";$($Env:USERPROFILE)\bin","USER")
@@ -313,8 +340,8 @@ docker run -it --rm -v ~/python_projects:/psp:z -v ~/python_projects/.env:/psp/.
 docker run -it --rm -v ~/python_projects:/psp:z -e "PSP_GIT=true" -e "PSP_PYVER=1.0.0" localhost/psp:latest
 ```
 
-
 ## Next features
+
 - [x] `windows` operating system support
 - [x] Container support for psp program
 - [x] `conda`and `uv` support
@@ -328,6 +355,7 @@ docker run -it --rm -v ~/python_projects:/psp:z -e "PSP_GIT=true" -e "PSP_PYVER=
 - [ ] YAML configuration file
 
 ## Open source
+
 _psp_ is an open source project. Any contribution, It's welcome.
 
 **A great thanks**.
@@ -340,20 +368,22 @@ For me
 
 For [Telethon](http://www.telethon.it/)
 
-The Telethon Foundation is a non-profit organization recognized by the Ministry of University and Scientific and Technological Research.
+The Telethon Foundation is a non-profit organization recognized by the Ministry of University and Scientific and
+Technological Research.
 They were born in 1990 to respond to the appeal of patients suffering from rare diseases.
 Come today, we are organized to dare to listen to them and answers, every day of the year.
 
 [Adopt the future](https://www.ioadottoilfuturo.it/)
 
-
 ## Acknowledgments
 
-Thanks to Jim Blandy, Jason Orendorff and Nora Tindall for writing the  _Programming Rust_ book that make up my Rust foundation.
+Thanks to Jim Blandy, Jason Orendorff and Nora Tindall for writing the _Programming Rust_ book that make up my Rust
+foundation.
 
 Thanks to Tim McNamara for writing the _Rust in Action_ book.
 
-Thanks to [Zed IDE](https://zed.dev/) and for license of [RustRover](https://www.jetbrains.com/rust/) offered by JetBrains.
+Thanks to [Zed IDE](https://zed.dev/) and for license of [RustRover](https://www.jetbrains.com/rust/) offered by
+JetBrains.
 
 Special thanks go to my wife, who understood the hours of absence for this development.
 Thanks to my children, for the daily inspiration they give me and to make me realize, that life must be simple.
