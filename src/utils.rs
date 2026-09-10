@@ -64,7 +64,7 @@ pub fn error(msg: String) {
 
 // Function to set exit status
 pub fn set_exit_status(old: ExitStatus, new: ExitStatus) -> ExitStatus {
-    if old != new {
+    if old != new && new != 0 {
         new
     } else {
         old
@@ -553,11 +553,7 @@ fn create_template(template: &str, destination: &str) {
     let templates = env_psptemplatepath();
     let cache_template = env_pspcache();
     let template_is_url = check_templates_is_url(&templates);
-    let template_repo = if template_is_url {
-        format!("{templates}/{template}")
-    } else {
-        Path::new(&templates).join(template).display().to_string()
-    };
+    let template_repo = Path::new(&templates).join(template).display().to_string();
     let destination_template = Path::new(destination).join(template);
     if templates != TEMPLATES {
         if template_is_url {
@@ -569,7 +565,9 @@ fn create_template(template: &str, destination: &str) {
             // Copy custom local template
             let template_repo = Path::new(&templates).join(template);
             if let Err(err) = copy(&template_repo, &destination_template) {
-                error(format!("copy template `{template}` error ({err})"));
+                warning(format!(
+                    "copy template `{template}` error ({err}); use fallback"
+                ));
                 fallback = true;
             }
         }
@@ -579,7 +577,9 @@ fn create_template(template: &str, destination: &str) {
         if cached_template.exists() {
             cache_template_found = true;
             if let Err(err) = copy(&cached_template, &destination_template) {
-                warning(format!("copy cache template `{template}` error ({err})"));
+                warning(format!(
+                    "copy cache template `{template}` error ({err}); use fallback"
+                ));
                 fallback = true;
             }
         } else {
@@ -590,7 +590,9 @@ fn create_template(template: &str, destination: &str) {
     }
     if fallback && !cache_template_found {
         // Fallback
-        get_file_from_url(&template_repo, destination, template);
+        let fallback_repo = Path::new(TEMPLATES).join(template);
+        println!("fallback template `{template}` from `{fallback_repo:?}`");
+        get_file_from_url(fallback_repo.to_str().unwrap(), destination, template);
     }
     // Check cache (copy to cache)
     if cache_template {
