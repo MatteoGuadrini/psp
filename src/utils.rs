@@ -347,8 +347,8 @@ links:
     documentation:  https://psp.readthedocs.io/
 
 templates:
-    cache:  {}
-    folder: {}
+    cache:      {}
+    repository: {}
 
 variables:
     {psp_vars:?}
@@ -400,12 +400,12 @@ pub fn load_env() {
 // Function to render a template file
 pub fn render_template(template: &str, file: &str, data: HashMap<&str, &str>) -> bool {
     // Create template file
-    let tmp_dir = temp_dir().join("psp_templates");
+    let tmp_dir = temp_dir().join(".psp_templates");
     let template_path = tmp_dir.join(template).display().to_string();
     create_template(template, tmp_dir.to_str().unwrap());
     let mut handlebars = Handlebars::new();
     if let Err(e) = handlebars.register_template_file(template, &template_path) {
-        error(format!("{e}; {template} is not found!"));
+        error(format!("{e}; `{template}` is not found!"));
         return false;
     }
     let mut output_file = File::create(file).unwrap();
@@ -549,12 +549,18 @@ pub fn create_cache_dir() -> String {
 // Function to download/copy template
 fn create_template(template: &str, destination: &str) {
     let mut fallback: bool = false;
+    let mut cache_template_found: bool = false;
     let templates = env_psptemplatepath();
     let cache_template = env_pspcache();
-    let template_repo = format!("{templates}/{template}");
+    let template_is_url = check_templates_is_url(&templates);
+    let template_repo = if template_is_url {
+        format!("{templates}/{template}")
+    } else {
+        Path::new(&templates).join(template).display().to_string()
+    };
     let destination_template = Path::new(destination).join(template);
     if templates != TEMPLATES {
-        if check_templates_is_url(&template_repo) {
+        if template_is_url {
             // Download custom template
             if !get_file_from_url(&template_repo, destination, template) {
                 fallback = true;
@@ -571,17 +577,20 @@ fn create_template(template: &str, destination: &str) {
         let cache_dir = create_cache_dir();
         let cached_template = Path::new(cache_dir.as_str()).join(template);
         if cached_template.exists() {
+            cache_template_found = true;
             if let Err(err) = copy(&cached_template, &destination_template) {
-                error(format!("copy cache template `{template}` error ({err})"));
+                warning(format!("copy cache template `{template}` error ({err})"));
                 fallback = true;
             }
+        } else {
+            fallback = true;
         }
     } else {
         fallback = true;
     }
-    if fallback {
+    if fallback && !cache_template_found {
         // Fallback
-        get_file_from_url(TEMPLATES, destination, template);
+        get_file_from_url(&template_repo, destination, template);
     }
     // Check cache (copy to cache)
     if cache_template {
@@ -589,7 +598,7 @@ fn create_template(template: &str, destination: &str) {
         let cached_template = Path::new(cache_dir.as_str()).join(template);
         if !cached_template.exists() {
             if let Err(err) = copy(&destination_template, &cached_template) {
-                error(format!("create cache template {template} error ({err})"));
+                warning(format!("create cache template `{template}` error ({err})"));
             }
         }
     }
