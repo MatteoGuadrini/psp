@@ -4,6 +4,7 @@ nav:
   - Simple: simple.md
   - Shortcut: shortcut.md
   - Env: env.md
+  - Error: error.md
 theme:
   name: material
   logo: img/psp_logo.svg
