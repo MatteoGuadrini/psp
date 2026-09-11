@@ -92,7 +92,11 @@ PSP_DEPS="numpy scipy pydata-sphinx-theme"
 PSP_DOCS=sphinx     # Overwritten
 PSP_LICENSE=mit     # Overwritten
 [gu]# psp
-info: welcome to psp, version 0.7.0
+
+┏━┃┏━━━━┛┏━┃
+┏━┛━━━━━┃┏━┛
+┛  ━━━━━┛┛
+info: welcome to psp, version 0.8.0
 > Name of Python project: biopy
 info: python project `biopy` created at /tmp/mypyenv/biopy
 [gu]# ll biopy

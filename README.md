@@ -32,7 +32,7 @@
 
 ## 🚀 Get Started in 30 Seconds
 
-![Made with VHS](https://vhs.charm.sh/vhs-6iL5mTtR6CVF53AZiS3NFO.gif)
+![Made with VHS](https://vhs.charm.sh/vhs-68Vg3KvWI99SAuS8cNdpKL.gif)
 
 The result is:
 
@@ -124,7 +124,11 @@ For help message, type:
 
 ```console
 $> psp help
-psp (Python Scaffolding Projects), version 0.7.0
+
+┏━┃┏━━━━┛┏━┃
+┏━┛━━━━━┃┏━┛
+┛  ━━━━━┛┛
+psp (Python Scaffolding Projects), version 0.8.0
 usage: psp [shortcut]
 ie: psp [help|quick|simple|full]
 
@@ -153,8 +157,8 @@ environments:
 > More details for shortcuts, variables and other things, available in official
 documentation: [psp docs](https://psp.readthedocs.io/)
 
-> [!ATTENTION]
-> Licenses and templates folder in this repository is deprecated; please update `psp` to point of the new templates
+> [!IMPORTANT]
+> Licenses and templates folder in this repository is **deprecated**; please update `psp` to point of the new templates
 > repository: [psp templates](https://github.com/MatteoGuadrini/psp_templates)
 
 ## Why choose psp?
@@ -222,15 +226,24 @@ sudo pacman -Qi python3 python3-pip git curl
 
 ### 🐍 Python
 
+> [!WARNING]
+> If you're using _Windows_ OS, make sure you have the _Visual Studio Build Tools_ installed, otherwise install them
+with a
+command line: `winget install -e --id Microsoft.VisualStudio.BuildTools`
+
 To install with `pip`:
 
 ```console
+# Install psp-scaffold package (deprecated)
 pip install psp-scaffold
+# Use user-space
+pip install --user psp-scaffold
+# Use external tools like pipx(https://pipx.pypa.io/stable/) and/or uv(https://docs.astral.sh/uv/) (they create virtual environments for you); upgrading is done via a specific subcommand
+pipx install psp-scaffold && pipx upgrade-all
+uv pip install psp-scaffold --upgrade
+# Deactivate the externally managed file, temporarily or permanently
+pip install psp-scaffold --break-system-packages || python3 -m pip config set global.break-system-packages true
 ```
-
-> [!WARNING]
-> If you're using Windows, make sure you have the _Visual Studio Build Tools_ installed, otherwise install them with a
-command line: `winget install -e --id Microsoft.VisualStudio.BuildTools`
 
 ### Binary file
 
@@ -242,14 +255,14 @@ For **all users** (required root access):
 
 ```console
 sudo -i
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.7.0/psp_linux -o /usr/local/bin/psp
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.8.0/psp_linux -o /usr/local/bin/psp
 chmod +x /usr/local/bin/psp
 ```
 
 For **current user**:
 
 ```console
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.7.0/psp_linux -o $HOME/.local/bin/psp
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.8.0/psp_linux -o $HOME/.local/bin/psp
 chmod +x $HOME/.local/bin/psp
 ```
 
@@ -257,7 +270,7 @@ chmod +x $HOME/.local/bin/psp
 
 ```console
 sudo su -
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.7.0/psp_macos -o /usr/local/bin/psp
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.8.0/psp_macos -o /usr/local/bin/psp
 chmod +x /usr/local/bin/psp
 ```
 
@@ -266,7 +279,7 @@ chmod +x /usr/local/bin/psp
 For **all users** (required Administrator):
 
 ```powershell
-iwr -OutFile "C:\Windows\system32\psp.exe" "https://github.com/MatteoGuadrini/psp/releases/download/v0.7.0/psp_windows"
+iwr -OutFile "C:\Windows\system32\psp.exe" "https://github.com/MatteoGuadrini/psp/releases/download/v0.8.0/psp_windows"
 ```
 
 For **current user**:
@@ -274,7 +287,7 @@ For **current user**:
 ```powershell
 mkdir "$($Env:USERPROFILE)\bin"
 [System.Environment]::SetEnvironmentVariable("PATH", $Env:PATH + ";$($Env:USERPROFILE)\bin","USER")
-iwr -OutFile "$($Env:USERPROFILE)\bin\psp.exe" "https://github.com/MatteoGuadrini/psp/releases/download/v0.7.0/psp_windows"
+iwr -OutFile "$($Env:USERPROFILE)\bin\psp.exe" "https://github.com/MatteoGuadrini/psp/releases/download/v0.8.0/psp_windows"
 ```
 
 ### Packages
@@ -284,14 +297,14 @@ If you want to install OS package, follow instructions for your Operating System
 For **Debian/Ubuntu**:
 
 ```console
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.7.0/psp.deb -o psp.deb
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.8.0/psp.deb -o psp.deb
 sudo dpkg -i psp.deb
 ```
 
 For **Fedora/Mageia/OpenSuse**:
 
 ```console
-sudo rpm -i https://github.com/MatteoGuadrini/psp/releases/download/v0.7.0/psp.rpm
+sudo rpm -i https://github.com/MatteoGuadrini/psp/releases/download/v0.8.0/psp.rpm
 ```
 
 ### Compile as your own
