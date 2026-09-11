@@ -1,0 +1,24 @@
+#! /usr/bin/env python3
+# -*- encoding: utf-8 -*-
+# vim: se ts=4 et syn=python:
+# {{SIGNATURE}}, version {{VERSION}}
+
+
+import unittest
+from {{PRJ_NAME}} import __version__
+
+
+class TestAll(unittest.TestCase):
+
+    def test_all(self):
+        self.assertEqual(__version__, "{{PRJ_VER}}")
+        print("Test all `{{PRJ_NAME}}` successfully!")
+
+
+# Test functions for pytest
+def test_all():
+    assert __version__ == "{{PRJ_VER}}"
+
+
+if __name__ == '__main__':
+    unittest.main()

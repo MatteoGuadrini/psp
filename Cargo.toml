@@ -1,6 +1,6 @@
 [package]
 name = "psp"
-version = "0.7.0"
+version = "0.8.0"
 rust-version = "1.85"
 edition = "2021"
 authors = ["matteoguadrini <matteo.guadrini@hotmail.it>"]
@@ -9,7 +9,7 @@ license = "Apache License 2.0"
 readme = "README.md"
 repository = "https://github.com/MatteoGuadrini/psp"
 documentation = "https://psp.readthedocs.io/"
-categories = ["command-line-utilities", "python-tools"]
+categories = ["command-line-utilities", "command-line-interface"]
 keywords = ["scaffold", "tool", "python", "package", "library"]
 
 [dependencies]

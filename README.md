@@ -1,4 +1,5 @@
-<img src="https://raw.githubusercontent.com/MatteoGuadrini/psp/main/img/psp_logo.svg" alt="Logo" align="right" width="150"/> **psp** (Python Scaffolding Projects)
+<img src="https://raw.githubusercontent.com/MatteoGuadrini/psp/main/img/psp_logo.svg" alt="Logo" align="right" width="150"/>
+**psp** (Python Scaffolding Projects)
 ======
 
 `psp` is a blazing fast command line utility to scaffold your _Python_ project, written in Rust.
@@ -11,7 +12,9 @@
 - 🧪 Create a virtual environment
 - 🔧 Automagically dependencies installation
 - 🪛 Add build and deploy dependencies to distribute the package
-- 📏 [tox](https://tox.wiki/en/stable/) configuration supports and remotes CI like [CircleCI](https://circleci.com/), [TravisCI](https://www.travis-ci.com/), [GitHub Actions](https://docs.github.com/en/actions) and [Gitlab CI/CD](https://docs.gitlab.com/ci/)
+- 📏 [tox](https://tox.wiki/en/stable/) configuration supports and remotes CI
+  like [CircleCI](https://circleci.com/), [TravisCI](https://www.travis-ci.com/), [GitHub Actions](https://docs.github.com/en/actions)
+  and [Gitlab CI/CD](https://docs.gitlab.com/ci/)
 - ⌨️ [MkDocs](https://www.mkdocs.org/) and [Sphinx](https://www.sphinx-doc.org/) documentation support
 - 🧰 Initialize git repository and `gitignore` file
 - 🌎 GitHub and Gitlab remote repository support
@@ -22,11 +25,14 @@
 - 🎛️ Can use some [`PSP_`](https://psp.readthedocs.io/en/latest/env/) variables to control your defaults
 - 📦 Support `pip`, `conda` and `uv` package manager
 - 🧮 Support `hatch`, `maturin` and `poetry` builder
-- 🍿 Stop, pause and resume project creation when you want; see [Resume](https://psp.readthedocs.io/en/latest/simple/#resume)
+- 🍿 Stop, pause and resume project creation when you want;
+  see [Resume](https://psp.readthedocs.io/en/latest/simple/#resume)
+- 🖇️ [Handlebars] custom templates engine (with local cache) to customize project;
+  see [Template](https://psp.readthedocs.io/en/latest/template)
 
 ## 🚀 Get Started in 30 Seconds
 
-![Made with VHS](https://vhs.charm.sh/vhs-6iL5mTtR6CVF53AZiS3NFO.gif)
+![Made with VHS](https://vhs.charm.sh/vhs-68Vg3KvWI99SAuS8cNdpKL.gif)
 
 The result is:
 
@@ -109,7 +115,7 @@ On branch main
 No commits yet
 ...
 $> git remote get-url origin
-git@github.com:MatteoGuadrini/test.git
+git@github.com:MatteoGuadrini/dream.git
 ```
 
 ## Help
@@ -118,7 +124,11 @@ For help message, type:
 
 ```console
 $> psp help
-psp (Python Scaffolding Projects), version 0.7.0
+
+┏━┃┏━━━━┛┏━┃
+┏━┛━━━━━┃┏━┛
+┛  ━━━━━┛┛
+psp (Python Scaffolding Projects), version 0.8.0
 usage: psp [shortcut]
 ie: psp [help|quick|simple|full]
 
@@ -132,30 +142,49 @@ links:
     repository:     https://github.com/MatteoGuadrini/psp
     documentation:  https://psp.readthedocs.io/
 
+templates:
+    cache:      true
+    repository: https://raw.githubusercontent.com/MatteoGuadrini/psp_templates/refs/heads/main
+
 variables:
-    ["PSP_GIT","PSP_GIT_REMOTE","PSP_GIT_USER"]
+    ["PSP_GIT","PSP_GIT_REMOTE","PSP_GIT_USER","PSP_CACHE"]
     
 environments:
     Python version: 3.14
 ```
 
 > [!NOTE]
-> More details for shortcuts, variables and other things, available in official documentation: [psp docs](https://psp.readthedocs.io/)
+> More details for shortcuts, variables and other things, available in official
+documentation: [psp docs](https://psp.readthedocs.io/)
+
+> [!IMPORTANT]
+> Licenses and templates folder in this repository is **deprecated**; please update `psp` to point of the new templates
+> repository: [psp templates](https://github.com/MatteoGuadrini/psp_templates)
 
 ## Why choose psp?
 
-`psp` is simple, fast, effective, declarative, and supports Python and the entire ecosystem of tools written for it. Rather than replacing it, `psp` seeks to integrate and provide a useful scaffold for the end user.
+`psp` is simple, fast, effective, declarative, and supports Python and the entire ecosystem of tools written for it.
+Rather than replacing it, `psp` seeks to integrate and provide a useful scaffold for the end user.
 
 ### Differences with other tools
 
-- [cookiecutter](https://github.com/cookiecutter/cookiecutter): Templates are prescriptive by design. Cookiecutter enforces a particular project structure and conventions, which may not align with your or your organization's preferences. **If a template's opinions don't match your needs, you're forced to either choose a different template or heavily modify an existing one**. This can become tedious when you need something slightly different from what's available. `psp` is dynamic; scaffold what you need.
-- [PyScaffold](https://github.com/pyscaffold/pyscaffold): **PyScaffold doesn't manage virtual environments directly**. You have to manually create and activate a virtualenv or use external tools like `pipenv`, `poetry`, `conda`, or `pyenv`. While PyScaffold documents integrations with these tools, it doesn't provide a unified interface for environment management like `psp` do.
+- [cookiecutter](https://github.com/cookiecutter/cookiecutter): Templates are prescriptive by design. Cookiecutter
+  enforces a particular project structure and conventions, which may not align with your or your organization's
+  preferences. **If a template's opinions don't match your needs, you're forced to either choose a different template or
+  heavily modify an existing one**. This can become tedious when you need something slightly different from what's
+  available. `psp` is dynamic; scaffold what you need.
+- [PyScaffold](https://github.com/pyscaffold/pyscaffold): **PyScaffold doesn't manage virtual environments directly**.
+  You have to manually create and activate a virtualenv or use external tools like `pipenv`, `poetry`, `conda`, or
+  `pyenv`. While PyScaffold documents integrations with these tools, it doesn't provide a unified interface for
+  environment management like `psp` do.
 
-`psp` asks only what you need. By configuring a few environment variables, you can automate any project; in seconds, not hours.
+`psp` asks only what you need. By configuring a few environment variables, you can automate any project; in seconds, not
+hours.
 
 ## 🔌 Prerequisites
 
 `psp` has four mandatory prerequisetes installed on own machine:
+
 - `git`
 - `python3`
 - `pip`
@@ -197,9 +226,23 @@ sudo pacman -Qi python3 python3-pip git curl
 
 ### 🐍 Python
 
+> [!WARNING]
+> If you're using _Windows_ OS, make sure you have the _Visual Studio Build Tools_ installed, otherwise install them
+with a
+command line: `winget install -e --id Microsoft.VisualStudio.BuildTools`
+
 To install with `pip`:
+
 ```console
+# Install psp-scaffold package (deprecated)
 pip install psp-scaffold
+# Use user-space
+pip install --user psp-scaffold
+# Use external tools like pipx(https://pipx.pypa.io/stable/) and/or uv(https://docs.astral.sh/uv/) (they create virtual environments for you); upgrading is done via a specific subcommand
+pipx install psp-scaffold && pipx upgrade-all
+uv pip install psp-scaffold --upgrade
+# Deactivate the externally managed file, temporarily or permanently
+pip install psp-scaffold --break-system-packages || python3 -m pip config set global.break-system-packages true
 ```
 
 ### Binary file
@@ -209,15 +252,17 @@ To install compiled file into your machine, download it:
 #### Linux
 
 For **all users** (required root access):
+
 ```console
 sudo -i
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.7.0/psp_linux -o /usr/local/bin/psp
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.8.0/psp_linux -o /usr/local/bin/psp
 chmod +x /usr/local/bin/psp
 ```
 
 For **current user**:
+
 ```console
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.7.0/psp_linux -o $HOME/.local/bin/psp
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.8.0/psp_linux -o $HOME/.local/bin/psp
 chmod +x $HOME/.local/bin/psp
 ```
 
@@ -225,22 +270,24 @@ chmod +x $HOME/.local/bin/psp
 
 ```console
 sudo su -
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.7.0/psp_macos -o /usr/local/bin/psp
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.8.0/psp_macos -o /usr/local/bin/psp
 chmod +x /usr/local/bin/psp
 ```
 
 #### Windows
 
 For **all users** (required Administrator):
+
 ```powershell
-iwr -OutFile "C:\Windows\system32\psp.exe" "https://github.com/MatteoGuadrini/psp/releases/download/v0.7.0/psp_windows"
+iwr -OutFile "C:\Windows\system32\psp.exe" "https://github.com/MatteoGuadrini/psp/releases/download/v0.8.0/psp_windows"
 ```
 
 For **current user**:
+
 ```powershell
 mkdir "$($Env:USERPROFILE)\bin"
 [System.Environment]::SetEnvironmentVariable("PATH", $Env:PATH + ";$($Env:USERPROFILE)\bin","USER")
-iwr -OutFile "$($Env:USERPROFILE)\bin\psp.exe" "https://github.com/MatteoGuadrini/psp/releases/download/v0.7.0/psp_windows"
+iwr -OutFile "$($Env:USERPROFILE)\bin\psp.exe" "https://github.com/MatteoGuadrini/psp/releases/download/v0.8.0/psp_windows"
 ```
 
 ### Packages
@@ -250,14 +297,14 @@ If you want to install OS package, follow instructions for your Operating System
 For **Debian/Ubuntu**:
 
 ```console
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.7.0/psp.deb -o psp.deb
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.8.0/psp.deb -o psp.deb
 sudo dpkg -i psp.deb
 ```
 
 For **Fedora/Mageia/OpenSuse**:
 
 ```console
-sudo rpm -i https://github.com/MatteoGuadrini/psp/releases/download/v0.7.0/psp.rpm
+sudo rpm -i https://github.com/MatteoGuadrini/psp/releases/download/v0.8.0/psp.rpm
 ```
 
 ### Compile as your own
@@ -306,8 +353,8 @@ docker run -it --rm -v ~/python_projects:/psp:z -v ~/python_projects/.env:/psp/.
 docker run -it --rm -v ~/python_projects:/psp:z -e "PSP_GIT=true" -e "PSP_PYVER=1.0.0" localhost/psp:latest
 ```
 
+## Next features
 
-## 🧰 Next features
 - [x] `windows` operating system support
 - [x] Container support for psp program
 - [x] `conda`and `uv` support
@@ -315,12 +362,13 @@ docker run -it --rm -v ~/python_projects:/psp:z -e "PSP_GIT=true" -e "PSP_PYVER=
 - [x] updating/merging project
 - [x] Gitlab CI/CD and GitHub Actions
 - [x] templating files support
-- [ ] templating custom files support
+- [x] templating custom files support
 - [ ] universal installation script
 - [ ] command line flags support
 - [ ] YAML configuration file
 
 ## Open source
+
 _psp_ is an open source project. Any contribution, It's welcome.
 
 **A great thanks**.
@@ -333,28 +381,22 @@ For me
 
 For [Telethon](http://www.telethon.it/)
 
-The Telethon Foundation is a non-profit organization recognized by the Ministry of University and Scientific and Technological Research.
+The Telethon Foundation is a non-profit organization recognized by the Ministry of University and Scientific and
+Technological Research.
 They were born in 1990 to respond to the appeal of patients suffering from rare diseases.
 Come today, we are organized to dare to listen to them and answers, every day of the year.
 
 [Adopt the future](https://www.ioadottoilfuturo.it/)
 
-
-## Licence
-This package is [Treeware](https://treeware.earth).
-If you use it in production, then we ask that you [**buy the world a tree**](https://plant.treeware.earth/MatteoGuadrini/psp) to thank us for our work.
-By contributing to the Treeware forest you’ll be creating employment for local families and restoring wildlife habitats.
-
-[![Buy us a tree](https://img.shields.io/badge/Treeware-%F0%9F%8C%B3-lightgreen?style=for-the-badge)](https://plant.treeware.earth/MatteoGuadrini/psp)
-
-
 ## Acknowledgments
 
-Thanks to Jim Blandy, Jason Orendorff and Nora Tindall for writing the  _Programming Rust_ book that make up my Rust foundation.
+Thanks to Jim Blandy, Jason Orendorff and Nora Tindall for writing the _Programming Rust_ book that make up my Rust
+foundation.
 
 Thanks to Tim McNamara for writing the _Rust in Action_ book.
 
-Thanks to [Zed IDE](https://zed.dev/) and for license of [RustRover](https://www.jetbrains.com/rust/) offered by JetBrains.
+Thanks to [Zed IDE](https://zed.dev/) and for license of [RustRover](https://www.jetbrains.com/rust/) offered by
+JetBrains.
 
 Special thanks go to my wife, who understood the hours of absence for this development.
 Thanks to my children, for the daily inspiration they give me and to make me realize, that life must be simple.

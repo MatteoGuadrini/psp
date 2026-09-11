@@ -9,7 +9,7 @@ before_install:
   - sudo apt-get install python3-pip
   - sudo apt-get install python3-pytest
 install:
-  - pip install {requirements} pipenv
+  - pip install {{REQUIREMENTS}} pipenv
   - pipenv install --dev
 script:
   - python -m unittest discover tests

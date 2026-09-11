@@ -35,7 +35,7 @@ cd /tmp/psp
 cargo build --release"
 
 # Build RPM
-$ccli run -it --rm -v $PWD:/tmp/psp -v ./$DIST/psp_rpm:/tmp/psp_rpm -v ./$DIST/psp_release:/tmp/psp_release -e "VERSION=${VERSION}" "rockylinux:9.3" bash -c "
+$ccli run -it --rm -v $PWD:/tmp/psp -v ./$DIST/psp_rpm:/tmp/psp_rpm -v ./$DIST/psp_release:/tmp/psp_release -e "VERSION=${VERSION}" "rockylinux:9" bash -c "
 chmod 777 /tmp/psp_rpm -R
 cat >/tmp/psp_rpm/psp.spec <<EOL
 Name:           psp
@@ -69,6 +69,7 @@ cp %{name} %{buildroot}/%{_bindir}
 %changelog
 * %{__cat} CHANGES.md
 EOL
+dnf clean all && rm -r /var/cache/dnf && dnf upgrade -y && dnf update -y
 dnf install rpmdevtools gcc -yq
 cd /tmp/psp_rpm
 mkdir -p "psp-${VERSION}"

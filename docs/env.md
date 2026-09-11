@@ -14,25 +14,27 @@ You can configure two files for configure these environment variables:
 
 ## Variables
 
-| **NAME**              | **REFERENCE**                                              | **VALUE**                      |
-|-----------------------|------------------------------------------------------------|--------------------------------|
-| `PSP_NAME`            | [Name of Python Project](simple.md#name-of-python-project) | `name`                         |
-| `PSP_VENV`            | [Virtual Environment](simple.md#virtual-environment)       | `true|false`                   |
-| `PSP_GIT`             | [Git](simple.md#git)                                       | `true|false`                   |
-| `PSP_GIT_REMOTE`      | [Git remote provider](simple.md#git-remote-provider)       | `github|gitlab`                |
-| `PSP_GIT_USER`        | [Git remote username](simple.md#git-remote-username)       | `username`                     |
-| `PSP_TEST`            | [Test files](simple.md#test-files)                         | `true|false`                   |
-| `PSP_COMMON_DEPS`     | [Common Depedencies](simple.md#dependencies)               | `dep1 dep2==0.0.1`             |
-| `PSP_DEPS`            | [Depedencies](simple.md#dependencies)                      | `dep1 dep2==0.0.1`             |
-| `PSP_DOCS`            | [Documentation generator](simple.md#documentation)         | `sphinx|mkdocs`                |
-| `PSP_TOX`             | [Tox tool](simple.md#tox-tool)                             | `true|false`                   |
-| `PSP_CI`              | [Remote CI](simple.md#remote-ci-continuous-integration)    | `travisci|circleci`            |
-| `PSP_FILES`           | [Common files](simple.md#common-files)                     | `true|false`                   |
-| `PSP_LICENSE`         | [License](simple.md#license)                               | `mit|apache|cc|mozilla|gpl`    |
-| `PSP_PYPI`            | [PyPi dependencies](simple.md#pypi-dependencies)           | `true|false`                   |
-| `PSP_CONTAINER`       | [Containers](simple.md#dockerpodman)                       | `true|false`                   |
-| `PSP_PACKAGE_MANAGER` | [Depedencies](simple.md#dependencies)                      | `uv|conda`                     |
-| `PSP_LOG`             | [Update](simple.md#resume)                                 | `true|false`                   |
+| **NAME**              | **REFERENCE**                                              | **VALUE**                                    |
+|-----------------------|------------------------------------------------------------|----------------------------------------------|
+| `PSP_NAME`            | [Name of Python Project](simple.md#name-of-python-project) | `name`                                       |
+| `PSP_VENV`            | [Virtual Environment](simple.md#virtual-environment)       | `true|false`                                 |
+| `PSP_GIT`             | [Git](simple.md#git)                                       | `true|false`                                 |
+| `PSP_GIT_REMOTE`      | [Git remote provider](simple.md#git-remote-provider)       | `github|gitlab|custom`                       |
+| `PSP_GIT_USER`        | [Git remote username](simple.md#git-remote-username)       | `username`                                   |
+| `PSP_TEST`            | [Test files](simple.md#test-files)                         | `true|false`                                 |
+| `PSP_COMMON_DEPS`     | [Common Depedencies](simple.md#dependencies)               | `dep1 dep2==0.0.1`                           |
+| `PSP_DEPS`            | [Depedencies](simple.md#dependencies)                      | `dep1 dep2==0.0.1`                           |
+| `PSP_DOCS`            | [Documentation generator](simple.md#documentation)         | `sphinx|mkdocs`                              |
+| `PSP_TOX`             | [Tox tool](simple.md#tox-tool)                             | `true|false`                                 |
+| `PSP_CI`              | [Remote CI](simple.md#remote-ci-continuous-integration)    | `travisci|circleci|githubactions|gitlabcicd` |
+| `PSP_FILES`           | [Common files](simple.md#common-files)                     | `true|false`                                 |
+| `PSP_LICENSE`         | [License](simple.md#license)                               | `mit|apache|cc|mozilla|gpl`                  |
+| `PSP_PYPI`            | [PyPi dependencies](simple.md#pypi-dependencies)           | `true|false`                                 |
+| `PSP_CONTAINER`       | [Containers](simple.md#dockerpodman)                       | `true|false`                                 |
+| `PSP_PACKAGE_MANAGER` | [Depedencies](simple.md#dependencies)                      | `uv|conda`                                   |
+| `PSP_LOG`             | [Update](simple.md#resume)                                 | `true|false`                                 |
+| `PSP_CACHE`           | [All](simple.md)                                           | `true|false`                                 |
+| `PSP_TEMPLATES`       | [All](simple.md)                                           | `/home/gu/templates|https://server.com/temp` |
 
 ## Python `pyproject.toml` variables
 
@@ -90,7 +92,11 @@ PSP_DEPS="numpy scipy pydata-sphinx-theme"
 PSP_DOCS=sphinx     # Overwritten
 PSP_LICENSE=mit     # Overwritten
 [gu]# psp
-info: welcome to psp, version 0.7.0
+
+┏━┃┏━━━━┛┏━┃
+┏━┛━━━━━┃┏━┛
+┛  ━━━━━┛┛
+info: welcome to psp, version 0.8.0
 > Name of Python project: biopy
 info: python project `biopy` created at /tmp/mypyenv/biopy
 [gu]# ll biopy
