@@ -1078,11 +1078,19 @@ pub fn prj_files(root: &str, name: &str, container: bool, shortcut: &String) -> 
             exit_status = 14;
         }
         // Create CODE_OF_CONDUCT
-        get_file_from_url(
-            "https://www.contributor-covenant.org/version/2/1/code_of_conduct/code_of_conduct.md",
-            ".",
-            "CODE_OF_CONDUCT.md",
+        let code_of_conduct_template = Path::new(root)
+            .join("CODE_OF_CONDUCT.md")
+            .display()
+            .to_string();
+        let file_ret = render_template(
+            "code_of_conduct.hbs",
+            &code_of_conduct_template,
+            data.clone(),
         );
+        if !file_ret {
+            error("`CODE_OF_CONDUCT.md` render failed".to_string());
+            exit_status = 14;
+        }
         // SAMPLE template
         let sample_dir = Path::new(root).join("samples");
         // Check if sample folder exist
