@@ -26,7 +26,7 @@
 - 🧮 Support `hatch`, `maturin` and `poetry` builder
 - 🍿 Stop, pause and resume project creation when you want;
   see [Resume](https://psp.readthedocs.io/en/latest/simple/#resume)
-- 🖇️ [Handlebars] custom templates engine (with local cache) to customize project;
+- 🖇️ [Handlebars](https://handlebarsjs.com) custom templates engine (with local cache) to customize project;
   see [Template](https://psp.readthedocs.io/en/latest/template)
 
 ## 🚀 Get Started in 30 Seconds
