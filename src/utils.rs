@@ -12,6 +12,21 @@ use std::{
 
 // Custom types
 pub type ExitStatus = i32;
+pub type ProjectInfo = (String, String, ExitStatus);
+pub type GitStatus = (bool, ExitStatus);
+pub type TestStatus = (bool, ExitStatus);
+pub type VirtualEnvStatus = (bool, ExitStatus);
+pub type DependenciesStatus = (Vec<String>, ExitStatus);
+pub type ProjectConfStatus = ((), ExitStatus);
+pub type CIStatus = ((), ExitStatus);
+pub type GitInfo = (String, String, ExitStatus);
+pub type ToxStatus = ((), ExitStatus);
+pub type DocStatus = ((), ExitStatus);
+pub type CommonFilesStatus = ((), ExitStatus);
+pub type LicenseInfo = (String, ExitStatus);
+pub type PyPiStatus = (bool, ExitStatus);
+pub type ContainerStatus = (bool, ExitStatus);
+pub type MakeStatus = ((), ExitStatus);
 
 // Constants
 pub const ARGS: [&str; 4] = ["help", "quick", "simple", "full"];

@@ -10,7 +10,7 @@ use std::{
 };
 
 // Project name
-pub fn prj_name() -> (String, String, ExitStatus) {
+pub fn prj_name() -> ProjectInfo {
     // Check psp log for update
     let log_step = "prj_name";
     if check_log(log_step, LOGFILE) {
@@ -117,7 +117,7 @@ print(f'version: {{__version__}}')
 }
 
 // Project git
-pub fn prj_git(name: &str, shortcut: &String) -> (bool, ExitStatus) {
+pub fn prj_git(name: &str, shortcut: &String) -> GitStatus {
     // Check psp log for update
     let mut exit_status: ExitStatus = 0;
     let log_step = "prj_git";
@@ -170,7 +170,7 @@ pub fn prj_git(name: &str, shortcut: &String) -> (bool, ExitStatus) {
 }
 
 // Project unit tests
-pub fn prj_test(root: &str, name: &str, shortcut: &String) -> (bool, ExitStatus) {
+pub fn prj_test(root: &str, name: &str, shortcut: &String) -> TestStatus {
     // Check psp log for update
     let ret: bool;
     let mut exit_status: ExitStatus = 0;
@@ -225,7 +225,7 @@ pub fn prj_test(root: &str, name: &str, shortcut: &String) -> (bool, ExitStatus)
 }
 
 // Project venv
-pub fn prj_venv(name: &str, shortcut: &String) -> (bool, ExitStatus) {
+pub fn prj_venv(name: &str, shortcut: &String) -> VirtualEnvStatus {
     // Check psp log for update
     let mut ret: bool;
     let mut exit_status: ExitStatus = 0;
@@ -278,7 +278,7 @@ pub fn prj_venv(name: &str, shortcut: &String) -> (bool, ExitStatus) {
 }
 
 // Project dependencies
-pub fn prj_deps(name: &str, venv: bool, shortcut: &String) -> (Vec<String>, ExitStatus) {
+pub fn prj_deps(name: &str, venv: bool, shortcut: &String) -> DependenciesStatus {
     // Check psp log for update
     let mut exit_status: ExitStatus = 0;
     let log_step = "prj_deps";
@@ -379,7 +379,7 @@ pub fn prj_toml(
     git_info: (String, String, ExitStatus),
     license: String,
     venv: bool,
-) -> ((), ExitStatus) {
+) -> ProjectConfStatus {
     let mut exit_status: ExitStatus = 0;
     // Check git information
     let mut documentation = "https://docs.python.org/3/".to_string();
@@ -465,7 +465,7 @@ pub fn prj_toml(
 }
 
 // Project CI
-pub fn prj_ci(name: &str, deps: &Vec<String>, shortcut: &String) -> ((), ExitStatus) {
+pub fn prj_ci(name: &str, deps: &Vec<String>, shortcut: &String) -> CIStatus {
     let mut exit_status: ExitStatus = 0;
     // Check psp log for update
     let log_step = "prj_ci";
@@ -576,7 +576,7 @@ pub fn prj_ci(name: &str, deps: &Vec<String>, shortcut: &String) -> ((), ExitSta
 }
 
 // Project Gitlab/GitHub
-pub fn prj_remote(root: &str, name: &str, shortcut: &String) -> (String, String, ExitStatus) {
+pub fn prj_remote(root: &str, name: &str, shortcut: &String) -> GitInfo {
     // Check psp log for update
     let log_step = "prj_remote";
     let mut exit_status: ExitStatus = 0;
@@ -809,7 +809,7 @@ pub fn prj_remote(root: &str, name: &str, shortcut: &String) -> (String, String,
 }
 
 // Project tox
-pub fn prj_tox(name: &str, venv: bool, deps: &Vec<String>, shortcut: &String) -> ((), ExitStatus) {
+pub fn prj_tox(name: &str, venv: bool, deps: &Vec<String>, shortcut: &String) -> ToxStatus {
     let mut exit_status: ExitStatus = 0;
     // Check psp log for update
     let log_step = "prj_tox";
@@ -879,7 +879,7 @@ pub fn prj_tox(name: &str, venv: bool, deps: &Vec<String>, shortcut: &String) ->
 }
 
 // Project documentation site generator
-pub fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) -> ((), ExitStatus) {
+pub fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) -> DocStatus {
     // Check psp log for update
     let mut exit_status: ExitStatus = 0;
     let log_step = "prj_docs";
@@ -1015,7 +1015,7 @@ pub fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) -> ((), E
 }
 
 // Project common files
-pub fn prj_files(root: &str, name: &str, container: bool, shortcut: &String) -> ((), ExitStatus) {
+pub fn prj_files(root: &str, name: &str, container: bool, shortcut: &String) -> CommonFilesStatus {
     let mut exit_status: ExitStatus = 0;
     // Check psp log for update
     let log_step = "prj_files";
@@ -1114,7 +1114,7 @@ pub fn prj_files(root: &str, name: &str, container: bool, shortcut: &String) -> 
 }
 
 // Project license
-pub fn prj_license(name: &str, shortcut: &String, author: &String) -> (String, ExitStatus) {
+pub fn prj_license(name: &str, shortcut: &String, author: &String) -> LicenseInfo {
     let mut exit_status: ExitStatus = 0;
     // Check psp log for update
     let log_step = "prj_license";
@@ -1192,7 +1192,7 @@ pub fn prj_license(name: &str, shortcut: &String, author: &String) -> (String, E
 }
 
 // Project pypi dependencies
-pub fn prj_pypi(root: &str, venv: bool, shortcut: &String) -> (bool, ExitStatus) {
+pub fn prj_pypi(root: &str, venv: bool, shortcut: &String) -> PyPiStatus {
     let mut exit_status: ExitStatus = 0;
     // Check psp log for update
     let log_step = "prj_pypi";
@@ -1255,7 +1255,7 @@ pub fn prj_pypi(root: &str, venv: bool, shortcut: &String) -> (bool, ExitStatus)
 }
 
 // Project Docker/Podman
-pub fn prj_container(root: &str, name: &str, shortcut: &String) -> (bool, ExitStatus) {
+pub fn prj_container(root: &str, name: &str, shortcut: &String) -> ContainerStatus {
     let mut exit_status: ExitStatus = 0;
     // Check psp log for update
     let log_step = "prj_container";
@@ -1341,7 +1341,7 @@ pub fn prj_makefile(
     tests: bool,
     build: bool,
     container: bool,
-) -> ((), ExitStatus) {
+) -> MakeStatus {
     let mut exit_status: ExitStatus = 0;
     // Set options for make
     let mut make_options = vec!["help", "all", "run", "clean"];
