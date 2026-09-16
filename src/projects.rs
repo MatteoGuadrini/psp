@@ -376,8 +376,9 @@ pub fn prj_toml(
     root: &str,
     name: &str,
     deps: &Vec<String>,
-    git_info: (String, String, ExitStatus),
+    git_info: GitInfo,
     license: String,
+    tests: bool,
     venv: bool,
 ) -> ProjectConfStatus {
     let mut exit_status: ExitStatus = 0;
@@ -434,6 +435,8 @@ pub fn prj_toml(
     let project_version = env_pyversion();
     let python_version = get_python_version();
     let stringed_classifiers = format!("{:?}", classifiers);
+    let mut dev_dependencies: Vec<&str> = vec![];
+    let mut stringed_dev_dependencies = format!("{:?}", dev_dependencies);
     let mut data = HashMap::from([
         ("SIGNATURE", SIGNATURE),
         ("VERSION", VERSION),
@@ -454,6 +457,16 @@ pub fn prj_toml(
     // Check if license is set
     if license != "None" {
         data.insert("LICENSE", "true");
+    }
+    // Check if tests is set
+    if tests {
+        dev_dependencies.push("pytest");
+    }
+    // Check if dev dependencies is present
+    if !dev_dependencies.is_empty() {
+        stringed_dev_dependencies = format!("{:?}", dev_dependencies);
+        data.insert("OTHER_DEPS", "true");
+        data.insert("DEV_DEPS", &stringed_dev_dependencies);
     }
     let pyproject_template = Path::new(root).join("pyproject.toml").display().to_string();
     let file_ret = render_template("pyproject.hbs", &pyproject_template, data);
