@@ -379,6 +379,7 @@ pub fn prj_toml(
     git_info: GitInfo,
     license: String,
     tests: bool,
+    docs: &str,
     venv: bool,
 ) -> ProjectConfStatus {
     let mut exit_status: ExitStatus = 0;
@@ -461,6 +462,10 @@ pub fn prj_toml(
     // Check if tests is set
     if tests {
         dev_dependencies.push("pytest");
+    }
+    // Check if docs is set
+    if docs != "None" {
+        dev_dependencies.push(docs);
     }
     // Check if dev dependencies is present
     if !dev_dependencies.is_empty() {
@@ -897,7 +902,11 @@ pub fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) -> DocSta
     let mut exit_status: ExitStatus = 0;
     let log_step = "prj_docs";
     if check_log(log_step, LOGFILE) {
-        return ((), exit_status);
+        let log_content = read_log(LOGFILE);
+        let value = get_log_value(log_step, log_content.unwrap().as_str());
+        if let Some(v) = value {
+            return (v, exit_status);
+        }
     }
     let options = vec!["None", "Sphinx", "MKDocs"];
     // Check environment variable
@@ -1024,7 +1033,7 @@ pub fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) -> DocSta
     }
     // Write psp log
     write_log(LOGFILE, format!("{}: {}", log_step, docs).as_str());
-    ((), exit_status)
+    (docs, exit_status)
 }
 
 // Project common files

@@ -56,6 +56,7 @@ fn main() {
     exit_status = set_exit_status(exit_status, ret_prj_deps.1);
     // Documentation
     let ret_prj_docs = prj_docs(&root, &name, venv, &shortcut);
+    let docs = ret_prj_docs.0.to_lowercase();
     exit_status = set_exit_status(exit_status, ret_prj_docs.1);
     // Test factory
     if tests {
@@ -75,7 +76,7 @@ fn main() {
     let build = ret_prj_pypi.0;
     exit_status = set_exit_status(exit_status, ret_prj_pypi.1);
     // Write pyproject.toml
-    let ret_prj_toml = prj_toml(&root, &name, &deps, git_info, license, tests, venv);
+    let ret_prj_toml = prj_toml(&root, &name, &deps, git_info, license, tests, &docs, venv);
     exit_status = set_exit_status(exit_status, ret_prj_toml.1);
     // Dockerfile
     let ret_prj_container = prj_container(&root, &name, &shortcut);

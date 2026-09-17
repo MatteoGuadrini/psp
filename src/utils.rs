@@ -21,7 +21,7 @@ pub type ProjectConfStatus = ((), ExitStatus);
 pub type CIStatus = ((), ExitStatus);
 pub type GitInfo = (String, String, ExitStatus);
 pub type ToxStatus = ((), ExitStatus);
-pub type DocStatus = ((), ExitStatus);
+pub type DocStatus = (String, ExitStatus);
 pub type CommonFilesStatus = ((), ExitStatus);
 pub type LicenseInfo = (String, ExitStatus);
 pub type PyPiStatus = (bool, ExitStatus);
@@ -31,7 +31,7 @@ pub type MakeStatus = ((), ExitStatus);
 // Constants
 pub const ARGS: [&str; 4] = ["help", "quick", "simple", "full"];
 pub const TEMPLATES: &str =
-    "https://raw.githubusercontent.com/MatteoGuadrini/psp_templates/refs/heads/main";
+    "https://raw.githubusercontent.com/MatteoGuadrini/psp_templates/refs/heads/dev";
 const LOGO: &str = "
 ┏━┃┏━━━━┛┏━┃
 ┏━┛━━━━━┃┏━┛
