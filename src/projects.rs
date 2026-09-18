@@ -380,6 +380,7 @@ pub fn prj_toml(
     license: String,
     tests: bool,
     docs: &str,
+    tox: bool,
     venv: bool,
 ) -> ProjectConfStatus {
     let mut exit_status: ExitStatus = 0;
@@ -466,6 +467,10 @@ pub fn prj_toml(
     // Check if docs is set
     if docs != "None" {
         dev_dependencies.push(docs);
+    }
+    // Check if tox is set
+    if tox {
+        dev_dependencies.push("tox");
     }
     // Check if dev dependencies is present
     if !dev_dependencies.is_empty() {
@@ -832,7 +837,11 @@ pub fn prj_tox(name: &str, venv: bool, deps: &Vec<String>, shortcut: &String) ->
     // Check psp log for update
     let log_step = "prj_tox";
     if check_log(log_step, LOGFILE) {
-        return ((), exit_status);
+        let log_content = read_log(LOGFILE);
+        let value = get_log_value(log_step, log_content.unwrap().as_str());
+        if let Some(v) = value {
+            return (v.parse::<bool>().unwrap(), exit_status);
+        }
     }
     // Check environment variable
     let env_tox = var("PSP_TOX").unwrap_or("false".to_string()).parse().ok();
@@ -862,7 +871,7 @@ pub fn prj_tox(name: &str, venv: bool, deps: &Vec<String>, shortcut: &String) ->
         // Check if the command exits successfully
         if !output.status.success() {
             error("`tox` installation failed".to_string());
-            return ((), 8);
+            return (false, 8);
         }
         // Create a data map with variables
         let python_version = format!("py{}", get_python_version().replace(".", ""));
@@ -893,7 +902,7 @@ pub fn prj_tox(name: &str, venv: bool, deps: &Vec<String>, shortcut: &String) ->
     }
     // Write psp log
     write_log(LOGFILE, format!("{}: {}", log_step, confirm).as_str());
-    ((), exit_status)
+    (confirm, exit_status)
 }
 
 // Project documentation site generator

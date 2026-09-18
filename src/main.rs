@@ -59,9 +59,11 @@ fn main() {
     let docs = ret_prj_docs.0.to_lowercase();
     exit_status = set_exit_status(exit_status, ret_prj_docs.1);
     // Test factory
+    let mut tox = false;
     if tests {
         // Tox
         let ret_prj_tox = prj_tox(&root, venv, &deps, &shortcut);
+        tox = ret_prj_tox.0;
         exit_status = set_exit_status(exit_status, ret_prj_tox.1);
         // CI configuration
         let ret_prj_ci = prj_ci(&root, &deps, &shortcut);
@@ -76,7 +78,9 @@ fn main() {
     let build = ret_prj_pypi.0;
     exit_status = set_exit_status(exit_status, ret_prj_pypi.1);
     // Write pyproject.toml
-    let ret_prj_toml = prj_toml(&root, &name, &deps, git_info, license, tests, &docs, venv);
+    let ret_prj_toml = prj_toml(
+        &root, &name, &deps, git_info, license, tests, &docs, tox, venv,
+    );
     exit_status = set_exit_status(exit_status, ret_prj_toml.1);
     // Dockerfile
     let ret_prj_container = prj_container(&root, &name, &shortcut);
