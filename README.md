@@ -223,6 +223,14 @@ sudo pacman -Qi python3 python3-pip git curl
 
 ## 💿 Installation
 
+For quick installation using _installation script_, follow this:
+
+**Linux/MacOS**
+
+```bash
+curl --proto '=https' --tlsv1.2 -fsSL https://raw.githubusercontent.com/MatteoGuadrini/psp/main/install.sh | bash
+```
+
 ### 🐍 Python
 
 > [!WARNING]
@@ -362,7 +370,7 @@ docker run -it --rm -v ~/python_projects:/psp:z -e "PSP_GIT=true" -e "PSP_PYVER=
 - [x] Gitlab CI/CD and GitHub Actions
 - [x] templating files support
 - [x] templating custom files support
-- [ ] universal installation script
+- [x] universal installation script
 - [ ] command line flags support
 - [ ] YAML configuration file
 
