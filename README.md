@@ -231,6 +231,12 @@ For quick installation using _installation script_, follow this:
 curl --proto '=https' --tlsv1.2 -fsSL https://raw.githubusercontent.com/MatteoGuadrini/psp/main/install.sh | bash
 ```
 
+**Windows**
+
+```powershell
+iwr https://raw.githubusercontent.com/MatteoGuadrini/psp/main/install.ps1 | iex
+```
+
 ### 🐍 Python
 
 > [!WARNING]
