@@ -187,7 +187,7 @@ pub fn prj_test(root: &str, name: &str, shortcut: &String) -> TestStatus {
     let confirm = if let Some(true) = env_test {
         info(format!("tests enable: {}", env_test.unwrap().to_string()));
         true
-    } else if shortcut != "None" {
+    } else if !is_none(shortcut) {
         true
     } else {
         prompt_confirm("Do you want unit test files?", true, "None")
@@ -405,7 +405,7 @@ pub fn prj_toml(
     let description = pydescription;
     let (mut username, mut email) = env_pyauthor();
     let mut homepage = pyhomepage;
-    if git_info.0 != "None" && git_info.1 != "None" {
+    if !is_none(git_info.0.as_str()) && !is_none(git_info.1.as_str()) {
         let git_repo = &git_info.0.to_lowercase();
         let git_user = &git_info.1.to_lowercase();
         repository = format!(
@@ -457,7 +457,7 @@ pub fn prj_toml(
         ("CHANGELOG", &changelog),
     ]);
     // Check if license is set
-    if license != "None" {
+    if !is_none(license.as_str()) {
         data.insert("LICENSE", "true");
     }
     // Check if tests is set
@@ -465,7 +465,7 @@ pub fn prj_toml(
         dev_dependencies.push("pytest");
     }
     // Check if docs is set
-    if docs != "None" {
+    if !is_none(docs) {
         dev_dependencies.push(docs);
     }
     // Check if tox is set
@@ -929,7 +929,7 @@ pub fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) -> DocSta
     } else {
         prompt_select("Select documentation generator:", options, "None")
     };
-    if docs != "None" {
+    if !is_none(docs.as_str()) {
         let docs_home = Path::new(root).join("docs");
         let docs_folder = docs_home.as_path();
         // Check if folder docs exist
@@ -1157,7 +1157,7 @@ pub fn prj_license(name: &str, shortcut: &String, author: &String) -> LicenseInf
         }
     }
     // Check author
-    let author = if author == "None" {
+    let author = if is_none(author) {
         "<maintainers>"
     } else {
         author
@@ -1182,7 +1182,7 @@ pub fn prj_license(name: &str, shortcut: &String, author: &String) -> LicenseInf
     } else {
         prompt_select("Select license:", options, "None")
     };
-    if license != "None" {
+    if !is_none(license.as_str()) {
         let mut license_file = String::new();
         if license.to_lowercase() == "mit" {
             license_file.push_str("mit.hbs");

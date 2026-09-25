@@ -86,6 +86,12 @@ pub fn set_exit_status(old: ExitStatus, new: ExitStatus) -> ExitStatus {
     }
 }
 
+// Function to check if a string is None
+pub fn is_none(s: &str) -> bool {
+    let s = s.to_lowercase();
+    s == "none" || s == "null" || s == "no" || s == "false"
+}
+
 // Function to split PATH environment variable
 fn split_env_path() -> Vec<String> {
     let env_paths = var("PATH").ok().unwrap();
