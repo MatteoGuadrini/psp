@@ -639,21 +639,21 @@ pub fn make_builder(root: &str, venv: bool) -> String {
         // poetry
         build_settings = "
 [build-system]
-requires = ['poetry-core']
+requires = ['setuptools', 'poetry-core']
 build-backend = 'poetry.core.masonry.api'"
             .to_string();
     } else if builder == "hatch" {
         // hatch
         build_settings = "
 [build-system]
-requires = ['hatchling']
+requires = ['setuptools', 'hatchling']
 build-backend = 'hatchling.build'"
             .to_string();
     } else if builder == "maturin" {
         // maturin
         build_settings = "
 [build-system]
-requires = ['maturin>=1.0,<2.0']
+requires = ['setuptools', 'maturin>=1.0,<2.0']
 build-backend = 'maturin'
 "
         .to_string();
