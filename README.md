@@ -156,10 +156,6 @@ environments:
 > More details for shortcuts, variables and other things, available in official
 documentation: [psp docs](https://psp.readthedocs.io/)
 
-> [!IMPORTANT]
-> Licenses and templates folder in this repository is **deprecated**; please update `psp` to point of the new templates
-> repository: [psp templates](https://github.com/MatteoGuadrini/psp_templates)
-
 ## Why choose psp?
 
 `psp` is simple, fast, effective, declarative, and supports Python and the entire ecosystem of tools written for it.
@@ -251,10 +247,18 @@ To install with `pip`:
 pip install psp-scaffold
 # Use user-space
 pip install --user psp-scaffold
-# Use external tools like pipx(https://pipx.pypa.io/stable/) and/or uv(https://docs.astral.sh/uv/) (they create virtual environments for you); upgrading is done via a specific subcommand
-pipx install psp-scaffold && pipx upgrade-all
-uv pip install psp-scaffold --upgrade
-# Deactivate the externally managed file, temporarily or permanently
+```
+
+Use external tools like [`pipx`](https://pipx.pypa.io/stable/) and/or [`uv`](https://docs.astral.sh/uv/) 
+(they create virtual environments for you); upgrading is done via a specific subcommand
+
+```console
+pipx install psp-scaffold && pipx upgrade-all || uv pip install psp-scaffold --upgrade
+```
+
+Deactivate the externally managed file, temporarily or permanently
+
+```console
 pip install psp-scaffold --break-system-packages || python3 -m pip config set global.break-system-packages true
 ```
 
@@ -369,7 +373,7 @@ docker run -it --rm -v ~/python_projects:/psp:z -e "PSP_GIT=true" -e "PSP_PYVER=
 ## Next features
 
 - [x] `windows` operating system support
-- [x] Container support for psp program
+- [x] container support for psp program
 - [x] `conda`and `uv` support
 - [x] `hatch`, `maturin` and `poetry` build support
 - [x] updating/merging project
@@ -377,6 +381,8 @@ docker run -it --rm -v ~/python_projects:/psp:z -e "PSP_GIT=true" -e "PSP_PYVER=
 - [x] templating files support
 - [x] templating custom files support
 - [x] universal installation script
+- [ ] support update if project exists
+- [ ] profiles support (type of modules, custom init projects, custom files)
 - [ ] command line flags support
 - [ ] YAML configuration file
 
