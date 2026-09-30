@@ -266,6 +266,8 @@ pub fn get_file_from_url(url: &str, start_path: &str, output_file: &str) -> bool
         "--create-dirs".to_string(),
         "--connect-timeout".to_string(),
         "10".to_string(),
+        "--retry".to_string(),
+        "3".to_string(),
         url.to_string(),
     ];
     #[cfg(target_os = "windows")]
@@ -274,14 +276,17 @@ pub fn get_file_from_url(url: &str, start_path: &str, output_file: &str) -> bool
         "-ExecutionPolicy".to_string(),
         "Bypass".to_string(),
         "-Command".to_string(),
+        "$ProgressPreference='SilentlyContinue';".to_string(),
         "iwr".to_string(),
         "-TimeoutSec".to_string(),
         "10".to_string(),
+        "-MaximumRetryCount".to_string(),
+        "3".to_string(),
         "-OutFile".to_string(),
         format!("( New-Item -Path '{output_file}' -Force )"),
         url.to_string(),
     ];
-    let mut downloader = make_command(command, ".", start_path, command_args, false);
+    let mut downloader = make_command(command, start_path, start_path, command_args, false);
     let output = downloader
         .output()
         .expect(format!("{command} should be installed").as_str());
