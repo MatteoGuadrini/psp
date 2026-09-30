@@ -624,7 +624,7 @@ pub fn prj_remote(root: &str, name: &str, shortcut: &String) -> GitInfo {
     } else {
         prompt_select("Select git remote provider:", options, "None")
     };
-    if remote.as_str().to_lowercase() != "none" {
+    if !is_none(&remote) {
         // Custom
         if remote.as_str().to_lowercase() == "custom" {
             let env_git_server = var("PSP_GIT_CUSTOM").ok();
@@ -644,9 +644,9 @@ pub fn prj_remote(root: &str, name: &str, shortcut: &String) -> GitInfo {
                     warning("The FQDN server must not be empty".to_string());
                 }
             }
-            git_remote = git_custom.to_lowercase();
+            git_remote = git_custom.to_lowercase().replace(" ", "");
         } else {
-            git_remote = remote.to_owned().to_lowercase() + ".com";
+            git_remote = remote.to_owned().to_lowercase().replace(" ", "") + ".com";
         }
         // Check environment variable
         let env_git_user = var("PSP_GIT_USER").ok();
@@ -667,12 +667,12 @@ pub fn prj_remote(root: &str, name: &str, shortcut: &String) -> GitInfo {
                 warning("The username must not be empty".to_string());
             }
         }
-        git_user = username.to_owned();
+        git_user = username.to_owned().replace(" ", "");
         // Add a git remote path
         let remote_path = format!(
             "git@{}:{}/{}.git",
             git_remote,
-            username,
+            git_user,
             name.to_lowercase()
         );
         // Test if remote has already been set
@@ -1195,7 +1195,7 @@ pub fn prj_license(name: &str, shortcut: &String, author: &String) -> LicenseInf
         } else if license.to_lowercase() == "gnu public license" || license.to_lowercase() == "gpl"
         {
             license_file.push_str("gplv3.hbs");
-        } else if license.as_str().to_lowercase() != "none" {
+        } else {
             warning(format!("`{license}` is not recognized as a valid license"));
         }
         let license_template = Path::new(name).join(&license_file).display().to_string();
