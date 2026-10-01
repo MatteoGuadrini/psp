@@ -498,7 +498,7 @@ pub fn prj_ci(name: &str, deps: &Vec<String>, shortcut: &String) -> CIStatus {
     let options = vec![
         "None",
         "CircleCI",
-        "Github Actions",
+        "GitHub Actions",
         "Gitlab CI/CD",
         "TravisCI",
     ];
@@ -613,7 +613,7 @@ pub fn prj_remote(root: &str, name: &str, shortcut: &String) -> GitInfo {
     }
     let mut git_user = "None".to_string();
     let git_remote;
-    let options = vec!["None", "Github", "Gitlab", "Custom"];
+    let options = vec!["None", "GitHub", "Gitlab", "Custom"];
     // Check environment variable
     let env_remote = var("PSP_GIT_REMOTE").ok();
     let remote = if let Some(env_remote) = env_remote {
@@ -766,7 +766,7 @@ pub fn prj_remote(root: &str, name: &str, shortcut: &String) -> GitInfo {
                 error("`merge.md` render failed".to_string());
                 exit_status = 4;
             }
-        // Github
+        // GitHub
         } else if remote.as_str().to_lowercase() == "github" {
             let issue_folder = Path::new(root).join(".github").join("ISSUE_TEMPLATE");
             let merge_folder = Path::new(root)
@@ -1108,7 +1108,7 @@ pub fn prj_files(root: &str, name: &str, container: bool, shortcut: &String) -> 
             error("`CONTRIBUTING.md` render failed".to_string());
             exit_status = 14;
         }
-        // Create CODE_OF_CONDUCT
+        // CODE_OF_CONDUCT template
         let code_of_conduct_template = Path::new(root)
             .join("CODE_OF_CONDUCT.md")
             .display()

@@ -12,7 +12,7 @@
 ┏━┃┏━━━━┛┏━┃
 ┏━┛━━━━━┃┏━┛
 ┛  ━━━━━┛┛
-psp (Python Scaffolding Projects), version 0.8.0
+psp (Python Scaffolding Projects), version 0.9.0
 usage: psp [shortcut]
 ie: psp [help|quick|simple|full]
 
@@ -59,7 +59,7 @@ The _quick_ shortcut enables a rapid configuration of your Python project:
 ┏━┃┏━━━━┛┏━┃
 ┏━┛━━━━━┃┏━┛
 ┛  ━━━━━┛┛
-info: welcome to psp, version 0.8.0
+info: welcome to psp, version 0.9.0
 > Name of Python project: mypyprj
 > Select documentation generator: MKDocs
 > Select license: MIT
@@ -87,7 +87,7 @@ The _simple_ shortcut enables a basic configuration of your Python project:
 ┏━┃┏━━━━┛┏━┃
 ┏━┛━━━━━┃┏━┛
 ┛  ━━━━━┛┛
-info: welcome to psp, version 0.8.0
+info: welcome to psp, version 0.9.0
 > Name of Python project: mypyprj
 Python project `mypyprj` created at mypyprj
 ```
@@ -106,7 +106,7 @@ The _full_ shortcut enables a full configuration of your Python project:
 ┏━┃┏━━━━┛┏━┃
 ┏━┛━━━━━┃┏━┛
 ┛  ━━━━━┛┛
-info: welcome to psp, version 0.8.0
+info: welcome to psp, version 0.9.0
 > Name of Python project: mypyprj
 > Select git remote provider: Github
 > Username of Github: MatteoGuadrini

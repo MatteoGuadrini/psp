@@ -1,6 +1,7 @@
 # Env
 
-**psp** accept some `PSP_` environment variables, that you can configure also with files. These variables substitute questions and its values, to a better customization.
+**psp** accept some `PSP_` environment variables, that you can configure also with files. These variables substitute
+questions and its values, to a better customization.
 
 ## Files
 
@@ -10,41 +11,41 @@ You can configure two files for configure these environment variables:
 * `.psp.env` file into your `$HOME`
 
 !!! note
-    The `.env` file has a precedence respect the `.psp.env` file
+The `.env` file has a precedence respect the `.psp.env` file
 
 ## Variables
 
-| **NAME**              | **REFERENCE**                                              | **VALUE**                                    |
-|-----------------------|------------------------------------------------------------|----------------------------------------------|
-| `PSP_NAME`            | [Name of Python Project](simple.md#name-of-python-project) | `name`                                       |
-| `PSP_VENV`            | [Virtual Environment](simple.md#virtual-environment)       | `true|false`                                 |
-| `PSP_GIT`             | [Git](simple.md#git)                                       | `true|false`                                 |
-| `PSP_GIT_REMOTE`      | [Git remote provider](simple.md#git-remote-provider)       | `github|gitlab|custom`                       |
-| `PSP_GIT_USER`        | [Git remote username](simple.md#git-remote-username)       | `username`                                   |
-| `PSP_TEST`            | [Test files](simple.md#test-files)                         | `true|false`                                 |
-| `PSP_COMMON_DEPS`     | [Common Depedencies](simple.md#dependencies)               | `dep1 dep2==0.0.1`                           |
-| `PSP_DEPS`            | [Depedencies](simple.md#dependencies)                      | `dep1 dep2==0.0.1`                           |
-| `PSP_DOCS`            | [Documentation generator](simple.md#documentation)         | `sphinx|mkdocs`                              |
-| `PSP_TOX`             | [Tox tool](simple.md#tox-tool)                             | `true|false`                                 |
-| `PSP_CI`              | [Remote CI](simple.md#remote-ci-continuous-integration)    | `travisci|circleci|githubactions|gitlabcicd` |
-| `PSP_FILES`           | [Common files](simple.md#common-files)                     | `true|false`                                 |
-| `PSP_LICENSE`         | [License](simple.md#license)                               | `mit|apache|cc|mozilla|gpl`                  |
-| `PSP_PYPI`            | [PyPi dependencies](simple.md#pypi-dependencies)           | `true|false`                                 |
-| `PSP_CONTAINER`       | [Containers](simple.md#dockerpodman)                       | `true|false`                                 |
-| `PSP_PACKAGE_MANAGER` | [Depedencies](simple.md#dependencies)                      | `uv|conda`                                   |
-| `PSP_LOG`             | [Update](simple.md#resume)                                 | `true|false`                                 |
-| `PSP_CACHE`           | [All](simple.md)                                           | `true|false`                                 |
-| `PSP_TEMPLATES`       | [All](simple.md)                                           | `/home/gu/templates|https://server.com/temp` |
+| **NAME**              | **REFERENCE**                                              | **VALUE**           |
+|-----------------------|------------------------------------------------------------|---------------------|
+| `PSP_NAME`            | [Name of Python Project](simple.md#name-of-python-project) | `name`              |
+| `PSP_VENV`            | [Virtual Environment](simple.md#virtual-environment)       | `true               |false`                                 |
+| `PSP_GIT`             | [Git](simple.md#git)                                       | `true               |false`                                 |
+| `PSP_GIT_REMOTE`      | [Git remote provider](simple.md#git-remote-provider)       | `github             |gitlab|custom`                       |
+| `PSP_GIT_USER`        | [Git remote username](simple.md#git-remote-username)       | `username`          |
+| `PSP_TEST`            | [Test files](simple.md#test-files)                         | `true               |false`                                 |
+| `PSP_COMMON_DEPS`     | [Common Depedencies](simple.md#dependencies)               | `dep1 dep2==0.0.1`  |
+| `PSP_DEPS`            | [Depedencies](simple.md#dependencies)                      | `dep1 dep2==0.0.1`  |
+| `PSP_DOCS`            | [Documentation generator](simple.md#documentation)         | `sphinx             |mkdocs`                              |
+| `PSP_TOX`             | [Tox tool](simple.md#tox-tool)                             | `true               |false`                                 |
+| `PSP_CI`              | [Remote CI](simple.md#remote-ci-continuous-integration)    | `travisci           |circleci|githubactions|gitlabcicd` |
+| `PSP_FILES`           | [Common files](simple.md#common-files)                     | `true               |false`                                 |
+| `PSP_LICENSE`         | [License](simple.md#license)                               | `mit                |apache|cc|mozilla|gpl`                  |
+| `PSP_PYPI`            | [PyPi dependencies](simple.md#pypi-dependencies)           | `true               |false`                                 |
+| `PSP_CONTAINER`       | [Containers](simple.md#dockerpodman)                       | `true               |false`                                 |
+| `PSP_PACKAGE_MANAGER` | [Depedencies](simple.md#dependencies)                      | `uv                 |conda`                                   |
+| `PSP_LOG`             | [Update](simple.md#resume)                                 | `true               |false`                                 |
+| `PSP_CACHE`           | [All](simple.md)                                           | `true               |false`                                 |
+| `PSP_TEMPLATES`       | [All](simple.md)                                           | `/home/gu/templates |https://server.com/temp` |
 
 ## Python `pyproject.toml` variables
 
-| **NAME**          | **REFERENCE**                                              | **VALUE**                      |
-|-------------------|------------------------------------------------------------|--------------------------------|
-| `PSP_PYVER`       | Python project's version                                   | `0.0.1`                        |
-| `PSP_PYAUTHOR`    | Python project's author                                    | `matteo.guadrini@github.io`    |
-| `PSP_PYHOMEPAGE`  | Python project's homepage                                  | `matteoguadrini.github.io`     |
-| `PSP_PYDESC`      | Python project's description                               | `A simple Python package`      |
-| `PSP_PYBUILD`     | Python project's builder                                   | `poetry|maturin|hatch`         |
+| **NAME**         | **REFERENCE**                | **VALUE**                   |
+|------------------|------------------------------|-----------------------------|
+| `PSP_PYVER`      | Python project's version     | `0.0.1`                     |
+| `PSP_PYAUTHOR`   | Python project's author      | `matteo.guadrini@github.io` |
+| `PSP_PYHOMEPAGE` | Python project's homepage    | `matteoguadrini.github.io`  |
+| `PSP_PYDESC`     | Python project's description | `A simple Python package`   |
+| `PSP_PYBUILD`    | Python project's builder     | `poetry                     |maturin|hatch`         |
 
 ## Examples
 
@@ -96,7 +97,7 @@ PSP_LICENSE=mit     # Overwritten
 ┏━┃┏━━━━┛┏━┃
 ┏━┛━━━━━┃┏━┛
 ┛  ━━━━━┛┛
-info: welcome to psp, version 0.8.0
+info: welcome to psp, version 0.9.0
 > Name of Python project: biopy
 info: python project `biopy` created at /tmp/mypyenv/biopy
 [gu]# ll biopy
@@ -127,4 +128,4 @@ OK
 ```
 
 !!! note
-    All loaded _psp_ variable are visible in help subcommand: `psp help`
+All loaded _psp_ variable are visible in help subcommand: `psp help`

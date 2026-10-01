@@ -9,24 +9,26 @@ $arch = "amd64"
 $BinDir = "$Home\bin"
 $exeName = "psp.exe"
 $downloadedExe = "$BinDir\$exeName"
-$Target = "$arch-windows"
+$Target = "$arch-windows-gnu"
 
 # GitHub requires TLS 1.2
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
 $ResourceUri = "https://github.com/${repo}/releases/download/${Version}/psp-${Target}"
 
-if (!(Test-Path $BinDir)) {
-  New-Item $BinDir -ItemType Directory | Out-Null
+if (!(Test-Path $BinDir))
+{
+    New-Item $BinDir -ItemType Directory | Out-Null
 }
 
 Invoke-WebRequest $ResourceUri -OutFile $downloadedExe -UseBasicParsing -ErrorAction Stop
 
 $User = [EnvironmentVariableTarget]::User
 $Path = [Environment]::GetEnvironmentVariable('Path', $User)
-if (!(";$Path;".ToLower() -like "*;$BinDir;*".ToLower())) {
-  [Environment]::SetEnvironmentVariable('Path', "$Path;$BinDir", $User)
-  $Env:Path += ";$BinDir"
+if (!(";$Path;".ToLower() -like "*;$BinDir;*".ToLower()))
+{
+    [Environment]::SetEnvironmentVariable('Path', "$Path;$BinDir", $User)
+    $Env:Path += ";$BinDir"
 }
 
 Write-Host -ForegroundColor Green "${exeName} was installed successfully to $downloadedExe"

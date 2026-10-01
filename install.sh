@@ -34,8 +34,7 @@ detect_target() {
 }
 
 main() {
-    local target tag expected asset url
-    # Not local: the EXIT trap runs after main returns and must still see it under set -u.
+    local target asset url
     target="$(detect_target)"
     tmp="$(mktemp -d)"
     trap 'rm -rf "$tmp"' EXIT
@@ -48,7 +47,7 @@ main() {
 
     mkdir -p "$INSTALL_DIR"
     install -m 755 "$tmp/$APP_NAME" "$INSTALL_DIR/$APP_NAME"
-    info "installed $INSTALL_DIR/$APP_NAME ($tag)"
+    info "installed $INSTALL_DIR/$APP_NAME"
 
     case ":$PATH:" in
         *":$INSTALL_DIR:"*) ;;
