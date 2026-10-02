@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.9.0] - 2026-10-02
+
+### Added
+
+- Add return custom types for every project function
+- Add dev dependencies into **prj_toml** function
+- Add _OTHER_DEPS_ and _DEV_DEPS_ template variables
+- Add linux/macOS/Windows install script
+- Add **is_none** function
+
+### Changed
+
+- Delete all deprecated handlebars templates
+- Add setuptools into other builders
+- Add _retry_ into **get_file_from_url** function
+
+### Fixed
+
+- Use **render_template** function for _CODE_OF_CONDUCT_, refs #7
+- Replace spaces on **GitInfo** type
+
 ## [0.8.0] - 2026-09-11
 
 ### Added

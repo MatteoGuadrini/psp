@@ -33,7 +33,7 @@ avoid replacing some [special characters](https://handlebarsjs.com/guide/#html-e
 | `gitlab_merge.hbs`     | [Git remote provider](simple.md#git-remote-provider)    | `SIGNATURE`,`VERSION`, `PACKAGE`                                                                                                                                                                |
 | `gitlabcicd.hbs`       | [Remote CI](simple.md#remote-ci-continuous-integration) | `SIGNATURE`,`VERSION`, `PACKAGE`, `PYTHON`                                                                                                                                                      |
 | `makefile.hbs`         | [All](simple.md)                                        | `SIGNATURE`,`VERSION`, `ACTIONS`, `OPTIONS`, `TEST`, `BUILD`, `CONTAINER`, `PACKAGE`, `PYTHON`                                                                                                  |
-| `pyproject.hbs`        | [All](simple.md)                                        | `SIGNATURE`,`VERSION`, `BUILDER`, `PRJ_NAME`, `PRJ_VER`, `LICENSE`, `USERNAME`, `EMAIL`, `DESCRIPTION`, `PYTHON`, `CLASSIFIERS`, `DEPS`, `HOMEPAGE`, `DOCUMENTATION`, `REPOSITORY`, `CHANGELOG` |
+| `pyproject.hbs`        | [All](simple.md)                                        | `SIGNATURE`,`VERSION`, `BUILDER`, `PRJ_NAME`, `PRJ_VER`, `LICENSE`, `USERNAME`, `EMAIL`, `DESCRIPTION`, `PYTHON`, `CLASSIFIERS`, `DEPS`, `HOMEPAGE`, `DOCUMENTATION`, `REPOSITORY`, `CHANGELOG`, `OTHER_DEPS`, `DEV_DEPS` |
 | `readme.hbs`           | [Common files](simple.md#common-files)                  | `SIGNATURE`,`VERSION`, `PACKAGE`, `CONTAINER`, `PRJVERSION`                                                                                                                                     |
 | `sample.hbs`           | [Common files](simple.md#common-files)                  | `SIGNATURE`,`VERSION`, `PACKAGE`                                                                                                                                                                |
 | `test_module.hbs`      | [Test files](simple.md#test-files)                      | `SIGNATURE`,`VERSION`, `PRJ_NAME`, `PRJ_VER`                                                                                                                                                    |
@@ -55,6 +55,8 @@ variables are listed below.
 | `AUTHOR`        | remote git author like _"MatteoGuadrini"_                    |
 | `USERNAME`      | remote git author like _"MatteoGuadrini"_                    |
 | `DEPS`          | dependencies list like _"dep1\ndep2\n"_                      |
+| `OTHER_DEPS`    | pyproject other dependencies option                          |
+| `DEV_DEPS`      | developer dependencies list like _"dep1\ndep2\n"_            |
 | `REQUIREMENTS`  | dependencies list like _"dep1 dep2"_                         |
 | `PYTHON`        | python version like _"3.14"_                                 |
 | `ACTIONS`       | Makefile actions like _"all                                  |

@@ -2,9 +2,11 @@
 
 Sometimes to start a new Python project is very hard; Write a script? Write a module? Write a package?
 
-The best choice is [micropiecies pattern](https://py-pkgs.org/01-introduction.html#why-you-should-create-packages): write a script, so rewrite that in a module and so rewrite in a package.
+The best choice is [micropiecies pattern](https://py-pkgs.org/01-introduction.html#why-you-should-create-packages):
+write a script, so rewrite that in a module and so rewrite in a package.
 
-At this point you have a consinstent model. But every Python project has same pattern to package. `psp` help us in this way. Let's start a simple example.
+At this point you have a consinstent model. But every Python project has same pattern to package. `psp` help us in this
+way. Let's start a simple example.
 
 ## Name of Python project
 
@@ -16,13 +18,14 @@ To start with **psp**, type `psp`:
 ┏━┃┏━━━━┛┏━┃
 ┏━┛━━━━━┃┏━┛
 ┛  ━━━━━┛┛
-info: welcome to psp, version 0.8.0
+info: welcome to psp, version 0.9.0
 ? Name of Python project: mypyprj
 [Type name or path]
 ```
 
 !!! note
-    If the _name_ contains spaces, **psp** substitutes with underscore chars (`_`); if the name contains uppercase letters, will convert into lowercase the only python package.
+If the _name_ contains spaces, **psp** substitutes with underscore chars (`_`); if the name contains uppercase letters,
+will convert into lowercase the only python package.
 
 Now, if you type only a name, **psp** creates in the _current folder_ this structure:
 
@@ -42,16 +45,16 @@ You can also specify a relative/absolute path; in this case the last name of pat
 ┏━┃┏━━━━┛┏━┃
 ┏━┛━━━━━┃┏━┛
 ┛  ━━━━━┛┛
-info: welcome to psp, version 0.8.0
+info: welcome to psp, version 0.9.0
 ? Name of Python project: /tmp/mypyprj
 [Type name or path]
 ```
 
 !!! warning
-    If the folder exists, **psp** prompt a choice of overwritten.
+If the folder exists, **psp** prompt a choice of overwritten.
 
 ```console
-info: welcome to psp, version 0.8.0
+info: welcome to psp, version 0.9.0
 > Name of Python project: /tmp/mypyprj
 ? Path /tmp/mypyprj exists. Do you want continue? (y/N)
 [Some files will be overwritten]
@@ -61,13 +64,15 @@ info: welcome to psp, version 0.8.0
 
 This option creates a new Python virtual environment.
 
-A [virtual environment](https://docs.python.org/3/library/venv.html) is created on top of an existing Python installation, known as the virtual environment’s _base_ Python,
-and may optionally be isolated from the packages in the base environment, so only those explicitly installed in the virtual environment are available.
+A [virtual environment](https://docs.python.org/3/library/venv.html) is created on top of an existing Python
+installation, known as the virtual environment’s _base_ Python,
+and may optionally be isolated from the packages in the base environment, so only those explicitly installed in the
+virtual environment are available.
 
 The default value is _Yes_.
 
 ```console
-info: welcome to psp, version 0.8.0
+info: welcome to psp, version 0.9.0
 > Name of Python project: mypyprj
 ? Do you want to create a virtual environment? (Y/n)
 ```
@@ -94,7 +99,8 @@ mypyprj
 
 This option creates a new git repository.
 
-[Git](https://git-scm.com/) is a free and open source distributed version control system designed to handle everything from small to very large projects with speed and efficiency.
+[Git](https://git-scm.com/) is a free and open source distributed version control system designed to handle everything
+from small to very large projects with speed and efficiency.
 
 The default value is _Yes_.
 
@@ -144,13 +150,12 @@ Untracked files:
 ...
 ```
 
-
 ## Git remote provider
 
 This option creates a git remote repository configuration files.
 
 !!! note
-    This option is available only if [git repository](#git) is initialize.
+This option is available only if [git repository](#git) is initialize.
 
 ```console
 ...
@@ -201,7 +206,7 @@ This option permits to specify a custom FQDN git server name:
 This option creates a git remote repository configuration files.
 
 !!! note
-    This option is available only if **git remote option** is set.
+This option is available only if **git remote option** is set.
 
 ```console
 ...
@@ -257,7 +262,8 @@ With this option specify dependencies of your project.
 This option use `pip` to install all dependencies.
 
 !!! note
-    This option follow the format of [_requirements specifiers_](https://pip.pypa.io/en/stable/reference/requirement-specifiers) without any space betwenn name and version.
+This option follow the format of [_requirements
+specifiers_](https://pip.pypa.io/en/stable/reference/requirement-specifiers) without any space betwenn name and version.
 
 The default value is _No_.
 
@@ -270,7 +276,8 @@ The default value is _No_.
 ```
 
 !!! warning
-    If has been specified the option [Virtual Environment](#virtual-environment), the packages will be installed in the _Virtual Environment_; otherwise, for the current user.
+If has been specified the option [Virtual Environment](#virtual-environment), the packages will be installed in the
+_Virtual Environment_; otherwise, for the current user.
 
 The project structure after this choosen will be the same; will change the _.venv_ folder:
 
@@ -312,7 +319,8 @@ The default value is _None_.
 ```
 
 !!! warning
-    If has been specified the option [Virtual Environment](#virtual-environment), the package will be installed in the _Virtual Environment_; otherwise, for the current user.
+If has been specified the option [Virtual Environment](#virtual-environment), the package will be installed in the
+_Virtual Environment_; otherwise, for the current user.
 
 The project structure after this choosen:
 
@@ -346,10 +354,11 @@ mypyprj
 This option install [tox](https://tox.wiki/) and creates configuration files.
 
 !!! note
-    This option is available only if [test files](#test-files) has been selected.
+This option is available only if [test files](#test-files) has been selected.
 
 !!! warning
-    If has been specified the option [Virtual Environment](#virtual-environment), `tox` will be installed in the _Virtual Environment_; otherwise, for the current user.
+If has been specified the option [Virtual Environment](#virtual-environment), `tox` will be installed in the _Virtual
+Environment_; otherwise, for the current user.
 
 The default value is _No_.
 
@@ -429,7 +438,7 @@ This option download the license file and configure license into _pyproject.toml
 The default value is _None_.
 
 !!! warning
-    License file will downloaded from internet. Check your internet settings, proxy or firewall if an error occured.
+License file will downloaded from internet. Check your internet settings, proxy or firewall if an error occured.
 
 ```console
 ...
@@ -467,9 +476,11 @@ mypyprj
 │   └── ...
 └── LICENSE.md          │ License file
 ```
+
 ## PyPi dependencies
 
-This option install [PyPi](https://packaging.python.org/en/latest/tutorials/packaging-projects/) tools for publish your package.
+This option install [PyPi](https://packaging.python.org/en/latest/tutorials/packaging-projects/) tools for publish your
+package.
 
 The default value is _Yes_.
 
@@ -600,7 +611,8 @@ This option configure a common files for Python projects, as a _README, CONTRIBU
 The default value is _Yes_.
 
 !!! warning
-    In this option some files will downloaded from internet. Check your internet settings, proxy or firewall if an error occured.
+In this option some files will downloaded from internet. Check your internet settings, proxy or firewall if an error
+occured.
 
 ```console
 ...
@@ -640,8 +652,8 @@ mypyprj
 ```
 
 !!! note
-    As you notice, **psp** creates a Makefile to automate all process in your package.
-    If you want a help, try `make help`.
+As you notice, **psp** creates a Makefile to automate all process in your package.
+If you want a help, try `make help`.
 
 ## Resume
 
@@ -649,7 +661,7 @@ With `PSP_LOG` variable you enable the ability to stop or pause the scaffolding 
 
 ```console
 [gu]# psp
-info: welcome to psp, version 0.8.0
+info: welcome to psp, version 0.9.0
 > Name of Python project: mypyprj
 > Do you want to create a virtual environment? (Y/n)
 ? Install dependencies: <canceled>
@@ -663,7 +675,7 @@ note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 prj_name: mypyprj mypyprj
 prj_venv: true
 [gu]# psp
-info: welcome to psp, version 0.8.0
+info: welcome to psp, version 0.9.0
 ? Install dependencies: (No) tablib==3.4.0 pyreports<1.7.0 scipy numpy
 ...
 info: python project `mypyprj` created at `/tmp/mypyprj`

@@ -10,7 +10,7 @@ use std::{
 };
 
 // Project name
-pub fn prj_name() -> (String, String, ExitStatus) {
+pub fn prj_name() -> ProjectInfo {
     // Check psp log for update
     let log_step = "prj_name";
     if check_log(log_step, LOGFILE) {
@@ -117,7 +117,7 @@ print(f'version: {{__version__}}')
 }
 
 // Project git
-pub fn prj_git(name: &str, shortcut: &String) -> (bool, ExitStatus) {
+pub fn prj_git(name: &str, shortcut: &String) -> GitStatus {
     // Check psp log for update
     let mut exit_status: ExitStatus = 0;
     let log_step = "prj_git";
@@ -170,7 +170,7 @@ pub fn prj_git(name: &str, shortcut: &String) -> (bool, ExitStatus) {
 }
 
 // Project unit tests
-pub fn prj_test(root: &str, name: &str, shortcut: &String) -> (bool, ExitStatus) {
+pub fn prj_test(root: &str, name: &str, shortcut: &String) -> TestStatus {
     // Check psp log for update
     let ret: bool;
     let mut exit_status: ExitStatus = 0;
@@ -187,7 +187,7 @@ pub fn prj_test(root: &str, name: &str, shortcut: &String) -> (bool, ExitStatus)
     let confirm = if let Some(true) = env_test {
         info(format!("tests enable: {}", env_test.unwrap().to_string()));
         true
-    } else if shortcut != "None" {
+    } else if !is_none(shortcut) {
         true
     } else {
         prompt_confirm("Do you want unit test files?", true, "None")
@@ -225,7 +225,7 @@ pub fn prj_test(root: &str, name: &str, shortcut: &String) -> (bool, ExitStatus)
 }
 
 // Project venv
-pub fn prj_venv(name: &str, shortcut: &String) -> (bool, ExitStatus) {
+pub fn prj_venv(name: &str, shortcut: &String) -> VirtualEnvStatus {
     // Check psp log for update
     let mut ret: bool;
     let mut exit_status: ExitStatus = 0;
@@ -278,7 +278,7 @@ pub fn prj_venv(name: &str, shortcut: &String) -> (bool, ExitStatus) {
 }
 
 // Project dependencies
-pub fn prj_deps(name: &str, venv: bool, shortcut: &String) -> (Vec<String>, ExitStatus) {
+pub fn prj_deps(name: &str, venv: bool, shortcut: &String) -> DependenciesStatus {
     // Check psp log for update
     let mut exit_status: ExitStatus = 0;
     let log_step = "prj_deps";
@@ -376,10 +376,13 @@ pub fn prj_toml(
     root: &str,
     name: &str,
     deps: &Vec<String>,
-    git_info: (String, String, ExitStatus),
+    git_info: GitInfo,
     license: String,
+    tests: bool,
+    docs: &str,
+    tox: bool,
     venv: bool,
-) -> ((), ExitStatus) {
+) -> ProjectConfStatus {
     let mut exit_status: ExitStatus = 0;
     // Check git information
     let mut documentation = "https://docs.python.org/3/".to_string();
@@ -402,7 +405,7 @@ pub fn prj_toml(
     let description = pydescription;
     let (mut username, mut email) = env_pyauthor();
     let mut homepage = pyhomepage;
-    if git_info.0 != "None" && git_info.1 != "None" {
+    if !is_none(git_info.0.as_str()) && !is_none(git_info.1.as_str()) {
         let git_repo = &git_info.0.to_lowercase();
         let git_user = &git_info.1.to_lowercase();
         repository = format!(
@@ -434,6 +437,8 @@ pub fn prj_toml(
     let project_version = env_pyversion();
     let python_version = get_python_version();
     let stringed_classifiers = format!("{:?}", classifiers);
+    let mut dev_dependencies: Vec<&str> = vec![];
+    let mut stringed_dev_dependencies = format!("{:?}", dev_dependencies);
     let mut data = HashMap::from([
         ("SIGNATURE", SIGNATURE),
         ("VERSION", VERSION),
@@ -452,8 +457,26 @@ pub fn prj_toml(
         ("CHANGELOG", &changelog),
     ]);
     // Check if license is set
-    if license != "None" {
+    if !is_none(license.as_str()) {
         data.insert("LICENSE", "true");
+    }
+    // Check if tests is set
+    if tests {
+        dev_dependencies.push("pytest");
+    }
+    // Check if docs is set
+    if !is_none(docs) {
+        dev_dependencies.push(docs);
+    }
+    // Check if tox is set
+    if tox {
+        dev_dependencies.push("tox");
+    }
+    // Check if dev dependencies is present
+    if !dev_dependencies.is_empty() {
+        stringed_dev_dependencies = format!("{:?}", dev_dependencies);
+        data.insert("OTHER_DEPS", "true");
+        data.insert("DEV_DEPS", &stringed_dev_dependencies);
     }
     let pyproject_template = Path::new(root).join("pyproject.toml").display().to_string();
     let file_ret = render_template("pyproject.hbs", &pyproject_template, data);
@@ -465,7 +488,7 @@ pub fn prj_toml(
 }
 
 // Project CI
-pub fn prj_ci(name: &str, deps: &Vec<String>, shortcut: &String) -> ((), ExitStatus) {
+pub fn prj_ci(name: &str, deps: &Vec<String>, shortcut: &String) -> CIStatus {
     let mut exit_status: ExitStatus = 0;
     // Check psp log for update
     let log_step = "prj_ci";
@@ -475,7 +498,7 @@ pub fn prj_ci(name: &str, deps: &Vec<String>, shortcut: &String) -> ((), ExitSta
     let options = vec![
         "None",
         "CircleCI",
-        "Github Actions",
+        "GitHub Actions",
         "Gitlab CI/CD",
         "TravisCI",
     ];
@@ -576,7 +599,7 @@ pub fn prj_ci(name: &str, deps: &Vec<String>, shortcut: &String) -> ((), ExitSta
 }
 
 // Project Gitlab/GitHub
-pub fn prj_remote(root: &str, name: &str, shortcut: &String) -> (String, String, ExitStatus) {
+pub fn prj_remote(root: &str, name: &str, shortcut: &String) -> GitInfo {
     // Check psp log for update
     let log_step = "prj_remote";
     let mut exit_status: ExitStatus = 0;
@@ -590,7 +613,7 @@ pub fn prj_remote(root: &str, name: &str, shortcut: &String) -> (String, String,
     }
     let mut git_user = "None".to_string();
     let git_remote;
-    let options = vec!["None", "Github", "Gitlab", "Custom"];
+    let options = vec!["None", "GitHub", "Gitlab", "Custom"];
     // Check environment variable
     let env_remote = var("PSP_GIT_REMOTE").ok();
     let remote = if let Some(env_remote) = env_remote {
@@ -601,7 +624,7 @@ pub fn prj_remote(root: &str, name: &str, shortcut: &String) -> (String, String,
     } else {
         prompt_select("Select git remote provider:", options, "None")
     };
-    if remote.as_str().to_lowercase() != "none" {
+    if !is_none(&remote) {
         // Custom
         if remote.as_str().to_lowercase() == "custom" {
             let env_git_server = var("PSP_GIT_CUSTOM").ok();
@@ -621,9 +644,9 @@ pub fn prj_remote(root: &str, name: &str, shortcut: &String) -> (String, String,
                     warning("The FQDN server must not be empty".to_string());
                 }
             }
-            git_remote = git_custom.to_lowercase();
+            git_remote = git_custom.to_lowercase().replace(" ", "");
         } else {
-            git_remote = remote.to_owned().to_lowercase() + ".com";
+            git_remote = remote.to_owned().to_lowercase().replace(" ", "") + ".com";
         }
         // Check environment variable
         let env_git_user = var("PSP_GIT_USER").ok();
@@ -644,12 +667,12 @@ pub fn prj_remote(root: &str, name: &str, shortcut: &String) -> (String, String,
                 warning("The username must not be empty".to_string());
             }
         }
-        git_user = username.to_owned();
+        git_user = username.to_owned().replace(" ", "");
         // Add a git remote path
         let remote_path = format!(
             "git@{}:{}/{}.git",
             git_remote,
-            username,
+            git_user,
             name.to_lowercase()
         );
         // Test if remote has already been set
@@ -743,7 +766,7 @@ pub fn prj_remote(root: &str, name: &str, shortcut: &String) -> (String, String,
                 error("`merge.md` render failed".to_string());
                 exit_status = 4;
             }
-        // Github
+        // GitHub
         } else if remote.as_str().to_lowercase() == "github" {
             let issue_folder = Path::new(root).join(".github").join("ISSUE_TEMPLATE");
             let merge_folder = Path::new(root)
@@ -809,12 +832,16 @@ pub fn prj_remote(root: &str, name: &str, shortcut: &String) -> (String, String,
 }
 
 // Project tox
-pub fn prj_tox(name: &str, venv: bool, deps: &Vec<String>, shortcut: &String) -> ((), ExitStatus) {
+pub fn prj_tox(name: &str, venv: bool, deps: &Vec<String>, shortcut: &String) -> ToxStatus {
     let mut exit_status: ExitStatus = 0;
     // Check psp log for update
     let log_step = "prj_tox";
     if check_log(log_step, LOGFILE) {
-        return ((), exit_status);
+        let log_content = read_log(LOGFILE);
+        let value = get_log_value(log_step, log_content.unwrap().as_str());
+        if let Some(v) = value {
+            return (v.parse::<bool>().unwrap(), exit_status);
+        }
     }
     // Check environment variable
     let env_tox = var("PSP_TOX").unwrap_or("false".to_string()).parse().ok();
@@ -844,7 +871,7 @@ pub fn prj_tox(name: &str, venv: bool, deps: &Vec<String>, shortcut: &String) ->
         // Check if the command exits successfully
         if !output.status.success() {
             error("`tox` installation failed".to_string());
-            return ((), 8);
+            return (false, 8);
         }
         // Create a data map with variables
         let python_version = format!("py{}", get_python_version().replace(".", ""));
@@ -875,16 +902,20 @@ pub fn prj_tox(name: &str, venv: bool, deps: &Vec<String>, shortcut: &String) ->
     }
     // Write psp log
     write_log(LOGFILE, format!("{}: {}", log_step, confirm).as_str());
-    ((), exit_status)
+    (confirm, exit_status)
 }
 
 // Project documentation site generator
-pub fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) -> ((), ExitStatus) {
+pub fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) -> DocStatus {
     // Check psp log for update
     let mut exit_status: ExitStatus = 0;
     let log_step = "prj_docs";
     if check_log(log_step, LOGFILE) {
-        return ((), exit_status);
+        let log_content = read_log(LOGFILE);
+        let value = get_log_value(log_step, log_content.unwrap().as_str());
+        if let Some(v) = value {
+            return (v, exit_status);
+        }
     }
     let options = vec!["None", "Sphinx", "MKDocs"];
     // Check environment variable
@@ -898,7 +929,7 @@ pub fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) -> ((), E
     } else {
         prompt_select("Select documentation generator:", options, "None")
     };
-    if docs != "None" {
+    if !is_none(docs.as_str()) {
         let docs_home = Path::new(root).join("docs");
         let docs_folder = docs_home.as_path();
         // Check if folder docs exist
@@ -1011,11 +1042,11 @@ pub fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) -> ((), E
     }
     // Write psp log
     write_log(LOGFILE, format!("{}: {}", log_step, docs).as_str());
-    ((), exit_status)
+    (docs, exit_status)
 }
 
 // Project common files
-pub fn prj_files(root: &str, name: &str, container: bool, shortcut: &String) -> ((), ExitStatus) {
+pub fn prj_files(root: &str, name: &str, container: bool, shortcut: &String) -> CommonFilesStatus {
     let mut exit_status: ExitStatus = 0;
     // Check psp log for update
     let log_step = "prj_files";
@@ -1077,12 +1108,20 @@ pub fn prj_files(root: &str, name: &str, container: bool, shortcut: &String) -> 
             error("`CONTRIBUTING.md` render failed".to_string());
             exit_status = 14;
         }
-        // Create CODE_OF_CONDUCT
-        get_file_from_url(
-            "https://www.contributor-covenant.org/version/2/1/code_of_conduct/code_of_conduct.md",
-            ".",
-            "CODE_OF_CONDUCT.md",
+        // CODE_OF_CONDUCT template
+        let code_of_conduct_template = Path::new(root)
+            .join("CODE_OF_CONDUCT.md")
+            .display()
+            .to_string();
+        let file_ret = render_template(
+            "code_of_conduct.hbs",
+            &code_of_conduct_template,
+            data.clone(),
         );
+        if !file_ret {
+            error("`CODE_OF_CONDUCT.md` render failed".to_string());
+            exit_status = 14;
+        }
         // SAMPLE template
         let sample_dir = Path::new(root).join("samples");
         // Check if sample folder exist
@@ -1106,7 +1145,7 @@ pub fn prj_files(root: &str, name: &str, container: bool, shortcut: &String) -> 
 }
 
 // Project license
-pub fn prj_license(name: &str, shortcut: &String, author: &String) -> (String, ExitStatus) {
+pub fn prj_license(name: &str, shortcut: &String, author: &String) -> LicenseInfo {
     let mut exit_status: ExitStatus = 0;
     // Check psp log for update
     let log_step = "prj_license";
@@ -1118,7 +1157,7 @@ pub fn prj_license(name: &str, shortcut: &String, author: &String) -> (String, E
         }
     }
     // Check author
-    let author = if author == "None" {
+    let author = if is_none(author) {
         "<maintainers>"
     } else {
         author
@@ -1143,7 +1182,7 @@ pub fn prj_license(name: &str, shortcut: &String, author: &String) -> (String, E
     } else {
         prompt_select("Select license:", options, "None")
     };
-    if license != "None" {
+    if !is_none(license.as_str()) {
         let mut license_file = String::new();
         if license.to_lowercase() == "mit" {
             license_file.push_str("mit.hbs");
@@ -1156,7 +1195,7 @@ pub fn prj_license(name: &str, shortcut: &String, author: &String) -> (String, E
         } else if license.to_lowercase() == "gnu public license" || license.to_lowercase() == "gpl"
         {
             license_file.push_str("gplv3.hbs");
-        } else if license.as_str().to_lowercase() != "none" {
+        } else {
             warning(format!("`{license}` is not recognized as a valid license"));
         }
         let license_template = Path::new(name).join(&license_file).display().to_string();
@@ -1184,7 +1223,7 @@ pub fn prj_license(name: &str, shortcut: &String, author: &String) -> (String, E
 }
 
 // Project pypi dependencies
-pub fn prj_pypi(root: &str, venv: bool, shortcut: &String) -> (bool, ExitStatus) {
+pub fn prj_pypi(root: &str, venv: bool, shortcut: &String) -> PyPiStatus {
     let mut exit_status: ExitStatus = 0;
     // Check psp log for update
     let log_step = "prj_pypi";
@@ -1247,7 +1286,7 @@ pub fn prj_pypi(root: &str, venv: bool, shortcut: &String) -> (bool, ExitStatus)
 }
 
 // Project Docker/Podman
-pub fn prj_container(root: &str, name: &str, shortcut: &String) -> (bool, ExitStatus) {
+pub fn prj_container(root: &str, name: &str, shortcut: &String) -> ContainerStatus {
     let mut exit_status: ExitStatus = 0;
     // Check psp log for update
     let log_step = "prj_container";
@@ -1333,7 +1372,7 @@ pub fn prj_makefile(
     tests: bool,
     build: bool,
     container: bool,
-) -> ((), ExitStatus) {
+) -> MakeStatus {
     let mut exit_status: ExitStatus = 0;
     // Set options for make
     let mut make_options = vec!["help", "all", "run", "clean"];
