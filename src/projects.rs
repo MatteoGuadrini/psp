@@ -287,7 +287,7 @@ pub fn prj_deps(name: &str, venv: bool, shortcut: &String) -> DependenciesStatus
         let value = get_log_value(log_step, log_content.unwrap().as_str());
         if let Some(v) = value {
             let values: Vec<&str> = v.split(" ").collect();
-            if values[0] != "No" {
+            if !is_none(values[0]) {
                 return (values.iter().map(|s| s.to_string()).collect(), 0);
             }
         }
@@ -320,7 +320,7 @@ pub fn prj_deps(name: &str, venv: bool, shortcut: &String) -> DependenciesStatus
         vec![]
     };
     // Split String into Vector
-    let mut dependencies: Vec<String> = if deps.to_lowercase() != "no" {
+    let mut dependencies: Vec<String> = if !is_none(&deps) {
         deps.as_str()
             .split_whitespace()
             .map(|s| s.to_string())
@@ -878,7 +878,7 @@ pub fn prj_tox(name: &str, venv: bool, deps: &Vec<String>, shortcut: &String) ->
         let dependencies = deps
             .iter()
             .map(|s| {
-                if s != "No" {
+                if !is_none(&s) {
                     format!("\t{s}")
                 } else {
                     String::new()
