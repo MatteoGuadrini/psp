@@ -27,6 +27,7 @@ pub type LicenseInfo = (String, ExitStatus);
 pub type PyPiStatus = (bool, ExitStatus);
 pub type ContainerStatus = (bool, ExitStatus);
 pub type MakeStatus = ((), ExitStatus);
+pub type Profile = String;
 
 // Constants
 pub const ARGS: [&str; 4] = ["help", "quick", "simple", "full"];
@@ -211,6 +212,55 @@ pub fn create_python_package(path: &Path, content: &str) -> bool {
     if !create_python_file(init_file.display().to_string().as_str(), content) {
         error("`__init__.py` creation failed".to_string());
         return false;
+    }
+    true
+}
+
+// Function to create Python files structure from profile
+pub fn create_from_profile(profile: Profile, path: &Path, name: String, content: &str) -> bool {
+    // Check profile
+    if profile == "package" {
+        let package_name = path.display().to_string();
+        if !create_python_package(path, content) {
+            error(format!("package `{package_name}` creation failed."));
+            return false;
+        }
+    } else if profile == "module" {
+        let module = path.join(name);
+        let module_name = module.display().to_string();
+        if !create_python_file(&module_name, content) {
+            error(format!("module `{module_name}` creation failed."));
+            return false;
+        }
+    } else if profile == "website" {
+        // Create standard package
+        let package_name = path.display().to_string();
+        if !create_python_package(path, content) {
+            error(format!("package `{package_name}` creation failed."));
+            return false;
+        }
+        // Create folder static
+        let static_folder_path = path.join("static");
+        let static_folder = make_dirs(static_folder_path.display().to_string().as_str());
+        if let Err(e) = static_folder {
+            error(format!("{e}"));
+            return false;
+        }
+        // Create folder templates
+        let templates_folder_path = path.join("templates");
+        let templates_folder = make_dirs(templates_folder_path.display().to_string().as_str());
+        if let Err(e) = templates_folder {
+            error(format!("{e}"));
+            return false;
+        }
+    } else {
+        // Default: package
+        warning(format!("the profile `{}` doesn't exists", profile));
+        let package_name = path.display().to_string();
+        if !create_python_package(path, content) {
+            error(format!("package `{package_name}` creation failed."));
+            return false;
+        }
     }
     true
 }
