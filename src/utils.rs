@@ -265,6 +265,18 @@ pub fn create_from_profile(profile: Profile, path: &Path, name: String, content:
     true
 }
 
+// Function to get profile value
+fn env_profile() -> String {
+    // Check the profile variable
+    let env_profile = var("PSP_PROFILE").ok();
+    let profile = if let Some(p) = env_profile {
+        p
+    } else {
+        "package".to_string()
+    };
+    profile
+}
+
 // Function to check line into log
 pub fn check_log(step: &str, log: &str) -> bool {
     let mut result = false;
