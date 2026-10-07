@@ -24,8 +24,8 @@ info: welcome to psp, version 0.9.0
 ```
 
 !!! note
-If the _name_ contains spaces, **psp** substitutes with underscore chars (`_`); if the name contains uppercase letters,
-will convert into lowercase the only python package.
+    If the _name_ contains spaces, **psp** substitutes with underscore chars (`_`); if the name contains uppercase letters,
+    will convert into lowercase the only python package.
 
 Now, if you type only a name, **psp** creates in the _current folder_ this structure:
 
@@ -51,7 +51,7 @@ info: welcome to psp, version 0.9.0
 ```
 
 !!! warning
-If the folder exists, **psp** prompt a choice of overwritten.
+    If the folder exists, **psp** prompt a choice of overwritten.
 
 ```console
 info: welcome to psp, version 0.9.0
@@ -155,7 +155,7 @@ Untracked files:
 This option creates a git remote repository configuration files.
 
 !!! note
-This option is available only if [git repository](#git) is initialize.
+    This option is available only if [git repository](#git) is initialize.
 
 ```console
 ...
@@ -206,7 +206,7 @@ This option permits to specify a custom FQDN git server name:
 This option creates a git remote repository configuration files.
 
 !!! note
-This option is available only if **git remote option** is set.
+    This option is available only if **git remote option** is set.
 
 ```console
 ...
@@ -262,8 +262,8 @@ With this option specify dependencies of your project.
 This option use `pip` to install all dependencies.
 
 !!! note
-This option follow the format of [_requirements
-specifiers_](https://pip.pypa.io/en/stable/reference/requirement-specifiers) without any space betwenn name and version.
+    This option follow the format of [_requirements
+    specifiers_](https://pip.pypa.io/en/stable/reference/requirement-specifiers) without any space betwenn name and version.
 
 The default value is _No_.
 
@@ -276,8 +276,8 @@ The default value is _No_.
 ```
 
 !!! warning
-If has been specified the option [Virtual Environment](#virtual-environment), the packages will be installed in the
-_Virtual Environment_; otherwise, for the current user.
+    If has been specified the option [Virtual Environment](#virtual-environment), the packages will be installed in the
+    _Virtual Environment_; otherwise, for the current user.
 
 The project structure after this choosen will be the same; will change the _.venv_ folder:
 
@@ -319,8 +319,8 @@ The default value is _None_.
 ```
 
 !!! warning
-If has been specified the option [Virtual Environment](#virtual-environment), the package will be installed in the
-_Virtual Environment_; otherwise, for the current user.
+    If has been specified the option [Virtual Environment](#virtual-environment), the package will be installed in the
+    _Virtual Environment_; otherwise, for the current user.
 
 The project structure after this choosen:
 
@@ -354,11 +354,11 @@ mypyprj
 This option install [tox](https://tox.wiki/) and creates configuration files.
 
 !!! note
-This option is available only if [test files](#test-files) has been selected.
+    This option is available only if [test files](#test-files) has been selected.
 
 !!! warning
-If has been specified the option [Virtual Environment](#virtual-environment), `tox` will be installed in the _Virtual
-Environment_; otherwise, for the current user.
+    If has been specified the option [Virtual Environment](#virtual-environment), `tox` will be installed in the _Virtual
+    Environment_; otherwise, for the current user.
 
 The default value is _No_.
 
@@ -438,7 +438,7 @@ This option download the license file and configure license into _pyproject.toml
 The default value is _None_.
 
 !!! warning
-License file will downloaded from internet. Check your internet settings, proxy or firewall if an error occured.
+    License file will downloaded from internet. Check your internet settings, proxy or firewall if an error occured.
 
 ```console
 ...
@@ -611,8 +611,8 @@ This option configure a common files for Python projects, as a _README, CONTRIBU
 The default value is _Yes_.
 
 !!! warning
-In this option some files will downloaded from internet. Check your internet settings, proxy or firewall if an error
-occured.
+    In this option some files will downloaded from internet. Check your internet settings, proxy or firewall if an error
+    occured.
 
 ```console
 ...
@@ -652,8 +652,8 @@ mypyprj
 ```
 
 !!! note
-As you notice, **psp** creates a Makefile to automate all process in your package.
-If you want a help, try `make help`.
+    As you notice, **psp** creates a Makefile to automate all process in your package.
+    If you want a help, try `make help`.
 
 ## Resume
 

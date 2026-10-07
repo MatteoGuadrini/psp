@@ -11,13 +11,14 @@ You can configure two files for configure these environment variables:
 * `.psp.env` file into your `$HOME`
 
 !!! note
-The `.env` file has a precedence respect the `.psp.env` file
+    The `.env` file has a precedence respect the `.psp.env` file
 
 ## Variables
 
 | **NAME**              | **REFERENCE**                                              | **VALUE**           |
 |-----------------------|------------------------------------------------------------|---------------------|
 | `PSP_NAME`            | [Name of Python Project](simple.md#name-of-python-project) | `name`              |
+| `PSP_PROFILE`         | [Name of Python Project](simple.md#name-of-python-project) | `package|module|website`              |
 | `PSP_VENV`            | [Virtual Environment](simple.md#virtual-environment)       | `true               |false`                                 |
 | `PSP_GIT`             | [Git](simple.md#git)                                       | `true               |false`                                 |
 | `PSP_GIT_REMOTE`      | [Git remote provider](simple.md#git-remote-provider)       | `github             |gitlab|custom`                       |
@@ -128,4 +129,4 @@ OK
 ```
 
 !!! note
-All loaded _psp_ variable are visible in help subcommand: `psp help`
+    All loaded _psp_ variable are visible in help subcommand: `psp help`
