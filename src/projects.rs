@@ -29,6 +29,7 @@ pub fn prj_name() -> ProjectInfo {
     #[cfg(target_os = "windows")]
     let folder_separator = "\\";
     let env_name = var("PSP_NAME").ok();
+    let env_profile = env_profile();
     let mut name = if let Some(env_name) = env_name {
         info(format!("project name: {env_name}"));
         env_name
@@ -75,10 +76,8 @@ pub fn prj_name() -> ProjectInfo {
     }
     // Check the version of a Python project
     let pyver = env_pyversion();
-    let content = format!("__version__ = \"{pyver}\"");
-    let package_path = package.display();
-    if !create_python_package(package.as_path(), content.as_str()) {
-        error(format!("package {package_path} creation failed."));
+    let content = format!("__version__ = \"{pyver}\"\n");
+    if !create_from_profile(env_profile, &package, project_name.to_lowercase(), &content) {
         exit(1);
     }
     // Make file structures
@@ -88,12 +87,7 @@ pub fn prj_name() -> ProjectInfo {
 print('name: {}')
 print(f'version: {{__version__}}')
 ",
-        package
-            .file_name()
-            .unwrap()
-            .to_string_lossy()
-            .to_string()
-            .to_lowercase()
+        package.display()
     );
     let main_file = package.join("__main__.py");
     if !create_python_file(

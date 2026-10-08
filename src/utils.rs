@@ -266,7 +266,7 @@ pub fn create_from_profile(profile: Profile, path: &Path, name: String, content:
 }
 
 // Function to get profile value
-fn env_profile() -> String {
+pub fn env_profile() -> String {
     // Check the profile variable
     let env_profile = var("PSP_PROFILE").ok();
     let profile = if let Some(p) = env_profile {
