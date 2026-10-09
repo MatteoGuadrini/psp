@@ -77,25 +77,13 @@ pub fn prj_name() -> ProjectInfo {
     // Check the version of a Python project
     let pyver = env_pyversion();
     let content = format!("__version__ = \"{pyver}\"\n");
-    if !create_from_profile(env_profile, &package, project_name.to_lowercase(), &content) {
-        exit(1);
-    }
-    // Make file structures
-    let main_content = format!(
-        "from .__init__ import __version__
-
-print('name: {}')
-print(f'version: {{__version__}}')
-",
-        package.display()
-    );
-    let main_file = package.join("__main__.py");
-    if !create_python_file(
-        main_file.display().to_string().as_str(),
-        main_content.as_str(),
+    if !create_from_profile(
+        env_profile.clone(),
+        &package,
+        project_name.to_lowercase(),
+        &content,
     ) {
-        error("`__main__.py` creation failed".to_string());
-        exit(4);
+        exit(1);
     }
     let values = (
         root.to_string_lossy().to_string(),

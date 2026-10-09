@@ -221,7 +221,20 @@ pub fn create_from_profile(profile: Profile, path: &Path, name: String, content:
     // Check profile
     if profile == "package" {
         let package_name = path.display().to_string();
-        if !create_python_package(path, content) {
+        let main_file = path.join("__main__.py");
+        let main_content = format!(
+            "from .__init__ import __version__
+
+print('name: {package_name}')
+print(f'version: {{__version__}}')
+",
+        );
+        let package_creation = create_python_package(path, content);
+        let main_creation = create_python_file(
+            main_file.display().to_string().as_str(),
+            main_content.as_str(),
+        );
+        if !package_creation || !main_creation {
             error(format!("package `{package_name}` creation failed."));
             return false;
         }
@@ -257,7 +270,20 @@ pub fn create_from_profile(profile: Profile, path: &Path, name: String, content:
         // Default: package
         warning(format!("the profile `{}` doesn't exists", profile));
         let package_name = path.display().to_string();
-        if !create_python_package(path, content) {
+        let main_file = path.join("__main__.py");
+        let main_content = format!(
+            "from .__init__ import __version__
+
+print('name: {package_name}')
+print(f'version: {{__version__}}')
+",
+        );
+        let package_creation = create_python_package(path, content);
+        let main_creation = create_python_file(
+            main_file.display().to_string().as_str(),
+            main_content.as_str(),
+        );
+        if !package_creation || !main_creation {
             error(format!("package `{package_name}` creation failed."));
             return false;
         }
