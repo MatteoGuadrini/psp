@@ -194,7 +194,7 @@ pub fn create_python_file(file: &str, content: &str) -> bool {
         ),
     );
     if let Err(e) = py_file_ret {
-        error(format!("{e}"));
+        error(format!("Python file creation error: {e}"));
         return false;
     }
     true
@@ -239,7 +239,8 @@ print(f'version: {{__version__}}')
             return false;
         }
     } else if profile == "module" {
-        let module = path.join(name);
+        let root = path.parent().unwrap();
+        let module = root.join(format!("{name}.py"));
         let module_name = module.display().to_string();
         if !create_python_file(&module_name, content) {
             error(format!("module `{module_name}` creation failed."));

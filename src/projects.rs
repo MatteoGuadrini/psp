@@ -57,6 +57,12 @@ pub fn prj_name() -> ProjectInfo {
             .to_string()
             .to_lowercase(),
     );
+    let package_name = Path::new(&project_name)
+        .file_name()
+        .unwrap()
+        .to_str()
+        .unwrap()
+        .to_lowercase();
     let root = Path::new(package.parent().unwrap());
     // Check if a project path already exists
     if package.exists() {
@@ -70,7 +76,7 @@ pub fn prj_name() -> ProjectInfo {
             exit(0)
         }
     }
-    let dir_ret = make_dirs(format!("{}", package.display()).as_str());
+    let dir_ret = make_dirs(format!("{}", root.display()).as_str());
     if let Err(e) = dir_ret {
         error(format!("{e}"));
     }
@@ -80,7 +86,7 @@ pub fn prj_name() -> ProjectInfo {
     if !create_from_profile(
         env_profile.clone(),
         &package,
-        project_name.to_lowercase(),
+        package_name.to_string(),
         &content,
     ) {
         exit(1);
@@ -377,6 +383,7 @@ pub fn prj_toml(
     } else {
         "https://python.org/".to_string()
     };
+    let env_profile = env_profile();
     // Check description of a Python project
     let env_pydescription = var("PSP_PYDESC").ok();
     let pydescription = if let Some(description) = env_pydescription {
@@ -419,12 +426,16 @@ pub fn prj_toml(
     let project_version = env_pyversion();
     let python_version = get_python_version();
     let stringed_classifiers = format!("{:?}", classifiers);
+    let module = if env_profile == "module" { "true" } else { "" };
+    let modules = format!("[\"{project_name}\"]");
     let mut dev_dependencies: Vec<&str> = vec![];
     let mut stringed_dev_dependencies = format!("{:?}", dev_dependencies);
     let mut data = HashMap::from([
         ("SIGNATURE", SIGNATURE),
         ("VERSION", VERSION),
         ("BUILDER", &builder),
+        ("MODULE", &module),
+        ("MODULES", &modules),
         ("PRJ_NAME", &project_name),
         ("PRJ_VER", &project_version),
         ("USERNAME", &username),
