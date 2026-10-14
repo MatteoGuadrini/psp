@@ -732,30 +732,25 @@ pub fn make_builder(root: &str, venv: bool) -> String {
     let build_settings: String;
     if builder == "poetry" {
         // poetry
-        build_settings = "
-[build-system]
+        build_settings = "[build-system]
 requires = ['setuptools', 'poetry-core']
 build-backend = 'poetry.core.masonry.api'"
             .to_string();
     } else if builder == "hatch" {
         // hatch
-        build_settings = "
-[build-system]
+        build_settings = "[build-system]
 requires = ['setuptools', 'hatchling']
 build-backend = 'hatchling.build'"
             .to_string();
     } else if builder == "maturin" {
         // maturin
-        build_settings = "
-[build-system]
+        build_settings = "[build-system]
 requires = ['setuptools', 'maturin>=1.0,<2.0']
-build-backend = 'maturin'
-"
-        .to_string();
+build-backend = 'maturin"
+            .to_string();
     } else {
         // setuptools: defualt
-        build_settings = "
-[build-system]
+        build_settings = "[build-system]
 requires = ['setuptools', 'wheel']
 build-backend = 'setuptools.build_meta'"
             .to_string();
