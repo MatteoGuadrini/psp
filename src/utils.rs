@@ -181,20 +181,14 @@ pub fn read_log(log: &str) -> std::io::Result<String> {
 
 // Function to create Python file
 pub fn create_python_file(file: &str, content: &str) -> bool {
-    // Make file structures
-    let py_file_ret = make_file(
-        file,
-        format!(
-            "#! /usr/bin/env python3
-# -*- encoding: utf-8 -*-
-# vim: se ts=4 et syn=python:
-# {SIGNATURE}, version {VERSION}
-
-{content}"
-        ),
-    );
-    if let Err(e) = py_file_ret {
-        error(format!("Python file creation error: {e}"));
+    let data = HashMap::from([
+        ("SIGNATURE", SIGNATURE),
+        ("VERSION", VERSION),
+        ("PYCONTENT", content),
+    ]);
+    let file_ret = render_template("pyfile.hbs", file, data);
+    if !file_ret {
+        error(format!("Python file creation error: {file}"));
         return false;
     }
     true
@@ -220,7 +214,7 @@ pub fn create_python_package(path: &Path, content: &str) -> bool {
 pub fn create_from_profile(profile: Profile, path: &Path, name: String, content: &str) -> bool {
     // Check profile
     if profile == "package" {
-        let package_name = path.display().to_string();
+        let package_name = path.file_name().unwrap().to_string_lossy().to_string();
         let main_file = path.join("__main__.py");
         let main_content = format!(
             "from .__init__ import __version__

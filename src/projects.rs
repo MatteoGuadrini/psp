@@ -49,20 +49,13 @@ pub fn prj_name() -> ProjectInfo {
     // Make package path parts
     let project_name = name.replace(" ", "_");
     let project = Path::new(&project_name);
-    let package = project.join(
-        project
-            .file_name()
-            .unwrap()
-            .to_string_lossy()
-            .to_string()
-            .to_lowercase(),
-    );
     let package_name = Path::new(&project_name)
         .file_name()
         .unwrap()
         .to_str()
         .unwrap()
         .to_lowercase();
+    let package = project.join(&package_name);
     let root = Path::new(package.parent().unwrap());
     // Check if a project path already exists
     if package.exists() {
