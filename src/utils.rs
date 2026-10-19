@@ -210,28 +210,33 @@ pub fn create_python_package(path: &Path, content: &str) -> bool {
     true
 }
 
-// Function to create Python files structure from profile
-pub fn create_from_profile(profile: Profile, path: &Path, name: String, content: &str) -> bool {
-    // Check profile
-    if profile == "package" {
-        let package_name = path.file_name().unwrap().to_string_lossy().to_string();
-        let main_file = path.join("__main__.py");
-        let main_content = format!(
-            "from .__init__ import __version__
+fn create_python_project(path: &Path, content: &str) -> bool {
+    let package_name = path.file_name().unwrap().to_string_lossy().to_string();
+    let main_file = path.join("__main__.py");
+    let main_content = format!(
+        "from .__init__ import __version__
 
 print('name: {package_name}')
 print(f'version: {{__version__}}')
 ",
-        );
-        let package_creation = create_python_package(path, content);
-        let main_creation = create_python_file(
-            main_file.display().to_string().as_str(),
-            main_content.as_str(),
-        );
-        if !package_creation || !main_creation {
-            error(format!("package `{package_name}` creation failed."));
-            return false;
-        }
+    );
+    let package_creation = create_python_package(path, content);
+    let main_creation = create_python_file(
+        main_file.display().to_string().as_str(),
+        main_content.as_str(),
+    );
+    if !package_creation || !main_creation {
+        error(format!("package `{package_name}` creation failed."));
+        return false;
+    }
+    true
+}
+
+// Function to create Python files structure from profile
+pub fn create_from_profile(profile: Profile, path: &Path, name: String, content: &str) -> bool {
+    // Check profile
+    if profile == "package" {
+        return create_python_project(path, content);
     } else if profile == "module" {
         let root = path.parent().unwrap();
         let module = root.join(format!("{name}.py"));
@@ -264,24 +269,7 @@ print(f'version: {{__version__}}')
     } else {
         // Default: package
         warning(format!("the profile `{}` doesn't exists", profile));
-        let package_name = path.display().to_string();
-        let main_file = path.join("__main__.py");
-        let main_content = format!(
-            "from .__init__ import __version__
-
-print('name: {package_name}')
-print(f'version: {{__version__}}')
-",
-        );
-        let package_creation = create_python_package(path, content);
-        let main_creation = create_python_file(
-            main_file.display().to_string().as_str(),
-            main_content.as_str(),
-        );
-        if !package_creation || !main_creation {
-            error(format!("package `{package_name}` creation failed."));
-            return false;
-        }
+        return create_python_project(path, content);
     }
     true
 }
