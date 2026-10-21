@@ -247,7 +247,6 @@ pub fn create_from_profile(profile: Profile, path: &Path, name: String, content:
         }
     } else if profile == "website" {
         // Create standard package
-        let package_name = path.display().to_string();
         if !create_python_project(path, content) {
             return false;
         }
