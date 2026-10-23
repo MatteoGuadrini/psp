@@ -422,7 +422,7 @@ pub fn prj_toml(
     let module = if env_profile == "module" { "true" } else { "" };
     let package_data = if env_profile == "website" { "true" } else { "" };
     let modules = format!("[\"{project_name}\"]");
-    let package_data_list = vec!["templates/*", "static/*"];
+    let package_data_list = vec!["templates/*", "static/*", "templates/**/*", "static/**/*"];
     let stringed_package_data_list = format!("{project_name} = {package_data_list:?}");
     let mut dev_dependencies: Vec<&str> = vec![];
     let mut stringed_dev_dependencies = format!("{:?}", dev_dependencies);
