@@ -53,6 +53,7 @@ fn main() {
     // Install dependencies
     let ret_prj_deps = prj_deps(&root, venv, &shortcut);
     let deps = ret_prj_deps.0;
+    let deps_exists = deps.len() > 0;
     exit_status = set_exit_status(exit_status, ret_prj_deps.1);
     // Documentation
     let ret_prj_docs = prj_docs(&root, &name, venv, &shortcut);
@@ -90,7 +91,7 @@ fn main() {
     let ret_prj_files = prj_files(&root, &name, container, &shortcut);
     exit_status = set_exit_status(exit_status, ret_prj_files.1);
     // Makefile
-    let ret_prj_makefile = prj_makefile(&root, &name, tests, build, container);
+    let ret_prj_makefile = prj_makefile(&root, &name, tests, build, container, deps_exists);
     exit_status = set_exit_status(exit_status, ret_prj_makefile.1);
     // Delete log if enabled
     delete_log(LOGFILE);

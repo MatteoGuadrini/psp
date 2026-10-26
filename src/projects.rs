@@ -1363,6 +1363,7 @@ pub fn prj_makefile(
     tests: bool,
     build: bool,
     container: bool,
+    dependencies: bool,
 ) -> MakeStatus {
     let mut exit_status: ExitStatus = 0;
     // Set options for make
@@ -1378,6 +1379,19 @@ pub fn prj_makefile(
 container:
 \tpodman build . -t {name}:latest || docker build . -t {name}:latest"
     );
+
+    // Check dependencies argument
+    if dependencies {
+        make_options.push("init");
+        let init_value = "
+init:
+ifneq ('$(wildcard ${VENV}/bin/${PIP})','')
+\t${VENV}/bin/${PIP} install -r requirements.txt
+else
+\t${PIP} install -r requirements.txt
+endif";
+        data.insert("INIT", init_value);
+    }
     if tests {
         make_options.push("test");
         let test_value = "

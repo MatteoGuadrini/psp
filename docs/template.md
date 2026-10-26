@@ -33,7 +33,7 @@ avoid replacing some [special characters](https://handlebarsjs.com/guide/#html-e
 | `gitlab_feature.hbs`   | [Git remote provider](simple.md#git-remote-provider)       | `SIGNATURE`,`VERSION`, `PACKAGE`                                                                                                                                                                                          |
 | `gitlab_merge.hbs`     | [Git remote provider](simple.md#git-remote-provider)       | `SIGNATURE`,`VERSION`, `PACKAGE`                                                                                                                                                                                          |
 | `gitlabcicd.hbs`       | [Remote CI](simple.md#remote-ci-continuous-integration)    | `SIGNATURE`,`VERSION`, `PACKAGE`, `PYTHON`                                                                                                                                                                                |
-| `makefile.hbs`         | [All](simple.md)                                           | `SIGNATURE`,`VERSION`, `ACTIONS`, `OPTIONS`, `TEST`, `BUILD`, `CONTAINER`, `PACKAGE`, `PYTHON`                                                                                                                            |
+| `makefile.hbs`         | [All](simple.md)                                           | `SIGNATURE`,`VERSION`, `ACTIONS`, `OPTIONS`, `INIT`, `TEST`, `BUILD`, `CONTAINER`, `PACKAGE`, `PYTHON`                                                                                                                            |
 | `pyproject.hbs`        | [All](simple.md)                                           | `SIGNATURE`,`VERSION`, `BUILDER`, `PRJ_NAME`, `PRJ_VER`, `LICENSE`, `USERNAME`, `EMAIL`, `DESCRIPTION`, `PYTHON`, `CLASSIFIERS`, `DEPS`, `HOMEPAGE`, `DOCUMENTATION`, `REPOSITORY`, `CHANGELOG`, `OTHER_DEPS`, `DEV_DEPS` |
 | `pyfile.hbs`           | [Name of Python Project](simple.md#name-of-python-project) | `SIGNATURE`,`VERSION`, `PYCONTENT`                                                                                                                                                                                        |
 | `readme.hbs`           | [Common files](simple.md#common-files)                     | `SIGNATURE`,`VERSION`, `PACKAGE`, `CONTAINER`, `PRJVERSION`                                                                                                                                                               |
@@ -62,8 +62,9 @@ variables are listed below.
 | `REQUIREMENTS`  | dependencies list like _"dep1 dep2"_                         |
 | `PYTHON`        | python version like _"3.14"_                                 |
 | `PYCONTENT`     | python content like _"print('Hello, World!')"_               |
-| `ACTIONS`       | Makefile actions like _"all                                  |
+| `ACTIONS`       | Makefile actions like _"all"_                                |
 | `OPTIONS`       | Makefile options like _"all test build"_                     |
+| `INIT`          | Makefile dependencies installation                           |
 | `TEST`          | Makefile test option (run `unittest tests`)                  |
 | `BUILD`         | Makefile build option (run `python -m build`)                |
 | `CONTAINER`     | Makefile container option (run `docker/podman build`)        |

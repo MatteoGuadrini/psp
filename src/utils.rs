@@ -32,7 +32,7 @@ pub type Profile = String;
 // Constants
 pub const ARGS: [&str; 4] = ["help", "quick", "simple", "full"];
 pub const TEMPLATES: &str =
-    "https://raw.githubusercontent.com/MatteoGuadrini/psp_templates/refs/heads/main";
+    "https://raw.githubusercontent.com/MatteoGuadrini/psp_templates/refs/heads/dev";
 const LOGO: &str = "
 ┏━┃┏━━━━┛┏━┃
 ┏━┛━━━━━┃┏━┛
