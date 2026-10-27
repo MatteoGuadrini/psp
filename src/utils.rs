@@ -32,7 +32,7 @@ pub type Profile = String;
 // Constants
 pub const ARGS: [&str; 4] = ["help", "quick", "simple", "full"];
 pub const TEMPLATES: &str =
-    "https://raw.githubusercontent.com/MatteoGuadrini/psp_templates/refs/heads/dev";
+    "https://raw.githubusercontent.com/MatteoGuadrini/psp_templates/refs/heads/main";
 const LOGO: &str = "
 ┏━┃┏━━━━┛┏━┃
 ┏━┛━━━━━┃┏━┛
@@ -262,6 +262,16 @@ pub fn create_from_profile(profile: Profile, path: &Path, name: String, content:
         let templates_folder = make_dirs(templates_folder_path.display().to_string().as_str());
         if let Err(e) = templates_folder {
             error(format!("{e}"));
+            return false;
+        }
+    } else if profile == "api" {
+        // Create standard package
+        if !create_python_project(path, content) {
+            return false;
+        }
+        // Create api subpackage
+        let api_path = path.join("api");
+        if !create_python_project(&api_path, content) {
             return false;
         }
     } else {
