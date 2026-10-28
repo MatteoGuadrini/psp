@@ -28,6 +28,7 @@
   see [Resume](https://psp.readthedocs.io/en/latest/simple/#resume)
 - 🖇️ [Handlebars](https://handlebarsjs.com) custom templates engine (with local cache) to customize project;
   see [Template](https://psp.readthedocs.io/en/latest/template)
+- 🧩Customize layout of Python projects through profiles, see [Profiles](https://psp.readthedocs.io/en/latest/env/#profiles)
 
 ## 🚀 Get Started in 30 Seconds
 
@@ -376,13 +377,14 @@ docker run -it --rm -v ~/python_projects:/psp:z -e "PSP_GIT=true" -e "PSP_PYVER=
 - [x] container support for psp program
 - [x] `conda`and `uv` support
 - [x] `hatch`, `maturin` and `poetry` build support
-- [x] updating/merging project
+- [x] pause/resume project creation
 - [x] Gitlab CI/CD and GitHub Actions
 - [x] templating files support
 - [x] templating custom files support
 - [x] universal installation script
+- [x] profiles support (type of modules, custom init projects, custom files)
 - [ ] support update if project exists
-- [ ] profiles support (type of modules, custom init projects, custom files)
+- [ ] support AGENTS.md file
 - [ ] command line flags support
 - [ ] YAML configuration file
 

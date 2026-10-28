@@ -18,7 +18,7 @@ You can configure two files for configure these environment variables:
 | **NAME**              | **REFERENCE**                                              | **VALUE**           |
 |-----------------------|------------------------------------------------------------|---------------------|
 | `PSP_NAME`            | [Name of Python Project](simple.md#name-of-python-project) | `name`              |
-| `PSP_PROFILE`         | [Name of Python Project](simple.md#name-of-python-project) | `package|module|website`              |
+| `PSP_PROFILE`         | [Name of Python Project](simple.md#name-of-python-project) | `package|module|website|api`              |
 | `PSP_VENV`            | [Virtual Environment](simple.md#virtual-environment)       | `true               |false`                                 |
 | `PSP_GIT`             | [Git](simple.md#git)                                       | `true               |false`                                 |
 | `PSP_GIT_REMOTE`      | [Git remote provider](simple.md#git-remote-provider)       | `github             |gitlab|custom`                       |
@@ -47,6 +47,17 @@ You can configure two files for configure these environment variables:
 | `PSP_PYHOMEPAGE` | Python project's homepage    | `matteoguadrini.github.io`  |
 | `PSP_PYDESC`     | Python project's description | `A simple Python package`   |
 | `PSP_PYBUILD`    | Python project's builder     | `poetry                     |maturin|hatch`         |
+
+## Profiles
+
+`psp` supports profiles with `PSP_PROFILE` variable: is a name corresponding to a specific structure for a Python project.
+
+| **NAME**         | **TYPE**                     | **STRUCTURE**               |
+|------------------|------------------------------|-----------------------------|
+| `module`         | Python single module         | Single Python file          |
+| `package`        | Python package (default)     | Python standard package with `__init__.py` and `__main__.py`|
+| `website`        | Python package web (Django, Flask, etc.)      | Python standard package with `templates` and `static` folder |
+| `api`            | Python package api (FastApi, Django Rest)      | Python standard package with subpackage `api` |
 
 ## Examples
 
