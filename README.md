@@ -5,7 +5,7 @@
 
 - ⚡️ 1-100x faster compared to other scaffolding tools
 - 🛠️ `pyproject.toml` support
-- 🤝 Python 3.14 compatibility
+- 🤝 Python 3.15 compatibility
 - 🗃 Scaffolding file and folder structures for your Python project
 - 🗂️ Unit-test and [pytest](https://docs.pytest.org/) support
 - 🧪 Create a virtual environment
@@ -28,10 +28,12 @@
   see [Resume](https://psp.readthedocs.io/en/latest/simple/#resume)
 - 🖇️ [Handlebars](https://handlebarsjs.com) custom templates engine (with local cache) to customize project;
   see [Template](https://psp.readthedocs.io/en/latest/template)
+- 🧩 Customize layout of Python projects through profiles,
+  see [Profiles](https://psp.readthedocs.io/en/latest/env/#profiles)
 
 ## 🚀 Get Started in 30 Seconds
 
-![Made with VHS](https://vhs.charm.sh/vhs-5w83yBCsizX7CuwZAZlBtv.gif)
+![Made with VHS](https://vhs.charm.sh/vhs-2z6Zrju5llOQN2uqkMZc9f.gif)
 
 The result is:
 
@@ -127,7 +129,7 @@ $> psp help
 ┏━┃┏━━━━┛┏━┃
 ┏━┛━━━━━┃┏━┛
 ┛  ━━━━━┛┛
-psp (Python Scaffolding Projects), version 0.9.0
+psp (Python Scaffolding Projects), version 0.10.0
 usage: psp [shortcut]
 ie: psp [help|quick|simple|full]
 
@@ -149,7 +151,8 @@ variables:
     ["PSP_GIT","PSP_GIT_REMOTE","PSP_GIT_USER","PSP_CACHE"]
     
 environments:
-    Python version: 3.14
+    Python version: 3.15
+    Python profile: package
 ```
 
 > [!NOTE]
@@ -196,7 +199,7 @@ brew install python git
 
 ```console
 winget install -e --id Git.Git
-winget install -e --id Python.Python.3.14
+winget install -e --id Python.Python.3.15
 ```
 
 ### Ubuntu based prerequisites installation
@@ -272,14 +275,14 @@ For **all users** (required root access):
 
 ```console
 sudo -i
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.9.0/psp-x86_64-unknown-linux-gnu -o /usr/local/bin/psp
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.10.0/psp-x86_64-unknown-linux-gnu -o /usr/local/bin/psp
 chmod +x /usr/local/bin/psp
 ```
 
 For **current user**:
 
 ```console
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.9.0/psp-x86_64-unknown-linux-gnu -o $HOME/.local/bin/psp
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.10.0/psp-x86_64-unknown-linux-gnu -o $HOME/.local/bin/psp
 chmod +x $HOME/.local/bin/psp
 ```
 
@@ -287,7 +290,7 @@ chmod +x $HOME/.local/bin/psp
 
 ```console
 sudo su -
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.9.0/psp-aarch64-apple-darwin -o /usr/local/bin/psp
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.10.0/psp-aarch64-apple-darwin -o /usr/local/bin/psp
 chmod +x /usr/local/bin/psp
 ```
 
@@ -296,7 +299,7 @@ chmod +x /usr/local/bin/psp
 For **all users** (required Administrator):
 
 ```powershell
-iwr -OutFile "C:\Windows\system32\psp.exe" "https://github.com/MatteoGuadrini/psp/releases/download/v0.9.0/psp-amd64-windows-gnu"
+iwr -OutFile "C:\Windows\system32\psp.exe" "https://github.com/MatteoGuadrini/psp/releases/download/v0.10.0/psp-amd64-windows-gnu"
 ```
 
 For **current user**:
@@ -304,7 +307,7 @@ For **current user**:
 ```powershell
 mkdir "$( $Env:USERPROFILE )\bin"
 [System.Environment]::SetEnvironmentVariable("PATH", $Env:PATH + ";$( $Env:USERPROFILE )\bin", "USER")
-iwr -OutFile "$( $Env:USERPROFILE )\bin\psp.exe" "https://github.com/MatteoGuadrini/psp/releases/download/v0.9.0/psp-amd64-windows-gnu"
+iwr -OutFile "$( $Env:USERPROFILE )\bin\psp.exe" "https://github.com/MatteoGuadrini/psp/releases/download/v0.10.0/psp-amd64-windows-gnu"
 ```
 
 ### Packages
@@ -314,14 +317,14 @@ If you want to install OS package, follow instructions for your Operating System
 For **Debian/Ubuntu**:
 
 ```console
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.9.0/psp-x86_64-unknown-linux-gnu.deb -o psp.deb
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.10.0/psp-x86_64-unknown-linux-gnu.deb -o psp.deb
 sudo dpkg -i psp.deb
 ```
 
 For **Fedora/Mageia/OpenSuse**:
 
 ```console
-sudo rpm -i https://github.com/MatteoGuadrini/psp/releases/download/v0.9.0/psp-x86_64-unknown-linux-gnu.rpm
+sudo rpm -i https://github.com/MatteoGuadrini/psp/releases/download/v0.10.0/psp-x86_64-unknown-linux-gnu.rpm
 ```
 
 ### Compile as your own
@@ -358,16 +361,16 @@ git clone https://github.com/MatteoGuadrini/psp.git
 # Build...
 cd psp && docker build . -t psp:latest
 # Run...
-docker run -it --rm -v ~/python_projects:/psp:z localhost/psp:latest
+docker run -it --rm -v ~/python_projects:/psp localhost/psp:latest
 ```
 
 You can use `.env` files and environment variables:
 
 ```console
 # .env file
-docker run -it --rm -v ~/python_projects:/psp:z -v ~/python_projects/.env:/psp/.env localhost/psp:latest
+docker run -it --rm -v ~/python_projects:/psp -v ~/python_projects/.env:/psp/.env localhost/psp:latest
 # PSP_ environment variables
-docker run -it --rm -v ~/python_projects:/psp:z -e "PSP_GIT=true" -e "PSP_PYVER=1.0.0" localhost/psp:latest
+docker run -it --rm -v ~/python_projects:/psp -e "PSP_GIT=true" -e "PSP_PYVER=1.0.0" localhost/psp:latest
 ```
 
 ## Next features
@@ -376,13 +379,14 @@ docker run -it --rm -v ~/python_projects:/psp:z -e "PSP_GIT=true" -e "PSP_PYVER=
 - [x] container support for psp program
 - [x] `conda`and `uv` support
 - [x] `hatch`, `maturin` and `poetry` build support
-- [x] updating/merging project
+- [x] pause/resume project creation
 - [x] Gitlab CI/CD and GitHub Actions
 - [x] templating files support
 - [x] templating custom files support
 - [x] universal installation script
+- [x] profiles support (type of modules, custom init projects, custom files)
 - [ ] support update if project exists
-- [ ] profiles support (type of modules, custom init projects, custom files)
+- [ ] support AGENTS.md file
 - [ ] command line flags support
 - [ ] YAML configuration file
 

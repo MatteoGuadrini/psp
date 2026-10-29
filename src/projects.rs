@@ -29,6 +29,7 @@ pub fn prj_name() -> ProjectInfo {
     #[cfg(target_os = "windows")]
     let folder_separator = "\\";
     let env_name = var("PSP_NAME").ok();
+    let env_profile = env_profile();
     let mut name = if let Some(env_name) = env_name {
         info(format!("project name: {env_name}"));
         env_name
@@ -48,14 +49,13 @@ pub fn prj_name() -> ProjectInfo {
     // Make package path parts
     let project_name = name.replace(" ", "_");
     let project = Path::new(&project_name);
-    let package = project.join(
-        project
-            .file_name()
-            .unwrap()
-            .to_string_lossy()
-            .to_string()
-            .to_lowercase(),
-    );
+    let package_name = Path::new(&project_name)
+        .file_name()
+        .unwrap()
+        .to_str()
+        .unwrap()
+        .to_lowercase();
+    let package = project.join(&package_name);
     let root = Path::new(package.parent().unwrap());
     // Check if a project path already exists
     if package.exists() {
@@ -69,39 +69,20 @@ pub fn prj_name() -> ProjectInfo {
             exit(0)
         }
     }
-    let dir_ret = make_dirs(format!("{}", package.display()).as_str());
+    let dir_ret = make_dirs(format!("{}", root.display()).as_str());
     if let Err(e) = dir_ret {
         error(format!("{e}"));
     }
     // Check the version of a Python project
     let pyver = env_pyversion();
-    let content = format!("__version__ = \"{pyver}\"");
-    let package_path = package.display();
-    if !create_python_package(package.as_path(), content.as_str()) {
-        error(format!("package {package_path} creation failed."));
-        exit(1);
-    }
-    // Make file structures
-    let main_content = format!(
-        "from .__init__ import __version__
-
-print('name: {}')
-print(f'version: {{__version__}}')
-",
-        package
-            .file_name()
-            .unwrap()
-            .to_string_lossy()
-            .to_string()
-            .to_lowercase()
-    );
-    let main_file = package.join("__main__.py");
-    if !create_python_file(
-        main_file.display().to_string().as_str(),
-        main_content.as_str(),
+    let content = format!("__version__ = \"{pyver}\"\n");
+    if !create_from_profile(
+        env_profile.clone(),
+        &package,
+        package_name.to_string(),
+        &content,
     ) {
-        error("`__main__.py` creation failed".to_string());
-        exit(4);
+        exit(1);
     }
     let values = (
         root.to_string_lossy().to_string(),
@@ -287,7 +268,7 @@ pub fn prj_deps(name: &str, venv: bool, shortcut: &String) -> DependenciesStatus
         let value = get_log_value(log_step, log_content.unwrap().as_str());
         if let Some(v) = value {
             let values: Vec<&str> = v.split(" ").collect();
-            if values[0] != "No" {
+            if !is_none(values[0]) {
                 return (values.iter().map(|s| s.to_string()).collect(), 0);
             }
         }
@@ -320,7 +301,7 @@ pub fn prj_deps(name: &str, venv: bool, shortcut: &String) -> DependenciesStatus
         vec![]
     };
     // Split String into Vector
-    let mut dependencies: Vec<String> = if deps.to_lowercase() != "no" {
+    let mut dependencies: Vec<String> = if !is_none(&deps) {
         deps.as_str()
             .split_whitespace()
             .map(|s| s.to_string())
@@ -395,6 +376,7 @@ pub fn prj_toml(
     } else {
         "https://python.org/".to_string()
     };
+    let env_profile = env_profile();
     // Check description of a Python project
     let env_pydescription = var("PSP_PYDESC").ok();
     let pydescription = if let Some(description) = env_pydescription {
@@ -437,12 +419,21 @@ pub fn prj_toml(
     let project_version = env_pyversion();
     let python_version = get_python_version();
     let stringed_classifiers = format!("{:?}", classifiers);
+    let module = if env_profile == "module" { "true" } else { "" };
+    let package_data = if env_profile == "website" { "true" } else { "" };
+    let modules = format!("[\"{project_name}\"]");
+    let package_data_list = vec!["templates/*", "static/*", "templates/**/*", "static/**/*"];
+    let stringed_package_data_list = format!("{project_name} = {package_data_list:?}");
     let mut dev_dependencies: Vec<&str> = vec![];
     let mut stringed_dev_dependencies = format!("{:?}", dev_dependencies);
     let mut data = HashMap::from([
         ("SIGNATURE", SIGNATURE),
         ("VERSION", VERSION),
         ("BUILDER", &builder),
+        ("MODULE", &module),
+        ("MODULES", &modules),
+        ("PACKAGE_DATA", &package_data),
+        ("PACKAGE_DATA_LIST", &stringed_package_data_list),
         ("PRJ_NAME", &project_name),
         ("PRJ_VER", &project_version),
         ("USERNAME", &username),
@@ -878,7 +869,7 @@ pub fn prj_tox(name: &str, venv: bool, deps: &Vec<String>, shortcut: &String) ->
         let dependencies = deps
             .iter()
             .map(|s| {
-                if s != "No" {
+                if !is_none(&s) {
                     format!("\t{s}")
                 } else {
                     String::new()
@@ -1372,6 +1363,7 @@ pub fn prj_makefile(
     tests: bool,
     build: bool,
     container: bool,
+    dependencies: bool,
 ) -> MakeStatus {
     let mut exit_status: ExitStatus = 0;
     // Set options for make
@@ -1387,6 +1379,19 @@ pub fn prj_makefile(
 container:
 \tpodman build . -t {name}:latest || docker build . -t {name}:latest"
     );
+
+    // Check dependencies argument
+    if dependencies {
+        make_options.push("init");
+        let init_value = "
+init:
+ifneq ('$(wildcard ${VENV}/bin/${PIP})','')
+\t${VENV}/bin/${PIP} install -r requirements.txt
+else
+\t${PIP} install -r requirements.txt
+endif";
+        data.insert("INIT", init_value);
+    }
     if tests {
         make_options.push("test");
         let test_value = "
