@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.10.0] - 2026-10-30
+
+### Added
+
+- Add **create_from_profile** function
+- Add **env_profile** function
+- Add **create_python_project** function
+
+### Changed
+
+- Add _PSP_PROFILE_ env variable
+- Move main module creation into **create_from_profile** function
+- Use _pyfile.hbs_ template for any Python file creation
+- Add include _package_data_ into **prj_toml** function
+- Add others _package_data_ into **prj_toml** function
+- Add _INIT_ variables into **prj_makefile** function
+
+### Fixed
+
+- Fix check of _no_ word with **is_none** function
+
 ## [0.9.0] - 2026-10-02
 
 ### Added

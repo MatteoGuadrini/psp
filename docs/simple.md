@@ -1,12 +1,14 @@
 # Simple usage
 
-Sometimes to start a new Python project is very hard; Write a script? Write a module? Write a package?
+A **script**, a **module**, and a **package** are different ways to organize Python code, not necessarily competing choices.
 
-The best choice is [micropiecies pattern](https://py-pkgs.org/01-introduction.html#why-you-should-create-packages):
-write a script, so rewrite that in a module and so rewrite in a package.
+- **Script:** A single file you run directly. It’s great for small, one-off tasks, but can become difficult to maintain as the code grows.
+- **Module:** A Python file that can be imported by other code. Moving reusable functions and classes into a module makes them easier to test and share, but a project with many modules can become awkward to organize.
+- **Package:** A directory that groups related modules (and possibly subpackages). It provides a clearer structure for larger projects and gives you a standard way to distribute and install your code.
 
-At this point you have a consinstent model. But every Python project has same pattern to package. `psp` help us in this
-way. Let's start a simple example.
+A package is often better as a project grows because it helps you **organize related code, reuse it across programs, test it, and distribute it**. But it also adds structure and setup, so for a short task, a script may be the simplest and best choice. A common approach is to start with a script and refactor into a module or package when the project needs it.
+
+`psp` help us in this way. Let's start a simple example.
 
 ## Name of Python project
 
@@ -18,7 +20,7 @@ To start with **psp**, type `psp`:
 ┏━┃┏━━━━┛┏━┃
 ┏━┛━━━━━┃┏━┛
 ┛  ━━━━━┛┛
-info: welcome to psp, version 0.9.0
+info: welcome to psp, version 0.10.0
 ? Name of Python project: mypyprj
 [Type name or path]
 ```
@@ -45,7 +47,7 @@ You can also specify a relative/absolute path; in this case the last name of pat
 ┏━┃┏━━━━┛┏━┃
 ┏━┛━━━━━┃┏━┛
 ┛  ━━━━━┛┛
-info: welcome to psp, version 0.9.0
+info: welcome to psp, version 0.10.0
 ? Name of Python project: /tmp/mypyprj
 [Type name or path]
 ```
@@ -54,7 +56,7 @@ info: welcome to psp, version 0.9.0
     If the folder exists, **psp** prompt a choice of overwritten.
 
 ```console
-info: welcome to psp, version 0.9.0
+info: welcome to psp, version 0.10.0
 > Name of Python project: /tmp/mypyprj
 ? Path /tmp/mypyprj exists. Do you want continue? (y/N)
 [Some files will be overwritten]
@@ -72,7 +74,7 @@ virtual environment are available.
 The default value is _Yes_.
 
 ```console
-info: welcome to psp, version 0.9.0
+info: welcome to psp, version 0.10.0
 > Name of Python project: mypyprj
 ? Do you want to create a virtual environment? (Y/n)
 ```
@@ -661,7 +663,11 @@ With `PSP_LOG` variable you enable the ability to stop or pause the scaffolding 
 
 ```console
 [gu]# psp
-info: welcome to psp, version 0.9.0
+
+┏━┃┏━━━━┛┏━┃
+┏━┛━━━━━┃┏━┛
+┛  ━━━━━┛┛
+info: welcome to psp, version 0.10.0
 > Name of Python project: mypyprj
 > Do you want to create a virtual environment? (Y/n)
 ? Install dependencies: <canceled>
@@ -675,7 +681,11 @@ note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 prj_name: mypyprj mypyprj
 prj_venv: true
 [gu]# psp
-info: welcome to psp, version 0.9.0
+
+┏━┃┏━━━━┛┏━┃
+┏━┛━━━━━┃┏━┛
+┛  ━━━━━┛┛
+info: welcome to psp, version 0.10.0
 ? Install dependencies: (No) tablib==3.4.0 pyreports<1.7.0 scipy numpy
 ...
 info: python project `mypyprj` created at `/tmp/mypyprj`
