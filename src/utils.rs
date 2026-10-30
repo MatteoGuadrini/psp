@@ -1,3 +1,4 @@
+use anyhow::Result;
 use dotenvy::dotenv;
 use handlebars::Handlebars;
 use inquire::{Confirm, Select, Text};
@@ -28,6 +29,7 @@ pub type PyPiStatus = (bool, ExitStatus);
 pub type ContainerStatus = (bool, ExitStatus);
 pub type MakeStatus = ((), ExitStatus);
 pub type Profile = String;
+pub type ProjectResult<T> = Result<T>;
 
 // Constants
 pub const ARGS: [&str; 4] = ["help", "quick", "simple", "full"];

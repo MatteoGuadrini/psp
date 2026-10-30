@@ -10,16 +10,16 @@ use std::{
 };
 
 // Project name
-pub fn prj_name() -> ProjectInfo {
+pub fn prj_name() -> ProjectResult<ProjectInfo> {
     // Check psp log for update
     let log_step = "prj_name";
     if check_log(log_step, LOGFILE) {
         let log_content = read_log(LOGFILE);
-        let value = get_log_value(log_step, log_content.unwrap().as_str());
+        let value = get_log_value(log_step, log_content?.as_str());
         if let Some(v) = value {
             let values: Vec<&str> = v.split(" ").collect();
-            if std::fs::exists(values[0]).unwrap() {
-                return (values[0].to_string(), values[1].to_string(), 0);
+            if std::fs::exists(values[0])? {
+                return Ok((values[0].to_string(), values[1].to_string(), 0));
             }
         }
     }
@@ -94,19 +94,19 @@ pub fn prj_name() -> ProjectInfo {
         LOGFILE,
         format!("{}: {} {}", log_step, values.0, values.1).as_str(),
     );
-    values
+    Ok(values)
 }
 
 // Project git
-pub fn prj_git(name: &str, shortcut: &String) -> GitStatus {
+pub fn prj_git(name: &str, shortcut: &String) -> ProjectResult<GitStatus> {
     // Check psp log for update
     let mut exit_status: ExitStatus = 0;
     let log_step = "prj_git";
     if check_log(log_step, LOGFILE) {
         let log_content = read_log(LOGFILE);
-        let value = get_log_value(log_step, log_content.unwrap().as_str());
+        let value = get_log_value(log_step, log_content?.as_str());
         if let Some(v) = value {
-            return (v.parse::<bool>().unwrap(), exit_status);
+            return Ok((v.parse::<bool>()?, exit_status));
         }
     }
     // Check environment variable
@@ -129,7 +129,7 @@ pub fn prj_git(name: &str, shortcut: &String) -> GitStatus {
         if !output.status.success() {
             exit_status = 2;
             error("something wrong with `git init`".to_string());
-            return (false, exit_status);
+            return Ok((false, exit_status));
         }
         // Create a data map with variables
         let mut data = HashMap::new();
@@ -147,20 +147,20 @@ pub fn prj_git(name: &str, shortcut: &String) -> GitStatus {
     }
     // Write psp log
     write_log(LOGFILE, format!("{}: {}", log_step, ret).as_str());
-    (ret, exit_status)
+    Ok((ret, exit_status))
 }
 
 // Project unit tests
-pub fn prj_test(root: &str, name: &str, shortcut: &String) -> TestStatus {
+pub fn prj_test(root: &str, name: &str, shortcut: &String) -> ProjectResult<TestStatus> {
     // Check psp log for update
     let ret: bool;
     let mut exit_status: ExitStatus = 0;
     let log_step = "prj_test";
     if check_log(log_step, LOGFILE) {
         let log_content = read_log(LOGFILE);
-        let value = get_log_value(log_step, log_content.unwrap().as_str());
+        let value = get_log_value(log_step, log_content?.as_str());
         if let Some(v) = value {
-            return (v.parse::<bool>().unwrap(), 0);
+            return Ok((v.parse::<bool>()?, 0));
         }
     }
     // Check environment variable
@@ -202,20 +202,20 @@ pub fn prj_test(root: &str, name: &str, shortcut: &String) -> TestStatus {
     }
     // Write psp log
     write_log(LOGFILE, format!("{}: {}", log_step, ret).as_str());
-    (ret, exit_status)
+    Ok((ret, exit_status))
 }
 
 // Project venv
-pub fn prj_venv(name: &str, shortcut: &String) -> VirtualEnvStatus {
+pub fn prj_venv(name: &str, shortcut: &String) -> ProjectResult<VirtualEnvStatus> {
     // Check psp log for update
     let mut ret: bool;
     let mut exit_status: ExitStatus = 0;
     let log_step = "prj_venv";
     if check_log(log_step, LOGFILE) {
         let log_content = read_log(LOGFILE);
-        let value = get_log_value(log_step, log_content.unwrap().as_str());
+        let value = get_log_value(log_step, log_content?.as_str());
         if let Some(v) = value {
-            return (v.parse::<bool>().unwrap(), 0);
+            return Ok((v.parse::<bool>()?, 0));
         }
     }
     // Check environment variable
@@ -255,21 +255,21 @@ pub fn prj_venv(name: &str, shortcut: &String) -> VirtualEnvStatus {
     }
     // Write psp log
     write_log(LOGFILE, format!("{}: {}", log_step, ret).as_str());
-    (ret, exit_status)
+    Ok((ret, exit_status))
 }
 
 // Project dependencies
-pub fn prj_deps(name: &str, venv: bool, shortcut: &String) -> DependenciesStatus {
+pub fn prj_deps(name: &str, venv: bool, shortcut: &String) -> ProjectResult<DependenciesStatus> {
     // Check psp log for update
     let mut exit_status: ExitStatus = 0;
     let log_step = "prj_deps";
     if check_log(log_step, LOGFILE) {
         let log_content = read_log(LOGFILE);
-        let value = get_log_value(log_step, log_content.unwrap().as_str());
+        let value = get_log_value(log_step, log_content?.as_str());
         if let Some(v) = value {
             let values: Vec<&str> = v.split(" ").collect();
             if !is_none(values[0]) {
-                return (values.iter().map(|s| s.to_string()).collect(), 0);
+                return Ok((values.iter().map(|s| s.to_string()).collect(), 0));
             }
         }
     }
@@ -349,7 +349,7 @@ pub fn prj_deps(name: &str, venv: bool, shortcut: &String) -> DependenciesStatus
     }
     // Write psp log
     write_log(LOGFILE, format!("{}: {}", log_step, deps).as_str());
-    (dependencies, exit_status)
+    Ok((dependencies, exit_status))
 }
 
 // Project pyproject.toml
@@ -363,7 +363,7 @@ pub fn prj_toml(
     docs: &str,
     tox: bool,
     venv: bool,
-) -> ProjectConfStatus {
+) -> ProjectResult<ProjectConfStatus> {
     let mut exit_status: ExitStatus = 0;
     // Check git information
     let mut documentation = "https://docs.python.org/3/".to_string();
@@ -475,16 +475,16 @@ pub fn prj_toml(
         error("`pyproject.toml` render failed".to_string());
         exit_status = 12;
     }
-    ((), exit_status)
+    Ok(((), exit_status))
 }
 
 // Project CI
-pub fn prj_ci(name: &str, deps: &Vec<String>, shortcut: &String) -> CIStatus {
+pub fn prj_ci(name: &str, deps: &Vec<String>, shortcut: &String) -> ProjectResult<CIStatus> {
     let mut exit_status: ExitStatus = 0;
     // Check psp log for update
     let log_step = "prj_ci";
     if check_log(log_step, LOGFILE) {
-        return ((), exit_status);
+        return Ok(((), exit_status));
     }
     let options = vec![
         "None",
@@ -586,20 +586,20 @@ pub fn prj_ci(name: &str, deps: &Vec<String>, shortcut: &String) -> CIStatus {
     }
     // Write psp log
     write_log(LOGFILE, format!("{}: {}", log_step, ci).as_str());
-    ((), exit_status)
+    Ok(((), exit_status))
 }
 
 // Project Gitlab/GitHub
-pub fn prj_remote(root: &str, name: &str, shortcut: &String) -> GitInfo {
+pub fn prj_remote(root: &str, name: &str, shortcut: &String) -> ProjectResult<GitInfo> {
     // Check psp log for update
     let log_step = "prj_remote";
     let mut exit_status: ExitStatus = 0;
     if check_log(log_step, LOGFILE) {
         let log_content = read_log(LOGFILE);
-        let value = get_log_value(log_step, log_content.unwrap().as_str());
+        let value = get_log_value(log_step, log_content?.as_str());
         if let Some(v) = value {
             let values: Vec<&str> = v.split(" ").collect();
-            return (values[0].to_string(), values[1].to_string(), 0);
+            return Ok((values[0].to_string(), values[1].to_string(), 0));
         }
     }
     let mut git_user = "None".to_string();
@@ -819,19 +819,24 @@ pub fn prj_remote(root: &str, name: &str, shortcut: &String) -> GitInfo {
         LOGFILE,
         format!("{}: {} {}", log_step, remote, git_user).as_str(),
     );
-    (remote, git_user, exit_status)
+    Ok((remote, git_user, exit_status))
 }
 
 // Project tox
-pub fn prj_tox(name: &str, venv: bool, deps: &Vec<String>, shortcut: &String) -> ToxStatus {
+pub fn prj_tox(
+    name: &str,
+    venv: bool,
+    deps: &Vec<String>,
+    shortcut: &String,
+) -> ProjectResult<ToxStatus> {
     let mut exit_status: ExitStatus = 0;
     // Check psp log for update
     let log_step = "prj_tox";
     if check_log(log_step, LOGFILE) {
         let log_content = read_log(LOGFILE);
-        let value = get_log_value(log_step, log_content.unwrap().as_str());
+        let value = get_log_value(log_step, log_content?.as_str());
         if let Some(v) = value {
-            return (v.parse::<bool>().unwrap(), exit_status);
+            return Ok((v.parse::<bool>()?, exit_status));
         }
     }
     // Check environment variable
@@ -862,7 +867,7 @@ pub fn prj_tox(name: &str, venv: bool, deps: &Vec<String>, shortcut: &String) ->
         // Check if the command exits successfully
         if !output.status.success() {
             error("`tox` installation failed".to_string());
-            return (false, 8);
+            return Ok((false, 8));
         }
         // Create a data map with variables
         let python_version = format!("py{}", get_python_version().replace(".", ""));
@@ -893,19 +898,19 @@ pub fn prj_tox(name: &str, venv: bool, deps: &Vec<String>, shortcut: &String) ->
     }
     // Write psp log
     write_log(LOGFILE, format!("{}: {}", log_step, confirm).as_str());
-    (confirm, exit_status)
+    Ok((confirm, exit_status))
 }
 
 // Project documentation site generator
-pub fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) -> DocStatus {
+pub fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) -> ProjectResult<DocStatus> {
     // Check psp log for update
     let mut exit_status: ExitStatus = 0;
     let log_step = "prj_docs";
     if check_log(log_step, LOGFILE) {
         let log_content = read_log(LOGFILE);
-        let value = get_log_value(log_step, log_content.unwrap().as_str());
+        let value = get_log_value(log_step, log_content?.as_str());
         if let Some(v) = value {
-            return (v, exit_status);
+            return Ok((v, exit_status));
         }
     }
     let options = vec!["None", "Sphinx", "MKDocs"];
@@ -1033,16 +1038,21 @@ pub fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) -> DocSta
     }
     // Write psp log
     write_log(LOGFILE, format!("{}: {}", log_step, docs).as_str());
-    (docs, exit_status)
+    Ok((docs, exit_status))
 }
 
 // Project common files
-pub fn prj_files(root: &str, name: &str, container: bool, shortcut: &String) -> CommonFilesStatus {
+pub fn prj_files(
+    root: &str,
+    name: &str,
+    container: bool,
+    shortcut: &String,
+) -> ProjectResult<CommonFilesStatus> {
     let mut exit_status: ExitStatus = 0;
     // Check psp log for update
     let log_step = "prj_files";
     if check_log(log_step, LOGFILE) {
-        return ((), exit_status);
+        return Ok(((), exit_status));
     }
     // Check environment variable
     let env_files = var("PSP_FILES").unwrap_or("false".to_string()).parse().ok();
@@ -1132,19 +1142,19 @@ pub fn prj_files(root: &str, name: &str, container: bool, shortcut: &String) -> 
     }
     // Write psp log
     write_log(LOGFILE, format!("{}: {}", log_step, confirm).as_str());
-    ((), exit_status)
+    Ok(((), exit_status))
 }
 
 // Project license
-pub fn prj_license(name: &str, shortcut: &String, author: &String) -> LicenseInfo {
+pub fn prj_license(name: &str, shortcut: &String, author: &String) -> ProjectResult<LicenseInfo> {
     let mut exit_status: ExitStatus = 0;
     // Check psp log for update
     let log_step = "prj_license";
     if check_log(log_step, LOGFILE) {
         let log_content = read_log(LOGFILE);
-        let value = get_log_value(log_step, log_content.unwrap().as_str());
+        let value = get_log_value(log_step, log_content?.as_str());
         if let Some(v) = value {
-            return (v, exit_status);
+            return Ok((v, exit_status));
         }
     }
     // Check author
@@ -1210,19 +1220,19 @@ pub fn prj_license(name: &str, shortcut: &String, author: &String) -> LicenseInf
     }
     // Write psp log
     write_log(LOGFILE, format!("{}: {}", log_step, license).as_str());
-    (license, exit_status)
+    Ok((license, exit_status))
 }
 
 // Project pypi dependencies
-pub fn prj_pypi(root: &str, venv: bool, shortcut: &String) -> PyPiStatus {
+pub fn prj_pypi(root: &str, venv: bool, shortcut: &String) -> ProjectResult<PyPiStatus> {
     let mut exit_status: ExitStatus = 0;
     // Check psp log for update
     let log_step = "prj_pypi";
     if check_log(log_step, LOGFILE) {
         let log_content = read_log(LOGFILE);
-        let value = get_log_value(log_step, log_content.unwrap().as_str());
+        let value = get_log_value(log_step, log_content?.as_str());
         if let Some(v) = value {
-            return (v.parse::<bool>().unwrap(), exit_status);
+            return Ok((v.parse::<bool>()?, exit_status));
         }
     }
     // Check environment variable
@@ -1273,19 +1283,19 @@ pub fn prj_pypi(root: &str, venv: bool, shortcut: &String) -> PyPiStatus {
     }
     // Write psp log
     write_log(LOGFILE, format!("{}: {}", log_step, ret).as_str());
-    (ret, exit_status)
+    Ok((ret, exit_status))
 }
 
 // Project Docker/Podman
-pub fn prj_container(root: &str, name: &str, shortcut: &String) -> ContainerStatus {
+pub fn prj_container(root: &str, name: &str, shortcut: &String) -> ProjectResult<ContainerStatus> {
     let mut exit_status: ExitStatus = 0;
     // Check psp log for update
     let log_step = "prj_container";
     if check_log(log_step, LOGFILE) {
         let log_content = read_log(LOGFILE);
-        let value = get_log_value(log_step, log_content.unwrap().as_str());
+        let value = get_log_value(log_step, log_content?.as_str());
         if let Some(v) = value {
-            return (v.parse::<bool>().unwrap(), exit_status);
+            return Ok((v.parse::<bool>()?, exit_status));
         }
     }
     // Check environment variable
@@ -1353,7 +1363,7 @@ pub fn prj_container(root: &str, name: &str, shortcut: &String) -> ContainerStat
     }
     // Write psp log
     write_log(LOGFILE, format!("{}: {}", log_step, ret).as_str());
-    (ret, exit_status)
+    Ok((ret, exit_status))
 }
 
 // Project Makefile
@@ -1364,7 +1374,7 @@ pub fn prj_makefile(
     build: bool,
     container: bool,
     dependencies: bool,
-) -> MakeStatus {
+) -> ProjectResult<MakeStatus> {
     let mut exit_status: ExitStatus = 0;
     // Set options for make
     let mut make_options = vec!["help", "all", "run", "clean"];
@@ -1436,5 +1446,5 @@ endif";
         error("`Makefile` render failed".to_string());
         exit_status = 15;
     }
-    ((), exit_status)
+    Ok(((), exit_status))
 }

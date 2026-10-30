@@ -16,3 +16,4 @@ keywords = ["scaffold", "tool", "python", "package", "library"]
 inquire = "0.9"
 dotenvy = "0.15"
 handlebars = "6.4"
+anyhow = "1.0"
