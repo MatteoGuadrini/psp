@@ -41,6 +41,7 @@ avoid replacing some [special characters](https://handlebarsjs.com/guide/#html-e
 | `test_module.hbs`      | [Test files](simple.md#test-files)                         | `SIGNATURE`,`VERSION`, `PRJ_NAME`, `PRJ_VER`                                                                                                                                                                              |
 | `tox.hbs`              | [Tox tool](simple.md#tox-tool)                             | `SIGNATURE`,`VERSION`, `PYTHON`, `DEPS`                                                                                                                                                                                   |
 | `travis.hbs`           | [Remote CI](simple.md#remote-ci-continuous-integration)    | `SIGNATURE`,`VERSION`, `PYTHON`, `REQUIREMENTS`                                                                                                                                                                           |
+| `skills.hbs`           | [AI](simple.md#AI)    | `SIGNATURE`,`VERSION`, `PYTHON`, `PY_BUILDER`, `PACKAGE`                                                                                                                                                                           |
 
 ## Variables
 
@@ -54,6 +55,7 @@ variables are listed below.
 | `PACKAGE`       | package name like _"test"_                                   |
 | `PRJ_NAME`      | project name like _"test"_                                   |
 | `PRJ_VER`       | project version like _"0.0.1"_                               |
+| `PRJ_BUILDER`   | project builder like _"poetry"_                              |
 | `AUTHOR`        | remote git author like _"MatteoGuadrini"_                    |
 | `USERNAME`      | remote git author like _"MatteoGuadrini"_                    |
 | `DEPS`          | dependencies list like _"dep1\ndep2\n"_                      |

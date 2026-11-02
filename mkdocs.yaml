@@ -4,6 +4,7 @@ nav:
   - Simple: simple.md
   - Shortcut: shortcut.md
   - Env: env.md
+  - Template: template.md
   - Error: error.md
 theme:
   name: material
