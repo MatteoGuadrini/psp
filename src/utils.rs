@@ -28,6 +28,7 @@ pub type LicenseInfo = (String, ExitStatus);
 pub type PyPiStatus = (bool, ExitStatus);
 pub type ContainerStatus = (bool, ExitStatus);
 pub type MakeStatus = ((), ExitStatus);
+pub type AIStatus = (bool, ExitStatus);
 pub type Profile = String;
 pub type ProjectResult<T> = Result<T>;
 
@@ -590,7 +591,7 @@ pub fn env_pyauthor() -> (String, String) {
 }
 
 // Function to get a project core builder
-fn env_pybuild() -> String {
+pub fn env_pybuild() -> String {
     // Check the builder
     let env_pybuild = var("PSP_PYBUILD").ok();
     let build = if let Some(b) = env_pybuild {

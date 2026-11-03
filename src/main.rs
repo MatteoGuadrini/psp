@@ -90,6 +90,9 @@ fn main() -> ProjectResult<()> {
     // Common files
     let ret_prj_files = prj_files(&root, &name, container, &shortcut)?;
     exit_status = set_exit_status(exit_status, ret_prj_files.1);
+    // AI
+    let ret_prj_ai = prj_ai(&root, &name, &shortcut)?;
+    exit_status = set_exit_status(exit_status, ret_prj_ai.1);
     // Makefile
     let ret_prj_makefile = prj_makefile(&root, &name, tests, build, container, deps_exists)?;
     exit_status = set_exit_status(exit_status, ret_prj_makefile.1);

@@ -1068,7 +1068,7 @@ pub fn prj_files(
         false
     } else {
         prompt_confirm(
-            "Do you want create common files?",
+            "Do you want to create common files?",
             true,
             "Create README, CONTRIBUTING, CODE_OF_CONDUCT and CHANGES",
         )
@@ -1447,4 +1447,62 @@ endif";
         exit_status = 15;
     }
     Ok(((), exit_status))
+}
+
+pub fn prj_ai(root: &str, name: &str, shortcut: &String) -> ProjectResult<AIStatus> {
+    let mut exit_status: ExitStatus = 0;
+    // Check psp log for update
+    let log_step = "prj_ai";
+    if check_log(log_step, LOGFILE) {
+        let log_content = read_log(LOGFILE);
+        let value = get_log_value(log_step, log_content?.as_str());
+        if let Some(v) = value {
+            return Ok((v.parse::<bool>()?, exit_status));
+        }
+    }
+    // Check environment variable
+    let ret;
+    let env_container = var("PSP_AI").unwrap_or("false".to_string()).parse().ok();
+    let confirm = if let Some(true) = env_container {
+        info(format!(
+            "create AI files: {}",
+            env_container.unwrap().to_string()
+        ));
+        true
+    } else if shortcut == "quick" || shortcut == "full" {
+        true
+    } else if shortcut == "simple" {
+        false
+    } else {
+        prompt_confirm(
+            "Do you want to create a AI files?",
+            true,
+            "SKILLS, AGENTS and LLMs files",
+        )
+    };
+    if confirm {
+        // Create a data map with variables
+        let builder = env_pybuild();
+        let python = get_python_version();
+        let data = HashMap::from([
+            ("SIGNATURE", SIGNATURE),
+            ("VERSION", VERSION),
+            ("PACKAGE", name),
+            ("PY_BUILDER", &builder),
+            ("PYTHON", &python),
+        ]);
+        // SKILLS.md
+        let skills_template = Path::new(root).join("SKILLS.md").display().to_string();
+        let file_ret = render_template("skills.hbs", &skills_template, data.clone());
+        if !file_ret {
+            error("`SKILLS.md` render failed".to_string());
+            exit_status = 16;
+        }
+        ret = true;
+    } else {
+        ret = false;
+    }
+    // Write psp log
+    write_log(LOGFILE, format!("{}: {}", log_step, ret).as_str());
+    Ok((ret, exit_status))
 }
