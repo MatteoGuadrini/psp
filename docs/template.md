@@ -42,6 +42,7 @@ avoid replacing some [special characters](https://handlebarsjs.com/guide/#html-e
 | `tox.hbs`              | [Tox tool](simple.md#tox-tool)                             | `SIGNATURE`,`VERSION`, `PYTHON`, `DEPS`                                                                                                                                                                                   |
 | `travis.hbs`           | [Remote CI](simple.md#remote-ci-continuous-integration)    | `SIGNATURE`,`VERSION`, `PYTHON`, `REQUIREMENTS`                                                                                                                                                                           |
 | `skills.hbs`           | [AI](simple.md#AI)    | `SIGNATURE`,`VERSION`, `PYTHON`, `PY_BUILDER`, `PACKAGE`                                                                                                                                                                           |
+| `agents.hbs`           | [AI](simple.md#AI)    | `SIGNATURE`,`VERSION`, `PYTHON`, `PY_BUILDER`, `PACKAGE`                                                                                                                                                                           |
 
 ## Variables
 
