@@ -1484,18 +1484,27 @@ pub fn prj_ai(root: &str, name: &str, shortcut: &String) -> ProjectResult<AIStat
         // Create a data map with variables
         let builder = env_pybuild();
         let python = get_python_version();
+        let profile = env_profile();
         let data = HashMap::from([
             ("SIGNATURE", SIGNATURE),
             ("VERSION", VERSION),
             ("PACKAGE", name),
             ("PY_BUILDER", &builder),
             ("PYTHON", &python),
+            ("PROFILE", &profile),
         ]);
         // SKILLS.md
         let skills_template = Path::new(root).join("SKILLS.md").display().to_string();
         let file_ret = render_template("skills.hbs", &skills_template, data.clone());
         if !file_ret {
             error("`SKILLS.md` render failed".to_string());
+            exit_status = 16;
+        }
+        // AGENTS.md
+        let agents_template = Path::new(root).join("AGENTS.md").display().to_string();
+        let file_ret = render_template("agents.hbs", &agents_template, data.clone());
+        if !file_ret {
+            error("`AGENTS.md` render failed".to_string());
             exit_status = 16;
         }
         ret = true;
