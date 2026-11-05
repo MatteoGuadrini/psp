@@ -1507,6 +1507,13 @@ pub fn prj_ai(root: &str, name: &str, shortcut: &String) -> ProjectResult<AIStat
             error("`AGENTS.md` render failed".to_string());
             exit_status = 16;
         }
+        // llms.txt
+        let llms_template = Path::new(root).join("llms.txt").display().to_string();
+        let file_ret = render_template("llms.hbs", &llms_template, data.clone());
+        if !file_ret {
+            error("`llms.txt` render failed".to_string());
+            exit_status = 16;
+        }
         ret = true;
     } else {
         ret = false;
