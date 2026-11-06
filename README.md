@@ -52,6 +52,9 @@ dream                   # Project folder
 ├── Dockerfile          # Docker container file for build image
 ├── Makefile            # Makefile for command make; make help
 ├── requirements.txt    # Dependencies list used by third programs
+├── SKILLS.md           # Python AI skills for develop on this repository
+├── AGENTS.md           # Simple and open format for guiding AI agents
+├── llms.txt            # Instructions file to provide information to help AI agents use this project
 ├── docs                # Documentation folder: Sphinx/MKDocs
 │   ├── build
 │   ├── make.bat
@@ -157,7 +160,7 @@ environments:
 
 > [!NOTE]
 > More details for shortcuts, variables and other things, available in official
-documentation: [psp docs](https://psp.readthedocs.io/)
+> documentation: [psp docs](https://psp.readthedocs.io/)
 
 ## Why choose psp?
 
@@ -240,8 +243,7 @@ iwr https://raw.githubusercontent.com/MatteoGuadrini/psp/main/install.ps1 | iex
 
 > [!WARNING]
 > If you're using _Windows_ OS, make sure you have the _Visual Studio Build Tools_ installed, otherwise install them
-with a
-command line: `winget install -e --id Microsoft.VisualStudio.BuildTools`
+> with a command line: `winget install -e --id Microsoft.VisualStudio.BuildTools`
 
 To install with `pip`:
 
@@ -380,13 +382,13 @@ docker run -it --rm -v ~/python_projects:/psp -e "PSP_GIT=true" -e "PSP_PYVER=1.
 - [x] `conda`and `uv` support
 - [x] `hatch`, `maturin` and `poetry` build support
 - [x] pause/resume project creation
-- [x] Gitlab CI/CD and GitHub Actions
+- [x] GitLab CI/CD and GitHub Actions
 - [x] templating files support
 - [x] templating custom files support
 - [x] universal installation script
 - [x] profiles support (type of modules, custom init projects, custom files)
+- [x] support SKILLS.md, AGENTS.md and llms.txt files
 - [ ] support update if project exists
-- [ ] support AGENTS.md file
 - [ ] command line flags support
 - [ ] YAML configuration file
 

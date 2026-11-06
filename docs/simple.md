@@ -619,7 +619,7 @@ The default value is _Yes_.
 ```console
 ...
 > Do you want to create a Dockerfile and Containerfile? Yes
-? Do you want create common files? (Y/n)
+? Do you want to create common files? (Y/n)
 [Create README, CONTRIBUTING, CODE_OF_CONDUCT and CHANGES]
 ```
 
@@ -651,6 +651,55 @@ mypyprj
 ├── CONTRIBUTING.md         │ files
 ├── CODE_OF_CONDUCT.md      │ 
 └── CHANGES.md              ┘
+```
+
+## AI files
+
+This option configure an AI files for Python projects, as a _SKILLS, AGENTS and llms_.
+
+The default value is _Yes_.
+
+!!! warning
+    In this option some files will downloaded from internet. Check your internet settings, proxy or firewall if an error
+    occured.
+
+```console
+...
+> Do you want to create common files? Yes
+? Do you want to create a AI files? (Y/n)
+[Create SKILLS, AGENTS and LLMs files]
+```
+
+The project structure after this choosen:
+
+```
+mypyprj
+├── pyproject.toml
+├── mypyprj
+│   └──...
+├── .venv
+│   └──...
+├── .git
+│   └──...
+├── .gitignore
+├── .github
+│   └──...
+├── tests
+│   └──...
+├── docs
+│   └──...
+├── tox.ini
+├── Makefile
+├── .circleci
+│   └── ...
+├── samples
+│   └── mypyprj_sample.py
+├── README.md
+├── ...
+├── AGENTS.md           ┐ 
+├── llms.txt            │ AI files
+└── SKILLS.md           ┘
+
 ```
 
 !!! note
