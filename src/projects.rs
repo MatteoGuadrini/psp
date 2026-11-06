@@ -490,7 +490,7 @@ pub fn prj_ci(name: &str, deps: &Vec<String>, shortcut: &String) -> ProjectResul
         "None",
         "CircleCI",
         "GitHub Actions",
-        "Gitlab CI/CD",
+        "GitLab CI/CD",
         "TravisCI",
     ];
     let env_ci = var("PSP_CI").ok();
@@ -589,7 +589,7 @@ pub fn prj_ci(name: &str, deps: &Vec<String>, shortcut: &String) -> ProjectResul
     Ok(((), exit_status))
 }
 
-// Project Gitlab/GitHub
+// Project GitLab/GitHub
 pub fn prj_remote(root: &str, name: &str, shortcut: &String) -> ProjectResult<GitInfo> {
     // Check psp log for update
     let log_step = "prj_remote";
@@ -604,7 +604,7 @@ pub fn prj_remote(root: &str, name: &str, shortcut: &String) -> ProjectResult<Gi
     }
     let mut git_user = "None".to_string();
     let git_remote;
-    let options = vec!["None", "GitHub", "Gitlab", "Custom"];
+    let options = vec!["None", "GitHub", "GitLab", "Custom"];
     // Check environment variable
     let env_remote = var("PSP_GIT_REMOTE").ok();
     let remote = if let Some(env_remote) = env_remote {
@@ -710,7 +710,7 @@ pub fn prj_remote(root: &str, name: &str, shortcut: &String) -> ProjectResult<Gi
             exit_status = 4;
         }
         // Make remote files and folders
-        // Gitlab
+        // GitLab
         if remote.as_str().to_lowercase() == "gitlab" {
             let issue_folder = Path::new(root)
                 .join(remote.to_lowercase())
@@ -1477,7 +1477,7 @@ pub fn prj_ai(root: &str, name: &str, shortcut: &String) -> ProjectResult<AIStat
         prompt_confirm(
             "Do you want to create a AI files?",
             true,
-            "SKILLS, AGENTS and LLMs files",
+            "Create SKILLS, AGENTS and LLMs files",
         )
     };
     if confirm {
