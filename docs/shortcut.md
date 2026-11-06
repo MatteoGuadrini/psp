@@ -77,6 +77,7 @@ The options included are:
 * [License](simple.md#license)
 * [PyPi dependencies](simple.md#pypi-dependencies)
 * [Docker/Podman](simple.md#dockerpodman)
+* [AI files](simple.md#ai-files)
 
 ## Simple
 
@@ -132,3 +133,4 @@ The options included are:
 * [License](simple.md#license)
 * [PyPi dependencies](simple.md#pypi-dependencies)
 * [Docker/Podman](simple.md#dockerpodman)
+* [AI files](simple.md#ai-files)
