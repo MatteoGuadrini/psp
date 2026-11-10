@@ -5,11 +5,12 @@ use inquire::{Confirm, Select, Text};
 use std::{
     collections::HashMap,
     env::{args, temp_dir, var},
-    fs::{copy, create_dir_all, remove_file, File, OpenOptions},
+    fs::{copy, create_dir_all, read_to_string, remove_file, File, OpenOptions},
     io::{Read, Write},
     path::{absolute, Path},
     process::exit,
 };
+use toml_edit::{value, DocumentMut};
 
 // Custom types
 pub type ExitStatus = i32;
@@ -31,6 +32,7 @@ pub type MakeStatus = ((), ExitStatus);
 pub type AIStatus = (bool, ExitStatus);
 pub type Profile = String;
 pub type ProjectResult<T> = Result<T>;
+pub type UtilsResult<T> = Result<T>;
 
 // Constants
 pub const ARGS: [&str; 4] = ["help", "quick", "simple", "full"];
@@ -838,4 +840,11 @@ pub fn make_pm(
     }
     // Make command
     make_command(bin, root, start_path, args, venv)
+}
+
+// Function to read toml document file (preserve formatting)
+pub fn read_toml(path: &Path) -> UtilsResult<DocumentMut> {
+    let content = read_to_string(path)?;
+    let doc = content.parse::<DocumentMut>()?;
+    Ok(doc)
 }
