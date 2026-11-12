@@ -10,7 +10,7 @@ use std::{
     path::{absolute, Path},
     process::exit,
 };
-use toml_edit::{value, DocumentMut};
+use toml_edit::DocumentMut;
 
 // Custom types
 pub type ExitStatus = i32;
@@ -847,4 +847,12 @@ pub fn read_toml(path: &Path) -> UtilsResult<DocumentMut> {
     let content = read_to_string(path)?;
     let doc = content.parse::<DocumentMut>()?;
     Ok(doc)
+}
+
+// Function to modify toml value (preserve formatting)
+pub fn modify_toml_value(doc: &mut DocumentMut, key: &str, value: &str) -> UtilsResult<()> {
+    if let Some(item) = doc.get_mut(key) {
+        *item = value.into();
+    }
+    Ok(())
 }
