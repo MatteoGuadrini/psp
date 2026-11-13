@@ -22,8 +22,8 @@
 - 💡 Can use _quick_, _simple_ and _full_ argument for rapid configuration
 - 💾 Create `$HOME/.psp.env` and `$PWD/.env` files with your customizations
 - 🎛️ Can use some [`PSP_`](https://psp.readthedocs.io/en/latest/env/) variables to control your defaults
-- 📦 Support `pip`, `conda` and `uv` package manager
-- 🧮 Support `hatch`, `maturin` and `poetry` builder
+- 📦 Support `pip`, `conda` and `uv` package managers
+- 🧮 Support `hatch`, `maturin` and `poetry` builders
 - 🍿 Stop, pause and resume project creation when you want;
   see [Resume](https://psp.readthedocs.io/en/latest/simple/#resume)
 - 🖇️ [Handlebars](https://handlebarsjs.com) custom templates engine (with local cache) to customize project;
@@ -169,18 +169,11 @@ Rather than replacing it, `psp` seeks to integrate and provide a useful scaffold
 
 ### Differences with other tools
 
-- [cookiecutter](https://github.com/cookiecutter/cookiecutter): Templates are prescriptive by design. Cookiecutter
-  enforces a particular project structure and conventions, which may not align with your or your organization's
-  preferences. **If a template's opinions don't match your needs, you're forced to either choose a different template or
-  heavily modify an existing one**. This can become tedious when you need something slightly different from what's
-  available. `psp` is dynamic; scaffold what you need.
-- [PyScaffold](https://github.com/pyscaffold/pyscaffold): **PyScaffold doesn't manage virtual environments directly**.
-  You have to manually create and activate a virtualenv or use external tools like `pipenv`, `poetry`, `conda`, or
-  `pyenv`. While PyScaffold documents integrations with these tools, it doesn't provide a unified interface for
-  environment management like `psp` do.
-
-`psp` asks only what you need. By configuring a few environment variables, you can automate any project; in seconds, not
-hours.
+| Tool | What it is | Best fit | Time |
+|---|---|---|---|
+| [**cookiecutter**](https://github.com/cookiecutter/cookiecutter) | A tool that generates files from reusable templates. Templates can be for any language or project type; users supply values such as project name, and hooks can run setup steps. | You want to choose or build a custom template, especially for a team-specific layout or a non-Python project. | Hours |
+| [**PyScaffold**](https://github.com/pyscaffold/pyscaffold) | A Python-focused generator for package projects, with established defaults for packaging, tests, documentation, Git/versioning, and related development tooling. It also supports extensions and scaffold updates. | You’re making a distributable Python package and want a conventional, ready-to-develop structure. | Minutes |
+| [**`psp` (Python Scaffolding Projects)**](https://psp.readthedocs.io/en/latest/) | A Python project scaffolder with configurable profiles and options for things like virtual environments, dependency installation, tests, docs, CI, and packaging tools. It’s written in Rust.| You want an interactive/configurable setup that can handle more of the initial environment and tooling setup in one go. | Seconds |
 
 ## 🔌 Prerequisites
 
