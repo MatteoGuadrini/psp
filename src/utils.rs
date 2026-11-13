@@ -856,3 +856,10 @@ pub fn modify_toml_value(doc: &mut DocumentMut, key: &str, value: &str) -> Utils
     }
     Ok(())
 }
+
+// Function to write toml document file (preserve formatting)
+pub fn write_toml(path: &Path, doc: &DocumentMut) -> UtilsResult<()> {
+    let mut file = File::create(path)?;
+    file.write_all(doc.to_string().as_bytes())?;
+    Ok(())
+}
