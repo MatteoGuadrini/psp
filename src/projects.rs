@@ -4,7 +4,7 @@ use crate::utils::*;
 use std::{
     collections::HashMap,
     env::var,
-    fs::{copy, remove_dir_all},
+    fs::{copy, exists, remove_dir_all},
     path::Path,
     process::exit,
 };
@@ -469,11 +469,26 @@ pub fn prj_toml(
         data.insert("OTHER_DEPS", "true");
         data.insert("DEV_DEPS", &stringed_dev_dependencies);
     }
-    let pyproject_template = Path::new(root).join("pyproject.toml").display().to_string();
-    let file_ret = render_template("pyproject.hbs", &pyproject_template, data);
-    if !file_ret {
-        error("`pyproject.toml` render failed".to_string());
-        exit_status = 12;
+    let pyproject_path = Path::new(root).join("pyproject.toml");
+    let pyproject_template = pyproject_path.display().to_string();
+    // Check if pyproject.toml exists
+    if exists(&pyproject_path)? {
+        let mut pyproject = read_toml(&pyproject_path)?;
+        // Update dependencies
+        if !pyproject["project"]["dependencies"].is_none() {
+            let pyproject_deps = pyproject["project"]["dependencies"].as_array_mut().unwrap();
+            pyproject_deps.extend(deps);
+            if let Err(err) = write_toml(&pyproject_path, &pyproject) {
+                error(format!("`pyproject.toml` update failed: {err}"));
+                exit_status = 12;
+            }
+        }
+    } else {
+        let file_ret = render_template("pyproject.hbs", &pyproject_template, data);
+        if !file_ret {
+            error("`pyproject.toml` render failed".to_string());
+            exit_status = 12;
+        }
     }
     Ok(((), exit_status))
 }

@@ -850,9 +850,16 @@ pub fn read_toml(path: &Path) -> UtilsResult<DocumentMut> {
 }
 
 // Function to modify toml value (preserve formatting)
-pub fn modify_toml_value(doc: &mut DocumentMut, key: &str, value: &str) -> UtilsResult<()> {
-    if let Some(item) = doc.get_mut(key) {
-        *item = value.into();
+pub fn modify_toml_value(
+    doc: &mut DocumentMut,
+    section: &str,
+    key: &str,
+    value: &str,
+) -> UtilsResult<()> {
+    if let Some(table) = doc[section].as_table_mut() {
+        if let Some(item) = table.get_mut(key) {
+            *item = value.into();
+        }
     }
     Ok(())
 }
