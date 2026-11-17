@@ -478,10 +478,18 @@ pub fn prj_toml(
         if !pyproject["project"]["dependencies"].is_none() {
             let pyproject_deps = pyproject["project"]["dependencies"].as_array_mut().unwrap();
             pyproject_deps.extend(deps);
-            if let Err(err) = write_toml(&pyproject_path, &pyproject) {
-                error(format!("`pyproject.toml` update failed: {err}"));
-                exit_status = 12;
-            }
+        }
+        // Update dev dependencies
+        if !pyproject["project"]["optional-dependencies"]["dev"].is_none() {
+            let pyproject_dev_deps = pyproject["project"]["optional-dependencies"]["dev"]
+                .as_array_mut()
+                .unwrap();
+            pyproject_dev_deps.extend(dev_dependencies);
+        }
+        // Write pyproject
+        if let Err(err) = write_toml(&pyproject_path, &pyproject) {
+            error(format!("`pyproject.toml` update failed: {err}"));
+            exit_status = 12;
         }
     } else {
         let file_ret = render_template("pyproject.hbs", &pyproject_template, data);
