@@ -486,6 +486,11 @@ pub fn prj_toml(
                 .unwrap();
             pyproject_dev_deps.extend(dev_dependencies);
         }
+        // Update classifiers
+        if !pyproject["project"]["classifiers"].is_none() {
+            let pyproject_classifiers = pyproject["project"]["classifiers"].as_array_mut().unwrap();
+            pyproject_classifiers.extend(classifiers);
+        }
         // Write pyproject
         if let Err(err) = write_toml(&pyproject_path, &pyproject) {
             error(format!("`pyproject.toml` update failed: {err}"));
