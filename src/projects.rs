@@ -18,7 +18,7 @@ pub fn prj_name() -> ProjectResult<ProjectInfo> {
         let value = get_log_value(log_step, log_content?.as_str());
         if let Some(v) = value {
             let values: Vec<&str> = v.split(" ").collect();
-            if std::fs::exists(values[0])? {
+            if exists(values[0])? {
                 return Ok((values[0].to_string(), values[1].to_string(), 0));
             }
         }
@@ -490,6 +490,16 @@ pub fn prj_toml(
         if !pyproject["project"]["classifiers"].is_none() {
             let pyproject_classifiers = pyproject["project"]["classifiers"].as_array_mut().unwrap();
             pyproject_classifiers.extend(classifiers);
+        }
+        // Update package data
+        if !pyproject["tool"]["setuptools"]["package-data"][&project_name]
+            .is_none()
+        {
+            let pyproject_package_data = pyproject["tool"]["setuptools"]
+                ["package-data"][&project_name]
+                .as_array_mut()
+                .unwrap();
+            pyproject_package_data.extend(package_data_list);
         }
         // Write pyproject
         if let Err(err) = write_toml(&pyproject_path, &pyproject) {

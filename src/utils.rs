@@ -849,21 +849,6 @@ pub fn read_toml(path: &Path) -> UtilsResult<DocumentMut> {
     Ok(doc)
 }
 
-// Function to modify toml value (preserve formatting)
-pub fn modify_toml_value(
-    doc: &mut DocumentMut,
-    section: &str,
-    key: &str,
-    value: &str,
-) -> UtilsResult<()> {
-    if let Some(table) = doc[section].as_table_mut() {
-        if let Some(item) = table.get_mut(key) {
-            *item = value.into();
-        }
-    }
-    Ok(())
-}
-
 // Function to write toml document file (preserve formatting)
 pub fn write_toml(path: &Path, doc: &DocumentMut) -> UtilsResult<()> {
     let mut file = File::create(path)?;
