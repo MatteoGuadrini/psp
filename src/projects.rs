@@ -477,29 +477,47 @@ pub fn prj_toml(
         // Update dependencies
         if !pyproject["project"]["dependencies"].is_none() {
             let pyproject_deps = pyproject["project"]["dependencies"].as_array_mut().unwrap();
-            pyproject_deps.extend(deps);
+            let mut extended_deps = deps.clone();
+            extended_deps.extend(pyproject_deps.iter().map(|v| v.as_str().unwrap().to_string()));
+            extended_deps.sort();
+            extended_deps.dedup();
+            pyproject_deps.clear();
+            pyproject_deps.extend(extended_deps);
         }
         // Update dev dependencies
         if !pyproject["project"]["optional-dependencies"]["dev"].is_none() {
             let pyproject_dev_deps = pyproject["project"]["optional-dependencies"]["dev"]
                 .as_array_mut()
                 .unwrap();
-            pyproject_dev_deps.extend(dev_dependencies);
+            let mut extended_dev_deps = dev_dependencies.clone().iter().map(|s| s.to_string()).collect::<Vec<String>>();
+            extended_dev_deps.extend(pyproject_dev_deps.iter().map(|v| v.as_str().unwrap().to_string()));
+            extended_dev_deps.sort();
+            extended_dev_deps.dedup();
+            pyproject_dev_deps.clear();
+            pyproject_dev_deps.extend(extended_dev_deps);
         }
         // Update classifiers
         if !pyproject["project"]["classifiers"].is_none() {
             let pyproject_classifiers = pyproject["project"]["classifiers"].as_array_mut().unwrap();
-            pyproject_classifiers.extend(classifiers);
+            let mut extended_classifiers = classifiers.clone().iter().map(|s| s.to_string()).collect::<Vec<String>>();
+            extended_classifiers.extend(pyproject_classifiers.iter().map(|v| v.as_str().unwrap().to_string()));
+            extended_classifiers.sort();
+            extended_classifiers.dedup();
+            pyproject_classifiers.clear();
+            pyproject_classifiers.extend(extended_classifiers);
         }
         // Update package data
-        if !pyproject["tool"]["setuptools"]["package-data"][&project_name]
-            .is_none()
-        {
-            let pyproject_package_data = pyproject["tool"]["setuptools"]
-                ["package-data"][&project_name]
+        if !pyproject["tool"]["setuptools"]["package-data"][&project_name].is_none() {
+            let pyproject_package_data = pyproject["tool"]["setuptools"]["package-data"]
+                [&project_name]
                 .as_array_mut()
                 .unwrap();
-            pyproject_package_data.extend(package_data_list);
+            let mut extended_package_data = package_data_list.clone().iter().map(|s| s.to_string()).collect::<Vec<String>>();
+            extended_package_data.extend(pyproject_package_data.iter().map(|v| v.as_str().unwrap().to_string()));
+            extended_package_data.sort();
+            extended_package_data.dedup();
+            pyproject_package_data.clear();
+            pyproject_package_data.extend(extended_package_data);
         }
         // Write pyproject
         if let Err(err) = write_toml(&pyproject_path, &pyproject) {
