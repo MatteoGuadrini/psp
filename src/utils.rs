@@ -5,7 +5,7 @@ use inquire::{Confirm, Select, Text};
 use std::{
     collections::HashMap,
     env::{args, temp_dir, var},
-    fs::{copy, create_dir_all, read_to_string, remove_file, File, OpenOptions},
+    fs::{copy, create_dir_all, exists, read_to_string, remove_file, File, OpenOptions},
     io::{Read, Write},
     path::{absolute, Path},
     process::exit,
@@ -191,7 +191,7 @@ pub fn create_python_file(file: &str, content: &str) -> bool {
         ("VERSION", VERSION),
         ("PYCONTENT", content),
     ]);
-    let file_ret = render_template("pyfile.hbs", file, data);
+    let file_ret = render_template("pyfile.hbs", file, data, false);
     if !file_ret {
         error(format!("Python file creation error: {file}"));
         return false;
@@ -508,21 +508,32 @@ pub fn load_env() {
 }
 
 // Function to render a template file
-pub fn render_template(template: &str, file: &str, data: HashMap<&str, &str>) -> bool {
-    // Create template file
-    let tmp_dir = temp_dir().join(".psp_templates");
-    let template_path = tmp_dir.join(template).display().to_string();
-    create_template(template, tmp_dir.to_str().unwrap());
-    let mut handlebars = Handlebars::new();
-    if let Err(e) = handlebars.register_template_file(template, &template_path) {
-        error(format!("{e}; `{template}` is not found!"));
-        return false;
-    }
-    let mut output_file = File::create(file).unwrap();
-    // Replace variables into file
-    let file_ret = handlebars.render_to_write(template, &data, &mut output_file);
-    if file_ret.is_err() {
-        false
+pub fn render_template(
+    template: &str,
+    file: &str,
+    data: HashMap<&str, &str>,
+    rewrite: bool,
+) -> bool {
+    // Check if file is just rendered
+    let file_exists = exists(file).unwrap();
+    if !file_exists || rewrite {
+        // Create template file
+        let tmp_dir = temp_dir().join(".psp_templates");
+        let template_path = tmp_dir.join(template).display().to_string();
+        create_template(template, tmp_dir.to_str().unwrap());
+        let mut handlebars = Handlebars::new();
+        if let Err(e) = handlebars.register_template_file(template, &template_path) {
+            error(format!("{e}; `{template}` is not found!"));
+            return false;
+        }
+        let mut output_file = File::create(file).unwrap();
+        // Replace variables into file
+        let file_ret = handlebars.render_to_write(template, &data, &mut output_file);
+        if file_ret.is_err() {
+            return false;
+        } else {
+            return true;
+        }
     } else {
         true
     }

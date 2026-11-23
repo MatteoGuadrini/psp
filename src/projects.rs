@@ -136,7 +136,7 @@ pub fn prj_git(name: &str, shortcut: &String) -> ProjectResult<GitStatus> {
         data.insert("SIGNATURE", SIGNATURE);
         data.insert("VERSION", VERSION);
         let gitignore_template = Path::new(name).join(".gitignore").display().to_string();
-        let file_ret = render_template("gitignore.hbs", &gitignore_template, data);
+        let file_ret = render_template("gitignore.hbs", &gitignore_template, data, false);
         ret = if file_ret {
             true
         } else {
@@ -190,7 +190,12 @@ pub fn prj_test(root: &str, name: &str, shortcut: &String) -> ProjectResult<Test
             ("PRJ_VER", &project_version),
         ]);
         let test_module = tests_dir.join(format!("test_{project_name}.py"));
-        let file_ret = render_template("test_module.hbs", test_module.to_str().unwrap(), data);
+        let file_ret = render_template(
+            "test_module.hbs",
+            test_module.to_str().unwrap(),
+            data,
+            false,
+        );
         if !file_ret {
             error(format!("`test_{project_name}.py` render failed"));
             exit_status = 5;
@@ -478,7 +483,11 @@ pub fn prj_toml(
         if !pyproject["project"]["dependencies"].is_none() {
             let pyproject_deps = pyproject["project"]["dependencies"].as_array_mut().unwrap();
             let mut extended_deps = deps.clone();
-            extended_deps.extend(pyproject_deps.iter().map(|v| v.as_str().unwrap().to_string()));
+            extended_deps.extend(
+                pyproject_deps
+                    .iter()
+                    .map(|v| v.as_str().unwrap().to_string()),
+            );
             extended_deps.sort();
             extended_deps.dedup();
             pyproject_deps.clear();
@@ -489,8 +498,16 @@ pub fn prj_toml(
             let pyproject_dev_deps = pyproject["project"]["optional-dependencies"]["dev"]
                 .as_array_mut()
                 .unwrap();
-            let mut extended_dev_deps = dev_dependencies.clone().iter().map(|s| s.to_string()).collect::<Vec<String>>();
-            extended_dev_deps.extend(pyproject_dev_deps.iter().map(|v| v.as_str().unwrap().to_string()));
+            let mut extended_dev_deps = dev_dependencies
+                .clone()
+                .iter()
+                .map(|s| s.to_string())
+                .collect::<Vec<String>>();
+            extended_dev_deps.extend(
+                pyproject_dev_deps
+                    .iter()
+                    .map(|v| v.as_str().unwrap().to_string()),
+            );
             extended_dev_deps.sort();
             extended_dev_deps.dedup();
             pyproject_dev_deps.clear();
@@ -499,21 +516,37 @@ pub fn prj_toml(
         // Update classifiers
         if !pyproject["project"]["classifiers"].is_none() {
             let pyproject_classifiers = pyproject["project"]["classifiers"].as_array_mut().unwrap();
-            let mut extended_classifiers = classifiers.clone().iter().map(|s| s.to_string()).collect::<Vec<String>>();
-            extended_classifiers.extend(pyproject_classifiers.iter().map(|v| v.as_str().unwrap().to_string()));
+            let mut extended_classifiers = classifiers
+                .clone()
+                .iter()
+                .map(|s| s.to_string())
+                .collect::<Vec<String>>();
+            extended_classifiers.extend(
+                pyproject_classifiers
+                    .iter()
+                    .map(|v| v.as_str().unwrap().to_string()),
+            );
             extended_classifiers.sort();
             extended_classifiers.dedup();
             pyproject_classifiers.clear();
             pyproject_classifiers.extend(extended_classifiers);
         }
         // Update package data
-        if !pyproject["tool"]["setuptools"]["package-data"][&project_name].is_none() {
+        if pyproject.contains_table("tool.setuptools.package-data") {
             let pyproject_package_data = pyproject["tool"]["setuptools"]["package-data"]
                 [&project_name]
                 .as_array_mut()
                 .unwrap();
-            let mut extended_package_data = package_data_list.clone().iter().map(|s| s.to_string()).collect::<Vec<String>>();
-            extended_package_data.extend(pyproject_package_data.iter().map(|v| v.as_str().unwrap().to_string()));
+            let mut extended_package_data = package_data_list
+                .clone()
+                .iter()
+                .map(|s| s.to_string())
+                .collect::<Vec<String>>();
+            extended_package_data.extend(
+                pyproject_package_data
+                    .iter()
+                    .map(|v| v.as_str().unwrap().to_string()),
+            );
             extended_package_data.sort();
             extended_package_data.dedup();
             pyproject_package_data.clear();
@@ -525,7 +558,7 @@ pub fn prj_toml(
             exit_status = 12;
         }
     } else {
-        let file_ret = render_template("pyproject.hbs", &pyproject_template, data);
+        let file_ret = render_template("pyproject.hbs", &pyproject_template, data, false);
         if !file_ret {
             error("`pyproject.toml` render failed".to_string());
             exit_status = 12;
@@ -575,7 +608,7 @@ pub fn prj_ci(name: &str, deps: &Vec<String>, shortcut: &String) -> ProjectResul
             ("PYTHON", &python_version),
         ]);
         let travis_template = Path::new(name).join(".travis.yml").display().to_string();
-        let file_ret = render_template("travis.hbs", &travis_template, data);
+        let file_ret = render_template("travis.hbs", &travis_template, data, false);
         if !file_ret {
             error("`.travis.yml render failed".to_string());
             exit_status = 9;
@@ -596,7 +629,7 @@ pub fn prj_ci(name: &str, deps: &Vec<String>, shortcut: &String) -> ProjectResul
             .join("config.yml")
             .display()
             .to_string();
-        let file_ret = render_template("circleci.hbs", &circleci_template, data);
+        let file_ret = render_template("circleci.hbs", &circleci_template, data, false);
         if !file_ret {
             error("`.circleci/config.yml` render failed".to_string());
             exit_status = 9;
@@ -618,7 +651,7 @@ pub fn prj_ci(name: &str, deps: &Vec<String>, shortcut: &String) -> ProjectResul
             .join("python-app.yml")
             .display()
             .to_string();
-        let file_ret = render_template("githubactions.hbs", &github_template, data);
+        let file_ret = render_template("githubactions.hbs", &github_template, data, false);
         if !file_ret {
             error("`python-app.yml` render failed".to_string());
             exit_status = 9;
@@ -632,7 +665,7 @@ pub fn prj_ci(name: &str, deps: &Vec<String>, shortcut: &String) -> ProjectResul
             ("PACKAGE", package_name),
         ]);
         let gitlab_template = Path::new(name).join(".gitlab-ci.yml").display().to_string();
-        let file_ret = render_template("gitlabcicd.hbs", &gitlab_template, data);
+        let file_ret = render_template("gitlabcicd.hbs", &gitlab_template, data, false);
         if !file_ret {
             error("`.gitlab-ci.yml` render failed".to_string());
             exit_status = 9;
@@ -792,23 +825,32 @@ pub fn prj_remote(root: &str, name: &str, shortcut: &String) -> ProjectResult<Gi
             ]);
             // Feature template
             let gitlab_feature_template = issue_folder.join("feature.md").display().to_string();
-            let file_ret =
-                render_template("gitlab_feature.hbs", &gitlab_feature_template, data.clone());
+            let file_ret = render_template(
+                "gitlab_feature.hbs",
+                &gitlab_feature_template,
+                data.clone(),
+                false,
+            );
             if !file_ret {
                 error("`feature.md` render failed".to_string());
                 exit_status = 4;
             }
             // Bug template
             let gitlab_bug_template = issue_folder.join("bug.md").display().to_string();
-            let file_ret = render_template("gitlab_bug.hbs", &gitlab_bug_template, data.clone());
+            let file_ret =
+                render_template("gitlab_bug.hbs", &gitlab_bug_template, data.clone(), false);
             if !file_ret {
                 error("`bug.md` render failed".to_string());
                 exit_status = 4;
             }
             // Merge template
             let gitlab_merge_template = merge_folder.join("merge.md").display().to_string();
-            let file_ret =
-                render_template("gitlab_merge.hbs", &gitlab_merge_template, data.clone());
+            let file_ret = render_template(
+                "gitlab_merge.hbs",
+                &gitlab_merge_template,
+                data.clone(),
+                false,
+            );
             if !file_ret {
                 error("`merge.md` render failed".to_string());
                 exit_status = 4;
@@ -838,15 +880,20 @@ pub fn prj_remote(root: &str, name: &str, shortcut: &String) -> ProjectResult<Gi
             ]);
             // Feature template
             let github_feature_template = issue_folder.join("feature.yml").display().to_string();
-            let file_ret =
-                render_template("github_feature.hbs", &github_feature_template, data.clone());
+            let file_ret = render_template(
+                "github_feature.hbs",
+                &github_feature_template,
+                data.clone(),
+                false,
+            );
             if !file_ret {
                 error("`feature.yml` render failed".to_string());
                 exit_status = 4;
             }
             // Bug template
             let github_bug_template = issue_folder.join("bug.yml").display().to_string();
-            let file_ret = render_template("github_bug.hbs", &github_bug_template, data.clone());
+            let file_ret =
+                render_template("github_bug.hbs", &github_bug_template, data.clone(), false);
             if !file_ret {
                 error("`bug.yml` render failed".to_string());
                 exit_status = 4;
@@ -856,8 +903,12 @@ pub fn prj_remote(root: &str, name: &str, shortcut: &String) -> ProjectResult<Gi
                 .join("pull_request_template.md")
                 .display()
                 .to_string();
-            let file_ret =
-                render_template("github_merge.hbs", &github_merge_template, data.clone());
+            let file_ret = render_template(
+                "github_merge.hbs",
+                &github_merge_template,
+                data.clone(),
+                false,
+            );
             if !file_ret {
                 error("`pull_request_template.yml` render failed".to_string());
                 exit_status = 4;
@@ -946,7 +997,7 @@ pub fn prj_tox(
         ]);
         // Tox template
         let tox_template = Path::new(name).join("tox.ini").display().to_string();
-        let file_ret = render_template("tox.hbs", &tox_template, data.clone());
+        let file_ret = render_template("tox.hbs", &tox_template, data.clone(), true);
         if !file_ret {
             error("`tox.ini` render failed".to_string());
             exit_status = 8;
@@ -1143,14 +1194,14 @@ pub fn prj_files(
         ]);
         // README template
         let readme_template = Path::new(root).join("README.md").display().to_string();
-        let file_ret = render_template("readme.hbs", &readme_template, data.clone());
+        let file_ret = render_template("readme.hbs", &readme_template, data.clone(), false);
         if !file_ret {
             error("`README.md` render failed".to_string());
             exit_status = 14;
         }
         // CHANGES template
         let changes_template = Path::new(root).join("CHANGES.md").display().to_string();
-        let file_ret = render_template("changes.hbs", &changes_template, data.clone());
+        let file_ret = render_template("changes.hbs", &changes_template, data.clone(), false);
         if !file_ret {
             error("`CHANGES.md` render failed".to_string());
             exit_status = 14;
@@ -1160,7 +1211,12 @@ pub fn prj_files(
             .join("CONTRIBUTING.md")
             .display()
             .to_string();
-        let file_ret = render_template("contributing.hbs", &contributing_template, data.clone());
+        let file_ret = render_template(
+            "contributing.hbs",
+            &contributing_template,
+            data.clone(),
+            false,
+        );
         if !file_ret {
             error("`CONTRIBUTING.md` render failed".to_string());
             exit_status = 14;
@@ -1174,6 +1230,7 @@ pub fn prj_files(
             "code_of_conduct.hbs",
             &code_of_conduct_template,
             data.clone(),
+            false,
         );
         if !file_ret {
             error("`CODE_OF_CONDUCT.md` render failed".to_string());
@@ -1190,7 +1247,7 @@ pub fn prj_files(
             .join(format!("{name}_sample.py"))
             .display()
             .to_string();
-        let file_ret = render_template("sample.hbs", &contributing_template, data.clone());
+        let file_ret = render_template("sample.hbs", &contributing_template, data.clone(), false);
         if !file_ret {
             error(format!("`{name}_sample.py` render failed"));
             exit_status = 14;
@@ -1268,6 +1325,7 @@ pub fn prj_license(name: &str, shortcut: &String, author: &String) -> ProjectRes
             &license_file,
             &license_template.replace(&license_file, "LICENSE.md"),
             data,
+            true,
         );
         if !file_ret {
             error("`LICENSE.md` render failed".to_string());
@@ -1385,7 +1443,12 @@ pub fn prj_container(root: &str, name: &str, shortcut: &String) -> ProjectResult
             ("PACKAGE", name),
         ]);
         let container_template = Path::new(root).join("Dockerfile").display().to_string();
-        let file_ret = render_template("containerfile.hbs", &container_template, data.clone());
+        let file_ret = render_template(
+            "containerfile.hbs",
+            &container_template,
+            data.clone(),
+            false,
+        );
         // Copy Dockerfile to Containerfile
         copy(
             &container_template,
@@ -1402,6 +1465,7 @@ pub fn prj_container(root: &str, name: &str, shortcut: &String) -> ProjectResult
             "container_ignore.hbs",
             &container_ignore_template,
             data.clone(),
+            false,
         );
         // Copy .dockerignore to .containerignore
         copy(
@@ -1497,7 +1561,7 @@ endif";
     data.insert("OPTIONS", options.as_str());
     data.insert("ACTIONS", actions.as_str());
     let makefile_template = Path::new(root).join("Makefile").display().to_string();
-    let file_ret = render_template("makefile.hbs", &makefile_template, data.clone());
+    let file_ret = render_template("makefile.hbs", &makefile_template, data.clone(), false);
     if !file_ret {
         error("`Makefile` render failed".to_string());
         exit_status = 15;
@@ -1551,21 +1615,21 @@ pub fn prj_ai(root: &str, name: &str, shortcut: &String) -> ProjectResult<AIStat
         ]);
         // SKILLS.md
         let skills_template = Path::new(root).join("SKILLS.md").display().to_string();
-        let file_ret = render_template("skills.hbs", &skills_template, data.clone());
+        let file_ret = render_template("skills.hbs", &skills_template, data.clone(), false);
         if !file_ret {
             error("`SKILLS.md` render failed".to_string());
             exit_status = 16;
         }
         // AGENTS.md
         let agents_template = Path::new(root).join("AGENTS.md").display().to_string();
-        let file_ret = render_template("agents.hbs", &agents_template, data.clone());
+        let file_ret = render_template("agents.hbs", &agents_template, data.clone(), false);
         if !file_ret {
             error("`AGENTS.md` render failed".to_string());
             exit_status = 16;
         }
         // llms.txt
         let llms_template = Path::new(root).join("llms.txt").display().to_string();
-        let file_ret = render_template("llms.hbs", &llms_template, data.clone());
+        let file_ret = render_template("llms.hbs", &llms_template, data.clone(), false);
         if !file_ret {
             error("`llms.txt` render failed".to_string());
             exit_status = 16;
