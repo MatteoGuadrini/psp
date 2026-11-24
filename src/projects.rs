@@ -967,7 +967,13 @@ pub fn prj_tox(
             PIP_BIN
         };
         // Install tox
-        let mut pm = make_pm(bin, name, name, vec!["tox".to_string()], venv);
+        let mut pm = make_pm(
+            bin,
+            name,
+            name,
+            vec!["tox".to_string(), "pytest".to_string()],
+            venv,
+        );
         let output = pm
             .output()
             .expect(format!("{bin} should be installed").as_str());
