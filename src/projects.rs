@@ -58,12 +58,23 @@ pub fn prj_name() -> ProjectResult<ProjectInfo> {
     let package = project.join(&package_name);
     let root = Path::new(package.parent().unwrap());
     // Check if a project path already exists
-    if package.exists() {
-        let project_exists = prompt_confirm(
-            format!("Path `{}` exists. Do you want continue?", root.display()).as_str(),
-            false,
-            "Some files will be overwritten",
-        );
+    if project.exists() {
+        let message = if exists(project.join("pyproject.toml")).unwrap() {
+            let ret = format!(
+                "Python project `{}` exists. Do you want continue?",
+                root.display()
+            );
+            ret
+        } else {
+            let ret = format!("Path `{}` exists. Do you want continue?", root.display());
+            ret
+        };
+        let help = if exists(project.join("pyproject.toml")).unwrap() {
+            "Python project will upgrade"
+        } else {
+            "Some files will be overwritten"
+        };
+        let project_exists = prompt_confirm(message.as_str(), false, help);
         if !project_exists {
             info(format!("the path `{}` unchanged", root.display()));
             exit(0)

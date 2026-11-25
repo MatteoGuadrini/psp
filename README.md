@@ -30,6 +30,7 @@
   see [Template](https://psp.readthedocs.io/en/latest/template)
 - 🧩 Customize layout of Python projects through profiles,
   see [Profiles](https://psp.readthedocs.io/en/latest/env/#profiles)
+- 🔄 Update project if exists 
 
 ## 🚀 Get Started in 30 Seconds
 
