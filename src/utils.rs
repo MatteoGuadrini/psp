@@ -302,7 +302,7 @@ pub fn env_profile() -> String {
 // Function to check line into log
 pub fn check_log(step: &str, log: &str) -> bool {
     let mut result = false;
-    if env_psplog() && std::fs::exists(log).ok().unwrap() {
+    if env_psplog() && exists(log).ok().unwrap() {
         let log_content = read_log(log);
         result = log_content.unwrap().contains(step);
     }
@@ -530,9 +530,9 @@ pub fn render_template(
         // Replace variables into file
         let file_ret = handlebars.render_to_write(template, &data, &mut output_file);
         if file_ret.is_err() {
-            return false;
+            false
         } else {
-            return true;
+            true
         }
     } else {
         true
