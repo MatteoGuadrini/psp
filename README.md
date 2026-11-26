@@ -1,7 +1,7 @@
 <img src="https://raw.githubusercontent.com/MatteoGuadrini/psp/main/img/psp_logo.svg" alt="Logo" align="right" width="150"/>psp (Python Scaffolding Projects)
 ======
 
-`psp` is a blazing fast command line utility to scaffold your _Python_ project, written in Rust.
+`psp` is a blazing fast command line utility to scaffold your _Python_ project, written in Rust and is a user-friendly command-line tool optimized for AI agents as a tool for generating complete _Python_ projects.
 
 - ⚡️ 1-100x faster compared to other scaffolding tools
 - 🛠️ `pyproject.toml` support
@@ -175,6 +175,28 @@ Rather than replacing it, `psp` seeks to integrate and provide a useful scaffold
 | [**cookiecutter**](https://github.com/cookiecutter/cookiecutter) | A tool that generates files from reusable templates. Templates can be for any language or project type; users supply values such as project name, and hooks can run setup steps. | You want to choose or build a custom template, especially for a team-specific layout or a non-Python project. | Hours |
 | [**PyScaffold**](https://github.com/pyscaffold/pyscaffold) | A Python-focused generator for package projects, with established defaults for packaging, tests, documentation, Git/versioning, and related development tooling. It also supports extensions and scaffold updates. | You’re making a distributable Python package and want a conventional, ready-to-develop structure. | Minutes |
 | [**`psp` (Python Scaffolding Projects)**](https://psp.readthedocs.io/en/latest/) | A Python project scaffolder with configurable profiles and options for things like virtual environments, dependency installation, tests, docs, CI, and packaging tools. It’s written in Rust.| You want an interactive/configurable setup that can handle more of the initial environment and tooling setup in one go. | Seconds |
+
+### Why AI Agents Need `psp`
+
+AI agents require **scalable, modular, and optimized** scaffolding to operate efficiently. **PSP-Scaffold** is designed to **supercharge** agent development with:
+
+- **Ultra-Fast Setup** – Generate full Python projects in **seconds**.
+- **AI-Optimized Templates** – Pre-configured with `SKILLS.md`, `AGENTS.md`, and `llms.txt` for AI workflows.
+- **Modular Architecture** – Plug in custom tools, APIs, and workflows effortlessly.
+- **Enterprise-Grade** – Supports `pyproject.toml`, `tox`, CI/CD, and Docker for seamless deployment.
+- **Developer-Friendly** – Clean APIs, documentation, and examples for rapid iteration.
+
+### Key Features for AI Agents
+
+| Feature | Benefit |
+|---------|---------|
+| **1-100x Faster** | No waiting—get started immediately. |
+| **AI-Ready Templates** | Pre-built `SKILLS.md`, `AGENTS.md`, and `llms.txt` for agent guidance. |
+| **Modular Components** | Add tools, APIs, and workflows without rewriting scaffolding. |
+| **Dependency Management** | Auto-install dependencies with `pip`, `conda`, or `uv`. |
+| **Docker/Container Support** | Deploy agent projects in isolated environments. |
+| **Pause/Resume** | Stop mid-scaffolding and pick up later. |
+| **Customizable Profiles** | Tailor project structure to your agent’s project needs. |
 
 ## 🔌 Prerequisites
 
