@@ -34,7 +34,7 @@
 
 ## 🚀 Get Started in 30 Seconds
 
-![Made with VHS](https://vhs.charm.sh/vhs-2z6Zrju5llOQN2uqkMZc9f.gif)
+![Made with VHS](https://vhs.charm.sh/vhs-5o8WgR2b6PubGpl2cpLfW.gif)
 
 The result is:
 
@@ -53,7 +53,7 @@ dream                   # Project folder
 ├── Dockerfile          # Docker container file for build image
 ├── Makefile            # Makefile for command make; make help
 ├── requirements.txt    # Dependencies list used by third programs
-├── SKILLS.md           # Python AI skills for develop on this repository
+├── SKILLS.md           # Python AI skills to develop on this repository
 ├── AGENTS.md           # Simple and open format for guiding AI agents
 ├── llms.txt            # Instructions file to provide information to help AI agents use this project
 ├── docs                # Documentation folder: Sphinx/MKDocs
@@ -133,7 +133,7 @@ $> psp help
 ┏━┃┏━━━━┛┏━┃
 ┏━┛━━━━━┃┏━┛
 ┛  ━━━━━┛┛
-psp (Python Scaffolding Projects), version 0.10.0
+psp (Python Scaffolding Projects), version 0.11.0
 usage: psp [shortcut]
 ie: psp [help|quick|simple|full]
 
@@ -293,14 +293,14 @@ For **all users** (required root access):
 
 ```console
 sudo -i
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.10.0/psp-x86_64-unknown-linux-gnu -o /usr/local/bin/psp
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.11.0/psp-x86_64-unknown-linux-gnu -o /usr/local/bin/psp
 chmod +x /usr/local/bin/psp
 ```
 
 For **current user**:
 
 ```console
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.10.0/psp-x86_64-unknown-linux-gnu -o $HOME/.local/bin/psp
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.11.0/psp-x86_64-unknown-linux-gnu -o $HOME/.local/bin/psp
 chmod +x $HOME/.local/bin/psp
 ```
 
@@ -308,7 +308,7 @@ chmod +x $HOME/.local/bin/psp
 
 ```console
 sudo su -
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.10.0/psp-aarch64-apple-darwin -o /usr/local/bin/psp
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.11.0/psp-aarch64-apple-darwin -o /usr/local/bin/psp
 chmod +x /usr/local/bin/psp
 ```
 
@@ -317,7 +317,7 @@ chmod +x /usr/local/bin/psp
 For **all users** (required Administrator):
 
 ```powershell
-iwr -OutFile "C:\Windows\system32\psp.exe" "https://github.com/MatteoGuadrini/psp/releases/download/v0.10.0/psp-amd64-windows-gnu"
+iwr -OutFile "C:\Windows\system32\psp.exe" "https://github.com/MatteoGuadrini/psp/releases/download/v0.11.0/psp-amd64-windows-gnu"
 ```
 
 For **current user**:
@@ -325,7 +325,7 @@ For **current user**:
 ```powershell
 mkdir "$( $Env:USERPROFILE )\bin"
 [System.Environment]::SetEnvironmentVariable("PATH", $Env:PATH + ";$( $Env:USERPROFILE )\bin", "USER")
-iwr -OutFile "$( $Env:USERPROFILE )\bin\psp.exe" "https://github.com/MatteoGuadrini/psp/releases/download/v0.10.0/psp-amd64-windows-gnu"
+iwr -OutFile "$( $Env:USERPROFILE )\bin\psp.exe" "https://github.com/MatteoGuadrini/psp/releases/download/v0.11.0/psp-amd64-windows-gnu"
 ```
 
 ### Packages
@@ -335,14 +335,14 @@ If you want to install OS package, follow instructions for your Operating System
 For **Debian/Ubuntu**:
 
 ```console
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.10.0/psp-x86_64-unknown-linux-gnu.deb -o psp.deb
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.11.0/psp-x86_64-unknown-linux-gnu.deb -o psp.deb
 sudo dpkg -i psp.deb
 ```
 
 For **Fedora/Mageia/OpenSuse**:
 
 ```console
-sudo rpm -i https://github.com/MatteoGuadrini/psp/releases/download/v0.10.0/psp-x86_64-unknown-linux-gnu.rpm
+sudo rpm -i https://github.com/MatteoGuadrini/psp/releases/download/v0.11.0/psp-x86_64-unknown-linux-gnu.rpm
 ```
 
 ### Compile as your own

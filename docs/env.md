@@ -111,7 +111,7 @@ PSP_LICENSE=mit     # Overwritten
 ┏━┃┏━━━━┛┏━┃
 ┏━┛━━━━━┃┏━┛
 ┛  ━━━━━┛┛
-info: welcome to psp, version 0.10.0
+info: welcome to psp, version 0.11.0
 > Name of Python project: biopy
 info: python project `biopy` created at /tmp/mypyenv/biopy
 [gu]# ll biopy
