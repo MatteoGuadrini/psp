@@ -1,7 +1,7 @@
 <img src="https://raw.githubusercontent.com/MatteoGuadrini/psp/main/img/psp_logo.svg" alt="Logo" align="right" width="150"/>psp (Python Scaffolding Projects)
 ======
 
-`psp` is a blazing fast command line utility to scaffold your _Python_ project, written in Rust.
+`psp` is a blazing fast command line utility to scaffold your _Python_ project, written in Rust and is a user-friendly command-line tool optimized for AI agents as a tool for generating complete _Python_ projects.
 
 - ⚡️ 1-100x faster compared to other scaffolding tools
 - 🛠️ `pyproject.toml` support
@@ -22,18 +22,19 @@
 - 💡 Can use _quick_, _simple_ and _full_ argument for rapid configuration
 - 💾 Create `$HOME/.psp.env` and `$PWD/.env` files with your customizations
 - 🎛️ Can use some [`PSP_`](https://psp.readthedocs.io/en/latest/env/) variables to control your defaults
-- 📦 Support `pip`, `conda` and `uv` package manager
-- 🧮 Support `hatch`, `maturin` and `poetry` builder
+- 📦 Support `pip`, `conda` and `uv` package managers
+- 🧮 Support `hatch`, `maturin` and `poetry` builders
 - 🍿 Stop, pause and resume project creation when you want;
   see [Resume](https://psp.readthedocs.io/en/latest/simple/#resume)
 - 🖇️ [Handlebars](https://handlebarsjs.com) custom templates engine (with local cache) to customize project;
   see [Template](https://psp.readthedocs.io/en/latest/template)
 - 🧩 Customize layout of Python projects through profiles,
   see [Profiles](https://psp.readthedocs.io/en/latest/env/#profiles)
+- 🔄 Update project if exists 
 
 ## 🚀 Get Started in 30 Seconds
 
-![Made with VHS](https://vhs.charm.sh/vhs-2z6Zrju5llOQN2uqkMZc9f.gif)
+![Made with VHS](https://vhs.charm.sh/vhs-5o8WgR2b6PubGpl2cpLfW.gif)
 
 The result is:
 
@@ -52,6 +53,9 @@ dream                   # Project folder
 ├── Dockerfile          # Docker container file for build image
 ├── Makefile            # Makefile for command make; make help
 ├── requirements.txt    # Dependencies list used by third programs
+├── SKILLS.md           # Python AI skills to develop on this repository
+├── AGENTS.md           # Simple and open format for guiding AI agents
+├── llms.txt            # Instructions file to provide information to help AI agents use this project
 ├── docs                # Documentation folder: Sphinx/MKDocs
 │   ├── build
 │   ├── make.bat
@@ -129,7 +133,7 @@ $> psp help
 ┏━┃┏━━━━┛┏━┃
 ┏━┛━━━━━┃┏━┛
 ┛  ━━━━━┛┛
-psp (Python Scaffolding Projects), version 0.10.0
+psp (Python Scaffolding Projects), version 0.11.0
 usage: psp [shortcut]
 ie: psp [help|quick|simple|full]
 
@@ -157,7 +161,7 @@ environments:
 
 > [!NOTE]
 > More details for shortcuts, variables and other things, available in official
-documentation: [psp docs](https://psp.readthedocs.io/)
+> documentation: [psp docs](https://psp.readthedocs.io/)
 
 ## Why choose psp?
 
@@ -166,18 +170,33 @@ Rather than replacing it, `psp` seeks to integrate and provide a useful scaffold
 
 ### Differences with other tools
 
-- [cookiecutter](https://github.com/cookiecutter/cookiecutter): Templates are prescriptive by design. Cookiecutter
-  enforces a particular project structure and conventions, which may not align with your or your organization's
-  preferences. **If a template's opinions don't match your needs, you're forced to either choose a different template or
-  heavily modify an existing one**. This can become tedious when you need something slightly different from what's
-  available. `psp` is dynamic; scaffold what you need.
-- [PyScaffold](https://github.com/pyscaffold/pyscaffold): **PyScaffold doesn't manage virtual environments directly**.
-  You have to manually create and activate a virtualenv or use external tools like `pipenv`, `poetry`, `conda`, or
-  `pyenv`. While PyScaffold documents integrations with these tools, it doesn't provide a unified interface for
-  environment management like `psp` do.
+| Tool | What it is | Best fit | Time |
+|---|---|---|---|
+| [**cookiecutter**](https://github.com/cookiecutter/cookiecutter) | A tool that generates files from reusable templates. Templates can be for any language or project type; users supply values such as project name, and hooks can run setup steps. | You want to choose or build a custom template, especially for a team-specific layout or a non-Python project. | Hours |
+| [**PyScaffold**](https://github.com/pyscaffold/pyscaffold) | A Python-focused generator for package projects, with established defaults for packaging, tests, documentation, Git/versioning, and related development tooling. It also supports extensions and scaffold updates. | You’re making a distributable Python package and want a conventional, ready-to-develop structure. | Minutes |
+| [**`psp` (Python Scaffolding Projects)**](https://psp.readthedocs.io/en/latest/) | A Python project scaffolder with configurable profiles and options for things like virtual environments, dependency installation, tests, docs, CI, and packaging tools. It’s written in Rust.| You want an interactive/configurable setup that can handle more of the initial environment and tooling setup in one go. | Seconds |
 
-`psp` asks only what you need. By configuring a few environment variables, you can automate any project; in seconds, not
-hours.
+### Why AI Agents Need `psp`
+
+AI agents require **scalable, modular, and optimized** scaffolding to operate efficiently. **PSP-Scaffold** is designed to **supercharge** agent development with:
+
+- **Ultra-Fast Setup** – Generate full Python projects in **seconds**.
+- **AI-Optimized Templates** – Pre-configured with `SKILLS.md`, `AGENTS.md`, and `llms.txt` for AI workflows.
+- **Modular Architecture** – Plug in custom tools, APIs, and workflows effortlessly.
+- **Enterprise-Grade** – Supports `pyproject.toml`, `tox`, CI/CD, and Docker for seamless deployment.
+- **Developer-Friendly** – Clean APIs, documentation, and examples for rapid iteration.
+
+### Key Features for AI Agents
+
+| Feature | Benefit |
+|---------|---------|
+| **1-100x Faster** | No waiting—get started immediately. |
+| **AI-Ready Templates** | Pre-built `SKILLS.md`, `AGENTS.md`, and `llms.txt` for agent guidance. |
+| **Modular Components** | Add tools, APIs, and workflows without rewriting scaffolding. |
+| **Dependency Management** | Auto-install dependencies with `pip`, `conda`, or `uv`. |
+| **Docker/Container Support** | Deploy agent projects in isolated environments. |
+| **Pause/Resume** | Stop mid-scaffolding and pick up later. |
+| **Customizable Profiles** | Tailor project structure to your agent’s project needs. |
 
 ## 🔌 Prerequisites
 
@@ -240,8 +259,7 @@ iwr https://raw.githubusercontent.com/MatteoGuadrini/psp/main/install.ps1 | iex
 
 > [!WARNING]
 > If you're using _Windows_ OS, make sure you have the _Visual Studio Build Tools_ installed, otherwise install them
-with a
-command line: `winget install -e --id Microsoft.VisualStudio.BuildTools`
+> with a command line: `winget install -e --id Microsoft.VisualStudio.BuildTools`
 
 To install with `pip`:
 
@@ -275,14 +293,14 @@ For **all users** (required root access):
 
 ```console
 sudo -i
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.10.0/psp-x86_64-unknown-linux-gnu -o /usr/local/bin/psp
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.11.0/psp-x86_64-unknown-linux-gnu -o /usr/local/bin/psp
 chmod +x /usr/local/bin/psp
 ```
 
 For **current user**:
 
 ```console
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.10.0/psp-x86_64-unknown-linux-gnu -o $HOME/.local/bin/psp
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.11.0/psp-x86_64-unknown-linux-gnu -o $HOME/.local/bin/psp
 chmod +x $HOME/.local/bin/psp
 ```
 
@@ -290,7 +308,7 @@ chmod +x $HOME/.local/bin/psp
 
 ```console
 sudo su -
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.10.0/psp-aarch64-apple-darwin -o /usr/local/bin/psp
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.11.0/psp-aarch64-apple-darwin -o /usr/local/bin/psp
 chmod +x /usr/local/bin/psp
 ```
 
@@ -299,7 +317,7 @@ chmod +x /usr/local/bin/psp
 For **all users** (required Administrator):
 
 ```powershell
-iwr -OutFile "C:\Windows\system32\psp.exe" "https://github.com/MatteoGuadrini/psp/releases/download/v0.10.0/psp-amd64-windows-gnu"
+iwr -OutFile "C:\Windows\system32\psp.exe" "https://github.com/MatteoGuadrini/psp/releases/download/v0.11.0/psp-amd64-windows-gnu"
 ```
 
 For **current user**:
@@ -307,7 +325,7 @@ For **current user**:
 ```powershell
 mkdir "$( $Env:USERPROFILE )\bin"
 [System.Environment]::SetEnvironmentVariable("PATH", $Env:PATH + ";$( $Env:USERPROFILE )\bin", "USER")
-iwr -OutFile "$( $Env:USERPROFILE )\bin\psp.exe" "https://github.com/MatteoGuadrini/psp/releases/download/v0.10.0/psp-amd64-windows-gnu"
+iwr -OutFile "$( $Env:USERPROFILE )\bin\psp.exe" "https://github.com/MatteoGuadrini/psp/releases/download/v0.11.0/psp-amd64-windows-gnu"
 ```
 
 ### Packages
@@ -317,14 +335,14 @@ If you want to install OS package, follow instructions for your Operating System
 For **Debian/Ubuntu**:
 
 ```console
-curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.10.0/psp-x86_64-unknown-linux-gnu.deb -o psp.deb
+curl -L https://github.com/MatteoGuadrini/psp/releases/download/v0.11.0/psp-x86_64-unknown-linux-gnu.deb -o psp.deb
 sudo dpkg -i psp.deb
 ```
 
 For **Fedora/Mageia/OpenSuse**:
 
 ```console
-sudo rpm -i https://github.com/MatteoGuadrini/psp/releases/download/v0.10.0/psp-x86_64-unknown-linux-gnu.rpm
+sudo rpm -i https://github.com/MatteoGuadrini/psp/releases/download/v0.11.0/psp-x86_64-unknown-linux-gnu.rpm
 ```
 
 ### Compile as your own
@@ -380,13 +398,13 @@ docker run -it --rm -v ~/python_projects:/psp -e "PSP_GIT=true" -e "PSP_PYVER=1.
 - [x] `conda`and `uv` support
 - [x] `hatch`, `maturin` and `poetry` build support
 - [x] pause/resume project creation
-- [x] Gitlab CI/CD and GitHub Actions
+- [x] GitLab CI/CD and GitHub Actions
 - [x] templating files support
 - [x] templating custom files support
 - [x] universal installation script
 - [x] profiles support (type of modules, custom init projects, custom files)
+- [x] support SKILLS.md, AGENTS.md and llms.txt files
 - [ ] support update if project exists
-- [ ] support AGENTS.md file
 - [ ] command line flags support
 - [ ] YAML configuration file
 

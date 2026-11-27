@@ -1,6 +1,6 @@
 [package]
 name = "psp"
-version = "0.10.0"
+version = "0.11.0"
 rust-version = "1.85"
 edition = "2021"
 authors = ["matteoguadrini <matteo.guadrini@hotmail.it>"]
@@ -16,3 +16,5 @@ keywords = ["scaffold", "tool", "python", "package", "library"]
 inquire = "0.9"
 dotenvy = "0.15"
 handlebars = "6.4"
+anyhow = "1.0"
+toml_edit = "0.22"

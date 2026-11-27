@@ -36,6 +36,7 @@ You can configure two files for configure these environment variables:
 | `PSP_PACKAGE_MANAGER` | [Depedencies](simple.md#dependencies)                      | `uv                 |conda`                                   |
 | `PSP_LOG`             | [Update](simple.md#resume)                                 | `true               |false`                                 |
 | `PSP_CACHE`           | [All](simple.md)                                           | `true               |false`                                 |
+| `PSP_AI`              | [AI files](simple.md#ai-files)                             | `true               |false`                                 |
 | `PSP_TEMPLATES`       | [All](simple.md)                                           | `/home/gu/templates |https://server.com/temp` |
 
 ## Python `pyproject.toml` variables
@@ -110,7 +111,7 @@ PSP_LICENSE=mit     # Overwritten
 ┏━┃┏━━━━┛┏━┃
 ┏━┛━━━━━┃┏━┛
 ┛  ━━━━━┛┛
-info: welcome to psp, version 0.10.0
+info: welcome to psp, version 0.11.0
 > Name of Python project: biopy
 info: python project `biopy` created at /tmp/mypyenv/biopy
 [gu]# ll biopy

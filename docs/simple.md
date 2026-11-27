@@ -20,7 +20,7 @@ To start with **psp**, type `psp`:
 ┏━┃┏━━━━┛┏━┃
 ┏━┛━━━━━┃┏━┛
 ┛  ━━━━━┛┛
-info: welcome to psp, version 0.10.0
+info: welcome to psp, version 0.11.0
 ? Name of Python project: mypyprj
 [Type name or path]
 ```
@@ -47,7 +47,7 @@ You can also specify a relative/absolute path; in this case the last name of pat
 ┏━┃┏━━━━┛┏━┃
 ┏━┛━━━━━┃┏━┛
 ┛  ━━━━━┛┛
-info: welcome to psp, version 0.10.0
+info: welcome to psp, version 0.11.0
 ? Name of Python project: /tmp/mypyprj
 [Type name or path]
 ```
@@ -56,7 +56,7 @@ info: welcome to psp, version 0.10.0
     If the folder exists, **psp** prompt a choice of overwritten.
 
 ```console
-info: welcome to psp, version 0.10.0
+info: welcome to psp, version 0.11.0
 > Name of Python project: /tmp/mypyprj
 ? Path /tmp/mypyprj exists. Do you want continue? (y/N)
 [Some files will be overwritten]
@@ -74,7 +74,7 @@ virtual environment are available.
 The default value is _Yes_.
 
 ```console
-info: welcome to psp, version 0.10.0
+info: welcome to psp, version 0.11.0
 > Name of Python project: mypyprj
 ? Do you want to create a virtual environment? (Y/n)
 ```
@@ -619,7 +619,7 @@ The default value is _Yes_.
 ```console
 ...
 > Do you want to create a Dockerfile and Containerfile? Yes
-? Do you want create common files? (Y/n)
+? Do you want to create common files? (Y/n)
 [Create README, CONTRIBUTING, CODE_OF_CONDUCT and CHANGES]
 ```
 
@@ -653,6 +653,55 @@ mypyprj
 └── CHANGES.md              ┘
 ```
 
+## AI files
+
+This option configure an AI files for Python projects, as a _SKILLS, AGENTS and llms_.
+
+The default value is _Yes_.
+
+!!! warning
+    In this option some files will downloaded from internet. Check your internet settings, proxy or firewall if an error
+    occured.
+
+```console
+...
+> Do you want to create common files? Yes
+? Do you want to create a AI files? (Y/n)
+[Create SKILLS, AGENTS and LLMs files]
+```
+
+The project structure after this choosen:
+
+```
+mypyprj
+├── pyproject.toml
+├── mypyprj
+│   └──...
+├── .venv
+│   └──...
+├── .git
+│   └──...
+├── .gitignore
+├── .github
+│   └──...
+├── tests
+│   └──...
+├── docs
+│   └──...
+├── tox.ini
+├── Makefile
+├── .circleci
+│   └── ...
+├── samples
+│   └── mypyprj_sample.py
+├── README.md
+├── ...
+├── AGENTS.md           ┐ 
+├── llms.txt            │ AI files
+└── SKILLS.md           ┘
+
+```
+
 !!! note
     As you notice, **psp** creates a Makefile to automate all process in your package.
     If you want a help, try `make help`.
@@ -667,7 +716,7 @@ With `PSP_LOG` variable you enable the ability to stop or pause the scaffolding 
 ┏━┃┏━━━━┛┏━┃
 ┏━┛━━━━━┃┏━┛
 ┛  ━━━━━┛┛
-info: welcome to psp, version 0.10.0
+info: welcome to psp, version 0.11.0
 > Name of Python project: mypyprj
 > Do you want to create a virtual environment? (Y/n)
 ? Install dependencies: <canceled>
@@ -685,7 +734,7 @@ prj_venv: true
 ┏━┃┏━━━━┛┏━┃
 ┏━┛━━━━━┃┏━┛
 ┛  ━━━━━┛┛
-info: welcome to psp, version 0.10.0
+info: welcome to psp, version 0.11.0
 ? Install dependencies: (No) tablib==3.4.0 pyreports<1.7.0 scipy numpy
 ...
 info: python project `mypyprj` created at `/tmp/mypyprj`

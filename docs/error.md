@@ -24,3 +24,4 @@ In this table you can find the error codes referred the last failed.
 | 13        | [Containers](simple.md#dockerpodman)                                    |
 | 14        | [Common files](simple.md#common-files)                                  |
 | 15        | `Makefile` creation                                                     |
+| 16        | [AI files](simple.md#ai-files)                                          |

@@ -4,22 +4,22 @@ use crate::utils::*;
 use std::{
     collections::HashMap,
     env::var,
-    fs::{copy, remove_dir_all},
+    fs::{copy, exists, remove_dir_all},
     path::Path,
     process::exit,
 };
 
 // Project name
-pub fn prj_name() -> ProjectInfo {
+pub fn prj_name() -> ProjectResult<ProjectInfo> {
     // Check psp log for update
     let log_step = "prj_name";
     if check_log(log_step, LOGFILE) {
         let log_content = read_log(LOGFILE);
-        let value = get_log_value(log_step, log_content.unwrap().as_str());
+        let value = get_log_value(log_step, log_content?.as_str());
         if let Some(v) = value {
             let values: Vec<&str> = v.split(" ").collect();
-            if std::fs::exists(values[0]).unwrap() {
-                return (values[0].to_string(), values[1].to_string(), 0);
+            if exists(values[0])? {
+                return Ok((values[0].to_string(), values[1].to_string(), 0));
             }
         }
     }
@@ -58,12 +58,23 @@ pub fn prj_name() -> ProjectInfo {
     let package = project.join(&package_name);
     let root = Path::new(package.parent().unwrap());
     // Check if a project path already exists
-    if package.exists() {
-        let project_exists = prompt_confirm(
-            format!("Path `{}` exists. Do you want continue?", root.display()).as_str(),
-            false,
-            "Some files will be overwritten",
-        );
+    if project.exists() {
+        let message = if exists(project.join("pyproject.toml"))? {
+            let ret = format!(
+                "Python project `{}` exists. Do you want continue?",
+                root.display()
+            );
+            ret
+        } else {
+            let ret = format!("Path `{}` exists. Do you want continue?", root.display());
+            ret
+        };
+        let help = if exists(project.join("pyproject.toml"))? {
+            "Python project will upgrade"
+        } else {
+            "Some files will be overwritten"
+        };
+        let project_exists = prompt_confirm(message.as_str(), false, help);
         if !project_exists {
             info(format!("the path `{}` unchanged", root.display()));
             exit(0)
@@ -94,19 +105,19 @@ pub fn prj_name() -> ProjectInfo {
         LOGFILE,
         format!("{}: {} {}", log_step, values.0, values.1).as_str(),
     );
-    values
+    Ok(values)
 }
 
 // Project git
-pub fn prj_git(name: &str, shortcut: &String) -> GitStatus {
+pub fn prj_git(name: &str, shortcut: &String) -> ProjectResult<GitStatus> {
     // Check psp log for update
     let mut exit_status: ExitStatus = 0;
     let log_step = "prj_git";
     if check_log(log_step, LOGFILE) {
         let log_content = read_log(LOGFILE);
-        let value = get_log_value(log_step, log_content.unwrap().as_str());
+        let value = get_log_value(log_step, log_content?.as_str());
         if let Some(v) = value {
-            return (v.parse::<bool>().unwrap(), exit_status);
+            return Ok((v.parse::<bool>()?, exit_status));
         }
     }
     // Check environment variable
@@ -129,14 +140,14 @@ pub fn prj_git(name: &str, shortcut: &String) -> GitStatus {
         if !output.status.success() {
             exit_status = 2;
             error("something wrong with `git init`".to_string());
-            return (false, exit_status);
+            return Ok((false, exit_status));
         }
         // Create a data map with variables
         let mut data = HashMap::new();
         data.insert("SIGNATURE", SIGNATURE);
         data.insert("VERSION", VERSION);
         let gitignore_template = Path::new(name).join(".gitignore").display().to_string();
-        let file_ret = render_template("gitignore.hbs", &gitignore_template, data);
+        let file_ret = render_template("gitignore.hbs", &gitignore_template, data, false);
         ret = if file_ret {
             true
         } else {
@@ -147,20 +158,20 @@ pub fn prj_git(name: &str, shortcut: &String) -> GitStatus {
     }
     // Write psp log
     write_log(LOGFILE, format!("{}: {}", log_step, ret).as_str());
-    (ret, exit_status)
+    Ok((ret, exit_status))
 }
 
 // Project unit tests
-pub fn prj_test(root: &str, name: &str, shortcut: &String) -> TestStatus {
+pub fn prj_test(root: &str, name: &str, shortcut: &String) -> ProjectResult<TestStatus> {
     // Check psp log for update
     let ret: bool;
     let mut exit_status: ExitStatus = 0;
     let log_step = "prj_test";
     if check_log(log_step, LOGFILE) {
         let log_content = read_log(LOGFILE);
-        let value = get_log_value(log_step, log_content.unwrap().as_str());
+        let value = get_log_value(log_step, log_content?.as_str());
         if let Some(v) = value {
-            return (v.parse::<bool>().unwrap(), 0);
+            return Ok((v.parse::<bool>()?, 0));
         }
     }
     // Check environment variable
@@ -190,7 +201,12 @@ pub fn prj_test(root: &str, name: &str, shortcut: &String) -> TestStatus {
             ("PRJ_VER", &project_version),
         ]);
         let test_module = tests_dir.join(format!("test_{project_name}.py"));
-        let file_ret = render_template("test_module.hbs", test_module.to_str().unwrap(), data);
+        let file_ret = render_template(
+            "test_module.hbs",
+            test_module.to_str().unwrap(),
+            data,
+            false,
+        );
         if !file_ret {
             error(format!("`test_{project_name}.py` render failed"));
             exit_status = 5;
@@ -202,20 +218,20 @@ pub fn prj_test(root: &str, name: &str, shortcut: &String) -> TestStatus {
     }
     // Write psp log
     write_log(LOGFILE, format!("{}: {}", log_step, ret).as_str());
-    (ret, exit_status)
+    Ok((ret, exit_status))
 }
 
 // Project venv
-pub fn prj_venv(name: &str, shortcut: &String) -> VirtualEnvStatus {
+pub fn prj_venv(name: &str, shortcut: &String) -> ProjectResult<VirtualEnvStatus> {
     // Check psp log for update
     let mut ret: bool;
     let mut exit_status: ExitStatus = 0;
     let log_step = "prj_venv";
     if check_log(log_step, LOGFILE) {
         let log_content = read_log(LOGFILE);
-        let value = get_log_value(log_step, log_content.unwrap().as_str());
+        let value = get_log_value(log_step, log_content?.as_str());
         if let Some(v) = value {
-            return (v.parse::<bool>().unwrap(), 0);
+            return Ok((v.parse::<bool>()?, 0));
         }
     }
     // Check environment variable
@@ -255,21 +271,21 @@ pub fn prj_venv(name: &str, shortcut: &String) -> VirtualEnvStatus {
     }
     // Write psp log
     write_log(LOGFILE, format!("{}: {}", log_step, ret).as_str());
-    (ret, exit_status)
+    Ok((ret, exit_status))
 }
 
 // Project dependencies
-pub fn prj_deps(name: &str, venv: bool, shortcut: &String) -> DependenciesStatus {
+pub fn prj_deps(name: &str, venv: bool, shortcut: &String) -> ProjectResult<DependenciesStatus> {
     // Check psp log for update
     let mut exit_status: ExitStatus = 0;
     let log_step = "prj_deps";
     if check_log(log_step, LOGFILE) {
         let log_content = read_log(LOGFILE);
-        let value = get_log_value(log_step, log_content.unwrap().as_str());
+        let value = get_log_value(log_step, log_content?.as_str());
         if let Some(v) = value {
             let values: Vec<&str> = v.split(" ").collect();
             if !is_none(values[0]) {
-                return (values.iter().map(|s| s.to_string()).collect(), 0);
+                return Ok((values.iter().map(|s| s.to_string()).collect(), 0));
             }
         }
     }
@@ -349,7 +365,7 @@ pub fn prj_deps(name: &str, venv: bool, shortcut: &String) -> DependenciesStatus
     }
     // Write psp log
     write_log(LOGFILE, format!("{}: {}", log_step, deps).as_str());
-    (dependencies, exit_status)
+    Ok((dependencies, exit_status))
 }
 
 // Project pyproject.toml
@@ -363,7 +379,7 @@ pub fn prj_toml(
     docs: &str,
     tox: bool,
     venv: bool,
-) -> ProjectConfStatus {
+) -> ProjectResult<ProjectConfStatus> {
     let mut exit_status: ExitStatus = 0;
     // Check git information
     let mut documentation = "https://docs.python.org/3/".to_string();
@@ -469,28 +485,112 @@ pub fn prj_toml(
         data.insert("OTHER_DEPS", "true");
         data.insert("DEV_DEPS", &stringed_dev_dependencies);
     }
-    let pyproject_template = Path::new(root).join("pyproject.toml").display().to_string();
-    let file_ret = render_template("pyproject.hbs", &pyproject_template, data);
-    if !file_ret {
-        error("`pyproject.toml` render failed".to_string());
-        exit_status = 12;
+    let pyproject_path = Path::new(root).join("pyproject.toml");
+    let pyproject_template = pyproject_path.display().to_string();
+    // Check if pyproject.toml exists
+    if exists(&pyproject_path)? {
+        let mut pyproject = read_toml(&pyproject_path)?;
+        // Update dependencies
+        if !pyproject["project"]["dependencies"].is_none() {
+            let pyproject_deps = pyproject["project"]["dependencies"].as_array_mut().unwrap();
+            let mut extended_deps = deps.clone();
+            extended_deps.extend(
+                pyproject_deps
+                    .iter()
+                    .map(|v| v.as_str().unwrap().to_string()),
+            );
+            extended_deps.sort();
+            extended_deps.dedup();
+            pyproject_deps.clear();
+            pyproject_deps.extend(extended_deps);
+        }
+        // Update dev dependencies
+        if !pyproject["project"]["optional-dependencies"]["dev"].is_none() {
+            let pyproject_dev_deps = pyproject["project"]["optional-dependencies"]["dev"]
+                .as_array_mut()
+                .unwrap();
+            let mut extended_dev_deps = dev_dependencies
+                .clone()
+                .iter()
+                .map(|s| s.to_string())
+                .collect::<Vec<String>>();
+            extended_dev_deps.extend(
+                pyproject_dev_deps
+                    .iter()
+                    .map(|v| v.as_str().unwrap().to_string()),
+            );
+            extended_dev_deps.sort();
+            extended_dev_deps.dedup();
+            pyproject_dev_deps.clear();
+            pyproject_dev_deps.extend(extended_dev_deps);
+        }
+        // Update classifiers
+        if !pyproject["project"]["classifiers"].is_none() {
+            let pyproject_classifiers = pyproject["project"]["classifiers"].as_array_mut().unwrap();
+            let mut extended_classifiers = classifiers
+                .clone()
+                .iter()
+                .map(|s| s.to_string())
+                .collect::<Vec<String>>();
+            extended_classifiers.extend(
+                pyproject_classifiers
+                    .iter()
+                    .map(|v| v.as_str().unwrap().to_string()),
+            );
+            extended_classifiers.sort();
+            extended_classifiers.dedup();
+            pyproject_classifiers.clear();
+            pyproject_classifiers.extend(extended_classifiers);
+        }
+        // Update package data
+        if pyproject.contains_table("tool.setuptools.package-data") {
+            let pyproject_package_data = pyproject["tool"]["setuptools"]["package-data"]
+                [&project_name]
+                .as_array_mut()
+                .unwrap();
+            let mut extended_package_data = package_data_list
+                .clone()
+                .iter()
+                .map(|s| s.to_string())
+                .collect::<Vec<String>>();
+            extended_package_data.extend(
+                pyproject_package_data
+                    .iter()
+                    .map(|v| v.as_str().unwrap().to_string()),
+            );
+            extended_package_data.sort();
+            extended_package_data.dedup();
+            pyproject_package_data.clear();
+            pyproject_package_data.extend(extended_package_data);
+        }
+        // Write pyproject
+        if let Err(err) = write_toml(&pyproject_path, &pyproject) {
+            error(format!("`pyproject.toml` update failed: {err}"));
+            exit_status = 12;
+        }
+    } else {
+        let file_ret = render_template("pyproject.hbs", &pyproject_template, data, false);
+        if !file_ret {
+            error("`pyproject.toml` render failed".to_string());
+            exit_status = 12;
+        }
     }
-    ((), exit_status)
+    Ok(((), exit_status))
 }
 
 // Project CI
-pub fn prj_ci(name: &str, deps: &Vec<String>, shortcut: &String) -> CIStatus {
+pub fn prj_ci(name: &str, deps: &Vec<String>, shortcut: &String) -> ProjectResult<CIStatus> {
     let mut exit_status: ExitStatus = 0;
     // Check psp log for update
     let log_step = "prj_ci";
     if check_log(log_step, LOGFILE) {
-        return ((), exit_status);
+        return Ok(((), exit_status));
     }
     let options = vec![
         "None",
         "CircleCI",
         "GitHub Actions",
-        "Gitlab CI/CD",
+        "GitLab CI/CD",
         "TravisCI",
     ];
     let env_ci = var("PSP_CI").ok();
@@ -519,7 +619,7 @@ pub fn prj_ci(name: &str, deps: &Vec<String>, shortcut: &String) -> CIStatus {
             ("PYTHON", &python_version),
         ]);
         let travis_template = Path::new(name).join(".travis.yml").display().to_string();
-        let file_ret = render_template("travis.hbs", &travis_template, data);
+        let file_ret = render_template("travis.hbs", &travis_template, data, false);
         if !file_ret {
             error("`.travis.yml render failed".to_string());
             exit_status = 9;
@@ -540,7 +640,7 @@ pub fn prj_ci(name: &str, deps: &Vec<String>, shortcut: &String) -> CIStatus {
             .join("config.yml")
             .display()
             .to_string();
-        let file_ret = render_template("circleci.hbs", &circleci_template, data);
+        let file_ret = render_template("circleci.hbs", &circleci_template, data, false);
         if !file_ret {
             error("`.circleci/config.yml` render failed".to_string());
             exit_status = 9;
@@ -562,7 +662,7 @@ pub fn prj_ci(name: &str, deps: &Vec<String>, shortcut: &String) -> CIStatus {
             .join("python-app.yml")
             .display()
             .to_string();
-        let file_ret = render_template("githubactions.hbs", &github_template, data);
+        let file_ret = render_template("githubactions.hbs", &github_template, data, false);
         if !file_ret {
             error("`python-app.yml` render failed".to_string());
             exit_status = 9;
@@ -576,7 +676,7 @@ pub fn prj_ci(name: &str, deps: &Vec<String>, shortcut: &String) -> CIStatus {
             ("PACKAGE", package_name),
         ]);
         let gitlab_template = Path::new(name).join(".gitlab-ci.yml").display().to_string();
-        let file_ret = render_template("gitlabcicd.hbs", &gitlab_template, data);
+        let file_ret = render_template("gitlabcicd.hbs", &gitlab_template, data, false);
         if !file_ret {
             error("`.gitlab-ci.yml` render failed".to_string());
             exit_status = 9;
@@ -586,25 +686,25 @@ pub fn prj_ci(name: &str, deps: &Vec<String>, shortcut: &String) -> CIStatus {
     }
     // Write psp log
     write_log(LOGFILE, format!("{}: {}", log_step, ci).as_str());
-    ((), exit_status)
+    Ok(((), exit_status))
 }
 
-// Project Gitlab/GitHub
-pub fn prj_remote(root: &str, name: &str, shortcut: &String) -> GitInfo {
+// Project GitLab/GitHub
+pub fn prj_remote(root: &str, name: &str, shortcut: &String) -> ProjectResult<GitInfo> {
     // Check psp log for update
     let log_step = "prj_remote";
     let mut exit_status: ExitStatus = 0;
     if check_log(log_step, LOGFILE) {
         let log_content = read_log(LOGFILE);
-        let value = get_log_value(log_step, log_content.unwrap().as_str());
+        let value = get_log_value(log_step, log_content?.as_str());
         if let Some(v) = value {
             let values: Vec<&str> = v.split(" ").collect();
-            return (values[0].to_string(), values[1].to_string(), 0);
+            return Ok((values[0].to_string(), values[1].to_string(), 0));
         }
     }
     let mut git_user = "None".to_string();
     let git_remote;
-    let options = vec!["None", "GitHub", "Gitlab", "Custom"];
+    let options = vec!["None", "GitHub", "GitLab", "Custom"];
     // Check environment variable
     let env_remote = var("PSP_GIT_REMOTE").ok();
     let remote = if let Some(env_remote) = env_remote {
@@ -710,7 +810,7 @@ pub fn prj_remote(root: &str, name: &str, shortcut: &String) -> GitInfo {
             exit_status = 4;
         }
         // Make remote files and folders
-        // Gitlab
+        // GitLab
         if remote.as_str().to_lowercase() == "gitlab" {
             let issue_folder = Path::new(root)
                 .join(remote.to_lowercase())
@@ -736,23 +836,32 @@ pub fn prj_remote(root: &str, name: &str, shortcut: &String) -> GitInfo {
             ]);
             // Feature template
             let gitlab_feature_template = issue_folder.join("feature.md").display().to_string();
-            let file_ret =
-                render_template("gitlab_feature.hbs", &gitlab_feature_template, data.clone());
+            let file_ret = render_template(
+                "gitlab_feature.hbs",
+                &gitlab_feature_template,
+                data.clone(),
+                false,
+            );
             if !file_ret {
                 error("`feature.md` render failed".to_string());
                 exit_status = 4;
             }
             // Bug template
             let gitlab_bug_template = issue_folder.join("bug.md").display().to_string();
-            let file_ret = render_template("gitlab_bug.hbs", &gitlab_bug_template, data.clone());
+            let file_ret =
+                render_template("gitlab_bug.hbs", &gitlab_bug_template, data.clone(), false);
             if !file_ret {
                 error("`bug.md` render failed".to_string());
                 exit_status = 4;
             }
             // Merge template
             let gitlab_merge_template = merge_folder.join("merge.md").display().to_string();
-            let file_ret =
-                render_template("gitlab_merge.hbs", &gitlab_merge_template, data.clone());
+            let file_ret = render_template(
+                "gitlab_merge.hbs",
+                &gitlab_merge_template,
+                data.clone(),
+                false,
+            );
             if !file_ret {
                 error("`merge.md` render failed".to_string());
                 exit_status = 4;
@@ -782,15 +891,20 @@ pub fn prj_remote(root: &str, name: &str, shortcut: &String) -> GitInfo {
             ]);
             // Feature template
             let github_feature_template = issue_folder.join("feature.yml").display().to_string();
-            let file_ret =
-                render_template("github_feature.hbs", &github_feature_template, data.clone());
+            let file_ret = render_template(
+                "github_feature.hbs",
+                &github_feature_template,
+                data.clone(),
+                false,
+            );
             if !file_ret {
                 error("`feature.yml` render failed".to_string());
                 exit_status = 4;
             }
             // Bug template
             let github_bug_template = issue_folder.join("bug.yml").display().to_string();
-            let file_ret = render_template("github_bug.hbs", &github_bug_template, data.clone());
+            let file_ret =
+                render_template("github_bug.hbs", &github_bug_template, data.clone(), false);
             if !file_ret {
                 error("`bug.yml` render failed".to_string());
                 exit_status = 4;
@@ -800,8 +914,12 @@ pub fn prj_remote(root: &str, name: &str, shortcut: &String) -> GitInfo {
                 .join("pull_request_template.md")
                 .display()
                 .to_string();
-            let file_ret =
-                render_template("github_merge.hbs", &github_merge_template, data.clone());
+            let file_ret = render_template(
+                "github_merge.hbs",
+                &github_merge_template,
+                data.clone(),
+                false,
+            );
             if !file_ret {
                 error("`pull_request_template.yml` render failed".to_string());
                 exit_status = 4;
@@ -819,19 +937,24 @@ pub fn prj_remote(root: &str, name: &str, shortcut: &String) -> GitInfo {
         LOGFILE,
         format!("{}: {} {}", log_step, remote, git_user).as_str(),
     );
-    (remote, git_user, exit_status)
+    Ok((remote, git_user, exit_status))
 }
 
 // Project tox
-pub fn prj_tox(name: &str, venv: bool, deps: &Vec<String>, shortcut: &String) -> ToxStatus {
+pub fn prj_tox(
+    name: &str,
+    venv: bool,
+    deps: &Vec<String>,
+    shortcut: &String,
+) -> ProjectResult<ToxStatus> {
     let mut exit_status: ExitStatus = 0;
     // Check psp log for update
     let log_step = "prj_tox";
     if check_log(log_step, LOGFILE) {
         let log_content = read_log(LOGFILE);
-        let value = get_log_value(log_step, log_content.unwrap().as_str());
+        let value = get_log_value(log_step, log_content?.as_str());
         if let Some(v) = value {
-            return (v.parse::<bool>().unwrap(), exit_status);
+            return Ok((v.parse::<bool>()?, exit_status));
         }
     }
     // Check environment variable
@@ -855,14 +978,20 @@ pub fn prj_tox(name: &str, venv: bool, deps: &Vec<String>, shortcut: &String) ->
             PIP_BIN
         };
         // Install tox
-        let mut pm = make_pm(bin, name, name, vec!["tox".to_string()], venv);
+        let mut pm = make_pm(
+            bin,
+            name,
+            name,
+            vec!["tox".to_string(), "pytest".to_string()],
+            venv,
+        );
         let output = pm
             .output()
             .expect(format!("{bin} should be installed").as_str());
         // Check if the command exits successfully
         if !output.status.success() {
             error("`tox` installation failed".to_string());
-            return (false, 8);
+            return Ok((false, 8));
         }
         // Create a data map with variables
         let python_version = format!("py{}", get_python_version().replace(".", ""));
@@ -885,7 +1014,7 @@ pub fn prj_tox(name: &str, venv: bool, deps: &Vec<String>, shortcut: &String) ->
         ]);
         // Tox template
         let tox_template = Path::new(name).join("tox.ini").display().to_string();
-        let file_ret = render_template("tox.hbs", &tox_template, data.clone());
+        let file_ret = render_template("tox.hbs", &tox_template, data.clone(), true);
         if !file_ret {
             error("`tox.ini` render failed".to_string());
             exit_status = 8;
@@ -893,19 +1022,19 @@ pub fn prj_tox(name: &str, venv: bool, deps: &Vec<String>, shortcut: &String) ->
     }
     // Write psp log
     write_log(LOGFILE, format!("{}: {}", log_step, confirm).as_str());
-    (confirm, exit_status)
+    Ok((confirm, exit_status))
 }
 
 // Project documentation site generator
-pub fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) -> DocStatus {
+pub fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) -> ProjectResult<DocStatus> {
     // Check psp log for update
     let mut exit_status: ExitStatus = 0;
     let log_step = "prj_docs";
     if check_log(log_step, LOGFILE) {
         let log_content = read_log(LOGFILE);
-        let value = get_log_value(log_step, log_content.unwrap().as_str());
+        let value = get_log_value(log_step, log_content?.as_str());
         if let Some(v) = value {
-            return (v, exit_status);
+            return Ok((v, exit_status));
         }
     }
     let options = vec!["None", "Sphinx", "MKDocs"];
@@ -1033,16 +1162,21 @@ pub fn prj_docs(root: &str, name: &str, venv: bool, shortcut: &String) -> DocSta
     }
     // Write psp log
     write_log(LOGFILE, format!("{}: {}", log_step, docs).as_str());
-    (docs, exit_status)
+    Ok((docs, exit_status))
 }
 
 // Project common files
-pub fn prj_files(root: &str, name: &str, container: bool, shortcut: &String) -> CommonFilesStatus {
+pub fn prj_files(
+    root: &str,
+    name: &str,
+    container: bool,
+    shortcut: &String,
+) -> ProjectResult<CommonFilesStatus> {
     let mut exit_status: ExitStatus = 0;
     // Check psp log for update
     let log_step = "prj_files";
     if check_log(log_step, LOGFILE) {
-        return ((), exit_status);
+        return Ok(((), exit_status));
     }
     // Check environment variable
     let env_files = var("PSP_FILES").unwrap_or("false".to_string()).parse().ok();
@@ -1058,7 +1192,7 @@ pub fn prj_files(root: &str, name: &str, container: bool, shortcut: &String) -> 
         false
     } else {
         prompt_confirm(
-            "Do you want create common files?",
+            "Do you want to create common files?",
             true,
             "Create README, CONTRIBUTING, CODE_OF_CONDUCT and CHANGES",
         )
@@ -1077,14 +1211,14 @@ pub fn prj_files(root: &str, name: &str, container: bool, shortcut: &String) -> 
         ]);
         // README template
         let readme_template = Path::new(root).join("README.md").display().to_string();
-        let file_ret = render_template("readme.hbs", &readme_template, data.clone());
+        let file_ret = render_template("readme.hbs", &readme_template, data.clone(), false);
         if !file_ret {
             error("`README.md` render failed".to_string());
             exit_status = 14;
         }
         // CHANGES template
         let changes_template = Path::new(root).join("CHANGES.md").display().to_string();
-        let file_ret = render_template("changes.hbs", &changes_template, data.clone());
+        let file_ret = render_template("changes.hbs", &changes_template, data.clone(), false);
         if !file_ret {
             error("`CHANGES.md` render failed".to_string());
             exit_status = 14;
@@ -1094,7 +1228,12 @@ pub fn prj_files(root: &str, name: &str, container: bool, shortcut: &String) -> 
             .join("CONTRIBUTING.md")
             .display()
             .to_string();
-        let file_ret = render_template("contributing.hbs", &contributing_template, data.clone());
+        let file_ret = render_template(
+            "contributing.hbs",
+            &contributing_template,
+            data.clone(),
+            false,
+        );
         if !file_ret {
             error("`CONTRIBUTING.md` render failed".to_string());
             exit_status = 14;
@@ -1108,6 +1247,7 @@ pub fn prj_files(root: &str, name: &str, container: bool, shortcut: &String) -> 
             "code_of_conduct.hbs",
             &code_of_conduct_template,
             data.clone(),
+            false,
         );
         if !file_ret {
             error("`CODE_OF_CONDUCT.md` render failed".to_string());
@@ -1124,7 +1264,7 @@ pub fn prj_files(root: &str, name: &str, container: bool, shortcut: &String) -> 
             .join(format!("{name}_sample.py"))
             .display()
             .to_string();
-        let file_ret = render_template("sample.hbs", &contributing_template, data.clone());
+        let file_ret = render_template("sample.hbs", &contributing_template, data.clone(), false);
         if !file_ret {
             error(format!("`{name}_sample.py` render failed"));
             exit_status = 14;
@@ -1132,19 +1272,19 @@ pub fn prj_files(root: &str, name: &str, container: bool, shortcut: &String) -> 
     }
     // Write psp log
     write_log(LOGFILE, format!("{}: {}", log_step, confirm).as_str());
-    ((), exit_status)
+    Ok(((), exit_status))
 }
 
 // Project license
-pub fn prj_license(name: &str, shortcut: &String, author: &String) -> LicenseInfo {
+pub fn prj_license(name: &str, shortcut: &String, author: &String) -> ProjectResult<LicenseInfo> {
     let mut exit_status: ExitStatus = 0;
     // Check psp log for update
     let log_step = "prj_license";
     if check_log(log_step, LOGFILE) {
         let log_content = read_log(LOGFILE);
-        let value = get_log_value(log_step, log_content.unwrap().as_str());
+        let value = get_log_value(log_step, log_content?.as_str());
         if let Some(v) = value {
-            return (v, exit_status);
+            return Ok((v, exit_status));
         }
     }
     // Check author
@@ -1202,6 +1342,7 @@ pub fn prj_license(name: &str, shortcut: &String, author: &String) -> LicenseInf
             &license_file,
             &license_template.replace(&license_file, "LICENSE.md"),
             data,
+            true,
         );
         if !file_ret {
             error("`LICENSE.md` render failed".to_string());
@@ -1210,19 +1351,19 @@ pub fn prj_license(name: &str, shortcut: &String, author: &String) -> LicenseInf
     }
     // Write psp log
     write_log(LOGFILE, format!("{}: {}", log_step, license).as_str());
-    (license, exit_status)
+    Ok((license, exit_status))
 }
 
 // Project pypi dependencies
-pub fn prj_pypi(root: &str, venv: bool, shortcut: &String) -> PyPiStatus {
+pub fn prj_pypi(root: &str, venv: bool, shortcut: &String) -> ProjectResult<PyPiStatus> {
     let mut exit_status: ExitStatus = 0;
     // Check psp log for update
     let log_step = "prj_pypi";
     if check_log(log_step, LOGFILE) {
         let log_content = read_log(LOGFILE);
-        let value = get_log_value(log_step, log_content.unwrap().as_str());
+        let value = get_log_value(log_step, log_content?.as_str());
         if let Some(v) = value {
-            return (v.parse::<bool>().unwrap(), exit_status);
+            return Ok((v.parse::<bool>()?, exit_status));
         }
     }
     // Check environment variable
@@ -1273,19 +1414,19 @@ pub fn prj_pypi(root: &str, venv: bool, shortcut: &String) -> PyPiStatus {
     }
     // Write psp log
     write_log(LOGFILE, format!("{}: {}", log_step, ret).as_str());
-    (ret, exit_status)
+    Ok((ret, exit_status))
 }
 
 // Project Docker/Podman
-pub fn prj_container(root: &str, name: &str, shortcut: &String) -> ContainerStatus {
+pub fn prj_container(root: &str, name: &str, shortcut: &String) -> ProjectResult<ContainerStatus> {
     let mut exit_status: ExitStatus = 0;
     // Check psp log for update
     let log_step = "prj_container";
     if check_log(log_step, LOGFILE) {
         let log_content = read_log(LOGFILE);
-        let value = get_log_value(log_step, log_content.unwrap().as_str());
+        let value = get_log_value(log_step, log_content?.as_str());
         if let Some(v) = value {
-            return (v.parse::<bool>().unwrap(), exit_status);
+            return Ok((v.parse::<bool>()?, exit_status));
         }
     }
     // Check environment variable
@@ -1319,7 +1460,12 @@ pub fn prj_container(root: &str, name: &str, shortcut: &String) -> ContainerStat
             ("PACKAGE", name),
         ]);
         let container_template = Path::new(root).join("Dockerfile").display().to_string();
-        let file_ret = render_template("containerfile.hbs", &container_template, data.clone());
+        let file_ret = render_template(
+            "containerfile.hbs",
+            &container_template,
+            data.clone(),
+            false,
+        );
         // Copy Dockerfile to Containerfile
         copy(
             &container_template,
@@ -1336,6 +1482,7 @@ pub fn prj_container(root: &str, name: &str, shortcut: &String) -> ContainerStat
             "container_ignore.hbs",
             &container_ignore_template,
             data.clone(),
+            false,
         );
         // Copy .dockerignore to .containerignore
         copy(
@@ -1353,7 +1500,7 @@ pub fn prj_container(root: &str, name: &str, shortcut: &String) -> ContainerStat
     }
     // Write psp log
     write_log(LOGFILE, format!("{}: {}", log_step, ret).as_str());
-    (ret, exit_status)
+    Ok((ret, exit_status))
 }
 
 // Project Makefile
@@ -1364,7 +1511,7 @@ pub fn prj_makefile(
     build: bool,
     container: bool,
     dependencies: bool,
-) -> MakeStatus {
+) -> ProjectResult<MakeStatus> {
     let mut exit_status: ExitStatus = 0;
     // Set options for make
     let mut make_options = vec!["help", "all", "run", "clean"];
@@ -1431,10 +1578,84 @@ endif";
     data.insert("OPTIONS", options.as_str());
     data.insert("ACTIONS", actions.as_str());
     let makefile_template = Path::new(root).join("Makefile").display().to_string();
-    let file_ret = render_template("makefile.hbs", &makefile_template, data.clone());
+    let file_ret = render_template("makefile.hbs", &makefile_template, data.clone(), false);
     if !file_ret {
         error("`Makefile` render failed".to_string());
         exit_status = 15;
     }
-    ((), exit_status)
+    Ok(((), exit_status))
+}
+
+pub fn prj_ai(root: &str, name: &str, shortcut: &String) -> ProjectResult<AIStatus> {
+    let mut exit_status: ExitStatus = 0;
+    // Check psp log for update
+    let log_step = "prj_ai";
+    if check_log(log_step, LOGFILE) {
+        let log_content = read_log(LOGFILE);
+        let value = get_log_value(log_step, log_content?.as_str());
+        if let Some(v) = value {
+            return Ok((v.parse::<bool>()?, exit_status));
+        }
+    }
+    // Check environment variable
+    let ret;
+    let env_container = var("PSP_AI").unwrap_or("false".to_string()).parse().ok();
+    let confirm = if let Some(true) = env_container {
+        info(format!(
+            "create AI files: {}",
+            env_container.unwrap().to_string()
+        ));
+        true
+    } else if shortcut == "quick" || shortcut == "full" {
+        true
+    } else if shortcut == "simple" {
+        false
+    } else {
+        prompt_confirm(
+            "Do you want to create a AI files?",
+            true,
+            "Create SKILLS, AGENTS and LLMs files",
+        )
+    };
+    if confirm {
+        // Create a data map with variables
+        let builder = env_pybuild();
+        let python = get_python_version();
+        let profile = env_profile();
+        let data = HashMap::from([
+            ("SIGNATURE", SIGNATURE),
+            ("VERSION", VERSION),
+            ("PACKAGE", name),
+            ("PY_BUILDER", &builder),
+            ("PYTHON", &python),
+            ("PROFILE", &profile),
+        ]);
+        // SKILLS.md
+        let skills_template = Path::new(root).join("SKILLS.md").display().to_string();
+        let file_ret = render_template("skills.hbs", &skills_template, data.clone(), false);
+        if !file_ret {
+            error("`SKILLS.md` render failed".to_string());
+            exit_status = 16;
+        }
+        // AGENTS.md
+        let agents_template = Path::new(root).join("AGENTS.md").display().to_string();
+        let file_ret = render_template("agents.hbs", &agents_template, data.clone(), false);
+        if !file_ret {
+            error("`AGENTS.md` render failed".to_string());
+            exit_status = 16;
+        }
+        // llms.txt
+        let llms_template = Path::new(root).join("llms.txt").display().to_string();
+        let file_ret = render_template("llms.hbs", &llms_template, data.clone(), false);
+        if !file_ret {
+            error("`llms.txt` render failed".to_string());
+            exit_status = 16;
+        }
+        ret = true;
+    } else {
+        ret = false;
+    }
+    // Write psp log
+    write_log(LOGFILE, format!("{}: {}", log_step, ret).as_str());
+    Ok((ret, exit_status))
 }

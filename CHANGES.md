@@ -7,6 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.11.0] - 2026-11-27
+
+### Added
+
+- Add **ProjectResult** type
+- Add **prj_ai** function
+- Add _toml_edit_ dependencies
+- Add **read_toml** function
+- Add **write_toml** function
+
+### Changed
+
+- Add _PSP_AI_ env variable
+- Update _pyproject.toml_ file
+- Add _rewrite_ parameter into **render_template** function
+- Add _pytest_ dependencies in **prj_tox** function
+
+### Fixed
+
+- Fix GitLab name
+- Fix code style
+
 ## [0.10.0] - 2026-10-30
 
 ### Added
